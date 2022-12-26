@@ -1,0 +1,24 @@
+{
+  "name": "@fathym/eac",
+  "version": "0.0.0",
+  "description": "The Enterprise as Code (EaC) packages, tooling, and docs that support solutions built with Fathym EaC",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
+  "typings": "./dist/src/index.d.ts",
+  "author": "Fathym, Inc",
+  "license": "MIT",
+  "homepage": "https://eac.fathym.com/",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "dist/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fathym/eac.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fathym/eac/issues"
+  }
+}
