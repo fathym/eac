@@ -16,36 +16,39 @@ oclif example Hello World CLI
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g oclif-hello-world
-$ oex COMMAND
+$ npm install -g @fathym/cli
+$ fathym COMMAND
 running command...
-$ oex (--version)
-oclif-hello-world/0.0.0 darwin-x64 node-v16.13.1
-$ oex --help [COMMAND]
+$ fathym (--version)
+@fathym/cli/0.0.1 win32-x64 node-v16.17.1
+$ fathym --help [COMMAND]
 USAGE
-  $ oex COMMAND
+  $ fathym COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oex hello PERSON`](#oex-hello-person)
-* [`oex hello world`](#oex-hello-world)
-* [`oex help [COMMAND]`](#oex-help-command)
-* [`oex plugins`](#oex-plugins)
-* [`oex plugins:inspect PLUGIN...`](#oex-pluginsinspect-plugin)
-* [`oex plugins:install PLUGIN...`](#oex-pluginsinstall-plugin)
-* [`oex plugins:link PLUGIN`](#oex-pluginslink-plugin)
-* [`oex plugins:uninstall PLUGIN...`](#oex-pluginsuninstall-plugin)
-* [`oex plugins update`](#oex-plugins-update)
+* [`fathym hello PERSON`](#fathym-hello-person)
+* [`fathym hello world`](#fathym-hello-world)
+* [`fathym help [COMMAND]`](#fathym-help-command)
+* [`fathym plugins`](#fathym-plugins)
+* [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
+* [`fathym plugins:inspect PLUGIN...`](#fathym-pluginsinspect-plugin)
+* [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin-1)
+* [`fathym plugins:link PLUGIN`](#fathym-pluginslink-plugin)
+* [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin)
+* [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-1)
+* [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-2)
+* [`fathym plugins update`](#fathym-plugins-update)
 
-## `oex hello PERSON`
+## `fathym hello PERSON`
 
 Say hello
 
 ```
 USAGE
-  $ oex hello [PERSON] -f <value>
+  $ fathym hello [PERSON] -f <value>
 
 ARGUMENTS
   PERSON  Person to say hello to
@@ -61,31 +64,31 @@ EXAMPLES
   hello friend from oclif! (./src/commands/hello/index.ts)
 ```
 
-_See code: [dist/commands/hello/index.ts](https://github.com/oclif/hello-world/blob/v0.0.0/dist/commands/hello/index.ts)_
+_See code: [dist/commands/hello/index.ts](https://github.com/fathym/eac/blob/v0.0.1/dist/commands/hello/index.ts)_
 
-## `oex hello world`
+## `fathym hello world`
 
 Say hello world
 
 ```
 USAGE
-  $ oex hello world
+  $ fathym hello world
 
 DESCRIPTION
   Say hello world
 
 EXAMPLES
-  $ oex hello world
+  $ fathym hello world
   hello world! (./src/commands/hello/world.ts)
 ```
 
-## `oex help [COMMAND]`
+## `fathym help [COMMAND]`
 
-Display help for oex.
+Display help for fathym.
 
 ```
 USAGE
-  $ oex help [COMMAND] [-n]
+  $ fathym help [COMMAND] [-n]
 
 ARGUMENTS
   COMMAND  Command to show help for.
@@ -94,18 +97,18 @@ FLAGS
   -n, --nested-commands  Include all nested commands in the output.
 
 DESCRIPTION
-  Display help for oex.
+  Display help for fathym.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.10/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.20/src/commands/help.ts)_
 
-## `oex plugins`
+## `fathym plugins`
 
 List installed plugins.
 
 ```
 USAGE
-  $ oex plugins [--core]
+  $ fathym plugins [--core]
 
 FLAGS
   --core  Show core plugins.
@@ -114,18 +117,56 @@ DESCRIPTION
   List installed plugins.
 
 EXAMPLES
-  $ oex plugins
+  $ fathym plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.0.11/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.9/src/commands/plugins/index.ts)_
 
-## `oex plugins:inspect PLUGIN...`
+## `fathym plugins:install PLUGIN...`
+
+Installs a plugin into the CLI.
+
+```
+USAGE
+  $ fathym plugins:install PLUGIN...
+
+ARGUMENTS
+  PLUGIN  Plugin to install.
+
+FLAGS
+  -f, --force    Run yarn install with force flag.
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Installs a plugin into the CLI.
+  Can be installed from npm or a git url.
+
+  Installation of a user-installed plugin will override a core plugin.
+
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
+  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
+  the CLI without the need to patch and update the whole CLI.
+
+
+ALIASES
+  $ fathym plugins add
+
+EXAMPLES
+  $ fathym plugins:install myplugin 
+
+  $ fathym plugins:install https://github.com/someuser/someplugin
+
+  $ fathym plugins:install someuser/someplugin
+```
+
+## `fathym plugins:inspect PLUGIN...`
 
 Displays installation properties of a plugin.
 
 ```
 USAGE
-  $ oex plugins:inspect PLUGIN...
+  $ fathym plugins:inspect PLUGIN...
 
 ARGUMENTS
   PLUGIN  [default: .] Plugin to inspect.
@@ -138,16 +179,16 @@ DESCRIPTION
   Displays installation properties of a plugin.
 
 EXAMPLES
-  $ oex plugins:inspect myplugin
+  $ fathym plugins:inspect myplugin
 ```
 
-## `oex plugins:install PLUGIN...`
+## `fathym plugins:install PLUGIN...`
 
 Installs a plugin into the CLI.
 
 ```
 USAGE
-  $ oex plugins:install PLUGIN...
+  $ fathym plugins:install PLUGIN...
 
 ARGUMENTS
   PLUGIN  Plugin to install.
@@ -159,7 +200,6 @@ FLAGS
 
 DESCRIPTION
   Installs a plugin into the CLI.
-
   Can be installed from npm or a git url.
 
   Installation of a user-installed plugin will override a core plugin.
@@ -168,24 +208,25 @@ DESCRIPTION
   will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
   the CLI without the need to patch and update the whole CLI.
 
+
 ALIASES
-  $ oex plugins add
+  $ fathym plugins add
 
 EXAMPLES
-  $ oex plugins:install myplugin 
+  $ fathym plugins:install myplugin 
 
-  $ oex plugins:install https://github.com/someuser/someplugin
+  $ fathym plugins:install https://github.com/someuser/someplugin
 
-  $ oex plugins:install someuser/someplugin
+  $ fathym plugins:install someuser/someplugin
 ```
 
-## `oex plugins:link PLUGIN`
+## `fathym plugins:link PLUGIN`
 
 Links a plugin into the CLI for development.
 
 ```
 USAGE
-  $ oex plugins:link PLUGIN
+  $ fathym plugins:link PLUGIN
 
 ARGUMENTS
   PATH  [default: .] path to plugin
@@ -196,23 +237,23 @@ FLAGS
 
 DESCRIPTION
   Links a plugin into the CLI for development.
-
   Installation of a linked plugin will override a user-installed or core plugin.
 
   e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
   command will override the user-installed or core plugin implementation. This is useful for development work.
 
+
 EXAMPLES
-  $ oex plugins:link myplugin
+  $ fathym plugins:link myplugin
 ```
 
-## `oex plugins:uninstall PLUGIN...`
+## `fathym plugins:uninstall PLUGIN...`
 
 Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ oex plugins:uninstall PLUGIN...
+  $ fathym plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -225,17 +266,63 @@ DESCRIPTION
   Removes a plugin from the CLI.
 
 ALIASES
-  $ oex plugins unlink
-  $ oex plugins remove
+  $ fathym plugins unlink
+  $ fathym plugins remove
 ```
 
-## `oex plugins update`
+## `fathym plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ fathym plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ fathym plugins unlink
+  $ fathym plugins remove
+```
+
+## `fathym plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ fathym plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ fathym plugins unlink
+  $ fathym plugins remove
+```
+
+## `fathym plugins update`
 
 Update installed plugins.
 
 ```
 USAGE
-  $ oex plugins update [-h] [-v]
+  $ fathym plugins update [-h] [-v]
 
 FLAGS
   -h, --help     Show CLI help.
