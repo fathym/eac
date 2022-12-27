@@ -44,7 +44,7 @@ Let's open that up and add some basic markdown (feel free to explore and write y
 ```markdown
 # Welcome to our Blog
 
-This is our new blog buildt on a static runtime.
+This is our new blog built on a static runtime.
 ```
 
 There are a few core features of Fathym you've worked with here; created your first LCU, pulled together your first deploy artifact, and have seen how Fathym can host it for us to share.

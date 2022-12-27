@@ -1,10 +1,10 @@
 {
-  "name": "@fathym-eac/cli",
+  "name": "@fathym/cli",
   "version": "0.0.0",
   "description": "The CLI used for code first flows with Fathym EaC.",
   "author": "Fathym, Inc",
   "bin": {
-    "eac": "./bin/run"
+    "fathym": "./bin/run"
   },
   "homepage": "https://github.com/fathym/eac",
   "license": "MIT",
@@ -38,8 +38,8 @@
     "typescript": "^4.9.4"
   },
   "oclif": {
-    "bin": "eac",
-    "dirname": "eac",
+    "bin": "fathym",
+    "dirname": "fathym",
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",
@@ -54,6 +54,8 @@
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
+    "deploy": "npm version patch && npm run deploy:all",
+    "deploy:all": "npm run build && npm publish --access public",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "yarn lint",
