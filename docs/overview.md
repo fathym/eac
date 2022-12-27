@@ -1,65 +1,25 @@
-# Welcome to Fathym Enterprise as Code (EaC)
+# Introduction to Fathym Enterprise as Code (EaC)
 
-First off, we'd like to thank you for even reading this first line of documentation. We know that
-you have several ways to build your next product, to deliver a unique and compelling experience to
-your users. Fathym EaC provides a backbone not just for building user experiences, but also for
-how a team manages the complex workflows and feedback loops that come with engineering,
-product, marketing, and sales trying to fulfill rapid growth and sustainability in
-their products.
+Thank you for considering Fathym EaC for your next project. Our goal is to provide a framework that helps your team rapidly build and deliver unique and compelling user experiences, while also managing the complex workflows and feedback loops that come with engineering, product, marketing, and sales.
 
-At first, Fathym EaC is an opinionated framework that will bring your ideas to life rapidly, without
-vendor lock, without config, and with complete ownership of your IP from client to server.
+Fathym EaC is an opinionated framework that allows you to bring your ideas to life quickly and easily, without vendor lock-in or the need for config. It also provides complete ownership of your IP, from the client to the server.
 
-Then Fathym EaC turns into a platform by which you can define and standardize the way your
-organization delivers products and experiences to the end user that are your definition of what
-vendors you are locked into, what default configurations you maintain and complete ownership of all
-code... your own personal enterprise framework.
+However, Fathym EaC is more than just a framework - it's a platform that allows you to define and standardize the way your organization delivers products and experiences to end users. You have the freedom to choose the vendors you want to work with, configure default settings, and maintain complete ownership of all code.
 
-![Depeche Mode](https://www.fathym.com/assets/images/depeche-mode.jpg)
+Think of Fathym EaC like an iceberg - the surface represents the core aspects of the framework, but there are many customization options available below the surface. For example, if you don't want to use our boilerplate or Render/Logic loop concepts, you can use Next.js instead. Or, if you prefer a different server-side rendering solution, you can use Razzle. The possibilities are endless.
 
-Like an iceberg, starting with Fathym is just the beginning of what you are capable of doing. Most
-of the hooks for customization exist below the surface, exposing opportunities to enhance, extend and
-fully replace core aspects of the experiences Fathym EaC offers.
+But Fathym EaC is more than just code and UX - it also includes a thoughtful DevOps workflow that gives you a strong starting point and the flexibility to customize how and where your app is modified and deployed.
 
-Don't want our boilerplate and Render/Logic loop concepts, then use next.js. don't like the way we SSR?
-Leverage razzle.  Looking for something fresh and simple?  Remix.
+## So, What Is Fathym EaC?
 
-Your next project needs more than just code and UX, it needs a thoughtful DevOps workflow that gives
-you a leg up and starting point, and then lets you customize how and where your app is
-modified and deployed.
+It's a common question - how does Fathym EaC compare to Terraform, Azure ARM, AWS CloudFormation, Fly.io, Netlify, and Vercel? The answer is simple - we don't try to compete with these tools, we work with them. Our philosophy is about finding ways to make all of these tools work together seamlessly for you.
 
-## So what is Fathym EaC?
+So, what is Fathym EaC, and what can you compare it to? At its core, Fathym EaC is a solution that allows you to efficiently craft custom, open source, and SaaS/third party solutions by combining LowCodeUnits (LCUs).
 
-This is a question we get asked often. More specifically, how do we compare to Terraform, Azure ARM, and
-AWS CloudFormation? We don't, use them all here. How do we compare to fly.io, Netlify and Vercel?  We don't, 
-use them all here.  While we do offer our own workflows and tooling that crossover with theses 
-groups our philosophy is more about how we can all work together better for you.
+## Fathym EaC: Your Kitchen, You the Chef
 
-So what are we and what can you can compare us to? Before we fully answer that question, let's take a look at
-our philosophy.
+Imagine walking into a fully stocked kitchen as the chef, with all the ingredients you could ever need (well, not quite all of them, but we'll get to that). Fathym EaC provides the ingredients - the LCUs - that you can use to create solutions, just like a chef creates dishes with various ingredients.
 
-After decades spent doing frontline development for competitive enterprise software, there became a moment when
-we realized that the pain staking process of (re)developing the entirety of what ammounted to the same stack
-for every different enterprise, no longer made sense. Even in having some highly reusable core architecture
-that allowed us to spin these enterprise architectures up and license them out, they didn't fully represent
-what IP ownership meant with the impending explosion of open source and SaaS.
+For example, you could use Fathym EaC to build a static blog using MDX with the Fathym runtime and static templates. Or, you could use the "static blog from Docusaurus recipe" LCU to build a static blog with Mix + SaaS CMS. Or, you could create a static blog using a non-React based blog and a deployed instance of Alfresco Community.
 
-We needed something more combinatorial, that allowed us to craft, with the same efficiency, solutions that 
-are composed of custom, open source and SaaS/third party LowCodeUnits.
-
-## Fathym EaC your kitchen, you the chef
-
-Imagine, as the chef, walking into a fully stocked kitchen, all the ingredients you'd ever need, (well not all 
-but we'll get to that)
-
-
-
-End with something on how the ingredients are the lcus...  they can be combined to make things like sauces that 
-letter get used and combined with other ingredients and completed item...
-
-Static Blog as mdx with fathym runtime and static templates =》 static blog from docusaurus recipe =》 static 
-blog with remix + SaaS cms =》 static blog with (non react based blog) and deployed instance of alfresco 
-community.
-
-As you can see, there are a number of ways for your team to bring solutions together, even weaving them together 
-as a single cohesive solution.
+As you can see, there are many ways to bring solutions together with Fathym EaC, even weaving them together into a single cohesive solution. The LCUs are like sauces that can be combined and used in different ways to create a finished dish.

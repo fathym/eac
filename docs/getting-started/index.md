@@ -61,7 +61,29 @@ Now we can auth our Fathym connection for the cli
 npx fathym auth
 ```
 
-This will open your browser and take you to Auth with the CLI.
+This will open your browser and take you to sign in with Fathym for the CLI. This will allow you to connect to your Fathym enterprises and related EaC data.
+
+```cli
+npx fathym enterprises list
+```
+
+You'll get a list of all your available enterprises. Locate the lookup for the one you want to manage and copy it.
+
+```cli
+npx fathym enterprises set {instert-lookup-here}
+```
+
+Now we've set the enterprise that we are going to work with and manage. If you are just starting with Fathym, then this will be the lookup to your personal enterprise.
+
+> **NOTE** - The previous `fathym` commands will only need to be executed when you've lost your authentication or want to change the enterprise you are managing. Otherwise, you will not need to run them.
+
+With the CLI connected, we first need to create a project to house our new application.
+
+```cli
+npx fathym eac projects create "My First Project"
+```
+
+# ...
 
 There are a few core features of Fathym you've worked with here; created your first LCU, pulled together your first deploy artifact, and have seen how Fathym can host it for you to share.
 
