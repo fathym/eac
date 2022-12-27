@@ -35,15 +35,17 @@ This will create a very simple package.json file, nothing for us to do there now
 `README.md` file any way you like.  A couple quick commands for that.
 
 ```cli`
-touch README.md
+npx touch README.md
 ````
 
 :::Note
 
-For windows users, you can leverage an npm package to do something similar.
+We used `npx touch` touch here to support cross platform instructions where we assume node.js will
+be installed. To use npm or npx throughout these docs, you will need to have the latest version of
+node installed. For users with `touch` (like linux), you can use touch as you are used to.
 
 ```cli`
-npx touch-for-windows README.md
+touch README.md
 
 ```
 
