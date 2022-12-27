@@ -12,7 +12,7 @@ For some doc and blog sites, markdown is all that is really needed. With markdow
 
 ## Let's Build a Blog
 
-Open your favorite IDE, we use [VS Code](https://code.visualstudio.com/download) for most of our open source projects, and navigate to a folder of your choice.  
+Open your favorite IDE, we use [VS Code](https://code.visualstudio.com/download) for most of our open source projects, and navigate to a folder of your choice.
 
 You may be used to opening up a command prompt, globally installing a custom CLI, and executing their create or init command, but we're going to go a more basic route to start.
 
@@ -25,10 +25,11 @@ npx make-dir-cli test
 cd test
 ```
 
-> **NOTE** - We used `npx make-dir-cli` and will use  `npx touch` in a moment.  We do this to support cross platform instructions (since we assume node.js will
-be installed). You will need node.js installed to complete these docs. Users that know their system commands can use those.
+> **NOTE** - We used `npx make-dir-cli` and will use `npx touch` in a moment. We do this to support cross platform instructions (since we assume node.js will
+> be installed). You will need node.js installed to complete these docs. Users that know their system commands can use those.
 
-Next we run 
+Next we run
+
 ```cli
 npm init -y
 ```
@@ -47,8 +48,6 @@ Let's open that up and add some basic markdown (feel free to explore and write y
 This is our new blog built on a static runtime.
 ```
 
-There are a few core features of Fathym you've worked with here; created your first LCU, pulled together your first deploy artifact, and have seen how Fathym can host it for us to share.
+There are a few core features of Fathym you've worked with here; created your first LCU, pulled together your first deploy artifact, and have seen how Fathym can host it for you to share.
 
-Ok, so we do have something up our sleeves.  To make all of this possible in the current example, we use the free, hosted version of Fathym's Runtime.  There is a lot to this, but nothing for us to bore you with here.
-
-
+Ok, so we do have something up our sleeves. To make all of this possible in the current example, we use the free, hosted version of Fathym's Runtime. There is a lot the runtime can do, nothing for us to bore you with here.
