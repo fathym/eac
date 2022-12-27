@@ -12,29 +12,22 @@ For some doc and blog sites, markdown is all that is really needed. With markdow
 
 ## Let's Build a Blog
 
-Open your favorite IDE, we use [VS Code](https://code.visualstudio.com/download) for most of our open source projects, and navigate to a folder of your choice.
+Open your favorite IDE, we use [VS Code](https://code.visualstudio.com/download) for most of our open source projects.
 
-You may be used to opening up a command prompt, globally installing a custom CLI, and executing their create or init command, but we're going to go a more basic route to start.
+At this point, you may be used to opening up a command prompt, globally installing a custom CLI, and executing a framework's create or init command, but we're going to go a more basic route to start.
 
 Just to show, nothing up our sleeves.
 
-We still need to open a command prompt in the location we chose and run
+We aren't magicians though, so still need to open a command prompt to a folder of your choosing and run
 
 ```cli
 npx make-dir-cli test
 cd test
 ```
 
-> **NOTE** - We used `npx make-dir-cli` and will use `npx touch` in a moment. We do this to support cross platform instructions (since we assume node.js will
-> be installed). You will need node.js installed to complete these docs. Users that know their system commands can use those.
+> **NOTE** - We used `npx make-dir-cli` and will use `npx touch` in a moment. We do this to support cross platform instructions (since we assume node.js is installed). You will need node.js installed to complete other aspects of these docs. Users that know their system commands can use those.
 
-Next we run
-
-```cli
-npm init -y
-```
-
-This will create a package.json file, nothing for us to do there yet. Create a new `README.md` file
+To start we need to create a new `README.md` file
 
 ```cli
 npx touch README.md
@@ -47,6 +40,28 @@ Let's open that up and add some basic markdown (feel free to explore and write y
 
 This is our new blog built on a static runtime.
 ```
+
+Now we need to create a deployable artifact that we'll send up to Fathym for hosting. For our purposes, let's start with a zip artifact
+
+```cli
+npx zip-cli -i ./ -o ./deploy.zip
+```
+
+This will generate a `deploy.zip` in the working folder that you'll use for deployment to Fathym.
+
+> **NOTE** - If you need to re-create the deploy.zip file, make sure to delete it first, so that it isn't also included in the new zip.
+
+## Let's start working with Fathym
+
+With the code in place, albeit lightweight, we can look at installing some Fathym tooling to bring our code online. If you haven't already, head over and [Sign Up](https://www.fathym.com/dashboard) for an account.
+
+Now we can auth our Fathym connection for the cli
+
+```cli
+npx fathym auth
+```
+
+This will open your browser and take you to Auth with the CLI.
 
 There are a few core features of Fathym you've worked with here; created your first LCU, pulled together your first deploy artifact, and have seen how Fathym can host it for you to share.
 
