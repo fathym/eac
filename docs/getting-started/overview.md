@@ -22,7 +22,7 @@ At this point, you may be used to opening up a command prompt, globally installi
 
 Just to show, nothing up our sleeves.
 
-We aren't magicians though, so still need to open a command prompt to a folder of your choosing and run
+We aren't magicians though, so still need to open a command prompt to a folder of your choosing to get started.
 
 ```cli
 npx make-dir-cli test
@@ -94,11 +94,11 @@ npx fathym eac applications create "My First Application"
 ```
 
 ```cli
-npx fathym eac applications lcu {app-lookup} [options]
+npx fathym eac applications {app-lookup} lcu [options]
 ```
 
 ```cli
-npx fathym eac applications processor {app-lookup} [options]
+npx fathym eac applications {app-lookup} processor [options]
 ```
 
 ```cli
