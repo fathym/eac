@@ -1,6 +1,10 @@
 # Getting Started
 
-...
+There are a number of ways to get started with your application, from launching full blown IoT infrastrucutre, to launching LCU recipes to get you moving quickly.
+
+Here we are going to start from zero and go to hero. providing you with an understanding of what we are and what we aren't while showcasing the features that will help take your development skills to the next level, without learning all the in and outs of every discipline of the DevOps flow.
+
+We'll provide you the tools to understand where your existing skills fit into our methodology and how the Fathym framework and platform will help hold you up where your still learning.
 
 ## What's that? How did we build these docs?
 
@@ -77,11 +81,34 @@ Now we've set the enterprise that we are going to work with and manage. If you a
 
 > **NOTE** - The previous `fathym` commands will only need to be executed when you've lost your authentication or want to change the enterprise you are managing. Otherwise, you will not need to run them.
 
-With the CLI connected, we first need to create a project to house our new application.
+With the CLI connected, we first need to create a project to house our new application. To do this, we will use fathym's `eac` commands.
 
 ```cli
 npx fathym eac projects create "My First Project"
 ```
+
+Now we will need an application that we can add to our project.
+
+```cli
+npx fathym eac applications create "My First Application"
+```
+
+```cli
+npx fathym eac applications lcu {app-lookup} [options]
+```
+
+```cli
+npx fathym eac applications processor {app-lookup} [options]
+```
+
+```cli
+npx fathym eac projects {proj-lookup} applications add {app-lookup}
+```
+
+There are a couple of different things happening here that start to further reveal the EaC and what it does.
+
+> **NOTE** - There are a number of different ways to configure the application and how ithandles a request
+> . It also provides a container to manage security and server side file modifications.
 
 # ...
 
