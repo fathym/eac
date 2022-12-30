@@ -110,21 +110,21 @@ npx touch index.html
 
 Then open that file and set some boilerplate HTML.
 
-```cli
+```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>My Fathym App</title>
-  </head>
-  <body>
-    <div id="fathym-inject">
-        <h1>Content Not Found</h1>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>My Fathym App</title>
+    </head>
+    <body>
+        <div id="fathym-inject">
+            <h1>Content Not Found</h1>
 
-        <p>The content you are trying to access is not available.</p>
-    </div>
-  </body>
+            <p>The content you are trying to access is not available.</p>
+        </div>
+    </body>
 </html>
 ```
 

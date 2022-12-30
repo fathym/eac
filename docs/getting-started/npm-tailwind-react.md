@@ -2,12 +2,38 @@
 
 ## Let's bring in TailwindCSS
 
-Tailwind CSS is a utility-first CSS framwork
+Tailwind CSS is a utility-first CSS framework that helps developers build custom user interfaces more quickly and easily. It provides a set of pre-designed styles and layout options that can be easily applied to HTML elements using simple class names, allowing developers to focus on creating the structure and content of their web pages rather than writing custom CSS styles.
 
-Now we can update our html with something more visually rich
+Now we can update our html with something more visually rich.
 
 ```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>My Fathym App</title>
 
+        <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {},
+                },
+            };
+        </script>
+    </head>
+    <body
+        class="font-sans font-normal leading-relaxed font-base dark:text-gray-100 text-gray-800 prose dark"
+    >
+        <div id="fathym-inject">
+            <h1>Content Not Found</h1>
+
+            <p>The content you are trying to access is not available.</p>
+        </div>
+    </body>
+</html>
 ```
 
 It's also pretty cool because you can use html in your markdown, allowing you to bring rich styling and capabilities into your static sites.
