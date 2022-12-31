@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.2 win32-x64 node-v16.17.1
+@fathym/cli/0.0.3 win32-x64 node-v16.17.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -29,6 +29,7 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`fathym auth [FILE]`](#fathym-auth-file)
 * [`fathym hello PERSON`](#fathym-hello-person)
 * [`fathym hello world`](#fathym-hello-world)
 * [`fathym help [COMMAND]`](#fathym-help-command)
@@ -41,6 +42,27 @@ USAGE
 * [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-1)
 * [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-2)
 * [`fathym plugins update`](#fathym-plugins-update)
+
+## `fathym auth [FILE]`
+
+Used to start the authentication process with Fathym, so your application can work with the EaC and other features.
+
+```
+USAGE
+  $ fathym auth [FILE] [-n <value>] [-f]
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  Used to start the authentication process with Fathym, so your application can work with the EaC and other features.
+
+EXAMPLES
+  $ fathym auth
+```
+
+_See code: [dist/commands/auth.ts](https://github.com/fathym/eac/blob/v0.0.3/dist/commands/auth.ts)_
 
 ## `fathym hello PERSON`
 
@@ -64,7 +86,7 @@ EXAMPLES
   hello friend from oclif! (./src/commands/hello/index.ts)
 ```
 
-_See code: [dist/commands/hello/index.ts](https://github.com/fathym/eac/blob/v0.0.2/dist/commands/hello/index.ts)_
+_See code: [dist/commands/hello/index.ts](https://github.com/fathym/eac/blob/v0.0.3/dist/commands/hello/index.ts)_
 
 ## `fathym hello world`
 
