@@ -83,7 +83,7 @@ Now we can update our `index.html` with something more visually rich and look at
 
 Typically this isn't how you'd would bring in TailwindCSS and React, but in the case of tinkering, you can.
 
-It's also pretty cool because you can use html in your markdown, allowing you to bring rich styling and capabilities into your static sites.
+It's also pretty cool because you can use html in your markdown, allowing you to bring rich styling and capabilities into your docs, blogs, and other static sites.
 
 ## Deployment artifacts with NPM packages
 
