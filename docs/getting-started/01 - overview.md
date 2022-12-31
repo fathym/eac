@@ -106,7 +106,7 @@ npx fathym eac applications {app-lookup} processor [options]
 Then, we can add the application to the project.
 
 ```cli
-npx fathym eac projects {project-lookup} applications add {app-lookup}
+npx fathym eac projects {project-lookup} applications {app-lookup} add
 ```
 
 Finally, we can commit all of our changes to the EaC at once.

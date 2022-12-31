@@ -106,9 +106,75 @@ Now we are going to need to create a new build pipeline to generate the NPM pack
 ```cli
 npx fathym eac pipelines create "My Basic NPM Package Artifact" [options]
 npx fathym eac sources {username/organization} my-new-repository attach pipeline {pipeline-lookup}
-npx fathym eac commit -m "Configured source and builds for {username/organization} my-new-repository"
 ```
 
-This will override the previous build pipeline and GitHub action.
+Next we will change the LCU for our application to target NPM artifacts instead of GitHub, and inform it which source to use, along with the version (or tag) to deploy.
+
+```cli
+npx fathym eac applications {app-lookup} lcu --type npm
+```
+
+Tag based deployments are key to our internal processes around QA and product validation. It allows us to automate deployments of features and bugs, keeping our QA environments ready to be tested at any moment.
+
+Now we can commit all of our changes to the EaC at once.
+
+```cli
+npx fathym eac commit -m "Configured source and builds for {username/organization} my-new-repository"
+npx fathym eac projects {project-lookup} applications {app-lookup} preview
+```
+
+This will override the previous build pipeline and GitHub action. Kicking off an automatic build that once complete will deploy the latest version of our application out for preview.
 
 ## Adding google analytics tracking and other thrid party libraries
+
+## Bonus - working with the CLI
+
+As you may have noticed, there is a lot of nesting and relationships to work with. It is possible, in many cases with the CLI, to set an "active" value. Take for example the following commands.
+
+```cli
+npx fathym eac projects create "My First Project"
+
+npx fathym eac applications create "My Second Application"
+npx fathym eac applications {app-lookup} lcu [options] --type github
+npx fathym eac applications {app-lookup} processor [options]
+
+npx fathym eac projects {project-lookup} applications {app-lookup} add
+npx fathym eac commit -m "Configured second application in project"
+npx fathym eac projects {project-lookup} applications {app-lookup} preview
+```
+
+And say you have multiple applications to add to the same project, or multiple other actions to take on applications within the project. Let's set the active project and applications in a couple of different ways.
+
+```cli
+npx fathym eac projects create "My First Project"
+npx fathym eac projects {project-lookup} set
+
+npx fathym eac applications create "My Second Application"
+npx fathym eac applications {app-lookup} set
+npx fathym eac applications lcu --type github
+npx fathym eac applications processor
+
+
+npx fathym eac projects applications add
+npx fathym eac commit -m "Configured second application in project"
+npx fathym eac projects applications preview
+```
+
+Let's talk through a bit of this. The project is created normally, same with the application. Then each uses the next line to `set` the active project and application respectively. After that, the only difference in the `lcu` and `processor` is we no longer need to to pass the {app-lookup} in to each call. We also don't need to pass the {project-lookup} or {app-lookup} to the `projects` based commands. You can of course pass the values in, and they will override any active values.
+
+There is one more shorthand to use, and that is to inline the `set` operation when creating the project or application.
+
+```cli
+npx fathym eac projects create "My First Project" --set
+
+npx fathym eac applications create "My Second Application" --set
+```
+
+To unset the values you can use the following commands.
+
+```cli
+npx fathym eac projects unset
+npx fathym eac applications unset
+```
+
+There are other objects within the EaC that support this, use the `--help` on commands to see if they support setting active values.

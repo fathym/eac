@@ -167,7 +167,7 @@ In order to deploy that artifact, you'll need to create a new application again,
 npx fathym eac applications create "My Second Application"
 npx fathym eac applications {app-lookup} lcu [options] --type github
 npx fathym eac applications {app-lookup} processor [options]
-npx fathym eac projects {project-lookup} applications add {app-lookup}
+npx fathym eac projects {project-lookup} applications {app-lookup} add
 npx fathym eac commit -m "Configured second application in project"
 npx fathym eac projects {project-lookup} applications {app-lookup} preview
 ```

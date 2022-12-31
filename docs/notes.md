@@ -9,7 +9,7 @@ Proxy:
 Simple API Key Management example
 (inline vs header keys?)
 CMS API example like contentful/baserow?
-Google Maps API example?
+Google Maps API example? Via AI?
 Other?
 
 Mods Examples:
@@ -23,3 +23,5 @@ Then get more advanced:
 State Flow
 
 We went from a static app to a dynamic team created fathym app!
+
+https://octopus.com/docs/getting-started/first-deployment/deploy-a-package
