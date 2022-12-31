@@ -15,7 +15,7 @@ Fathym helps to configure the repository for automated builds and deployments fo
 For the reason mentioned above, we are going to move our code off of the file system. The first thing you'll need to do is authorize with GitHub. Head back into VS Code and into a terminal where we will auth the user of the CLI with GitHub (in the users global GitHub auth for the active EaC).
 
 ```cli
-npx fathym github auth
+fathym github auth
 ```
 
 This will open a new window with GitHub authorization where you can determine which organizations Fathym has access to (you may have to sign up if you have not before). Grant access to the organizations you'd like us to help you manage and automate.
@@ -25,10 +25,10 @@ This will open a new window with GitHub authorization where you can determine wh
 Now we can initialize a new repository in your GitHub user.
 
 ```cli
-npx fathym eac sources create my-new-repository
+fathym eac sources create my-new-repository
 ```
 
-> **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `npx fathym eac sources {organization} create ...`. This works for all `fathym eac sources` commands.
+> **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `fathym eac sources {organization} create ...`. This works for all `fathym eac sources` commands.
 
 Detail out which options were used and what they do.
 
@@ -43,7 +43,7 @@ As mentioned previously, there are many different ways to get your deployment ar
 A build pipeline is a configuration of the build process. It is made up of a template and the parameters necessary to fullfill the chosen template. A source control can only have a single build pipeline while a build pipeline can have multiple source controls. This ensures understanding on how a source control is built, and allows you to make edits to a build pipeline that update multiple source controls at the same time (like a standard React build). This helps keep your GitHub Actions in sync as your architecture evolves.
 
 ```cli
-npx fathym eac pipelines create "My Basic Package Artifact" [options]
+fathym eac pipelines create "My Basic Package Artifact" [options]
 ```
 
 Detail out which options were used and what they do.
@@ -51,13 +51,13 @@ Detail out which options were used and what they do.
 After creating the build pipeline you can now attach it to the source control.
 
 ```cli
-npx fathym eac sources {username/organization} my-new-repository attach pipeline {pipeline-lookup}
+fathym eac sources {username/organization} my-new-repository attach pipeline {pipeline-lookup}
 ```
 
 Now, we need to commit all of our EaC changes for the source and build pipelines.
 
 ```cli
-npx fathym eac commit -m "Configured source and builds for {username/organization} my-new-repository"
+fathym eac commit -m "Configured source and builds for {username/organization} my-new-repository"
 ```
 
 Once the commit completes the source will be created with a new GitHub Action. It should start and run automatically.
@@ -75,7 +75,7 @@ The next step is going to be cloning your repository. Navigate into the folder w
 Now clone the repository.
 
 ```cli
-npx fathym git {username/organization} my-new-repository clone
+fathym git {username/organization} my-new-repository clone
 ```
 
 You'll notice after cloning that the `integration` branch is the initially selected branch. This is a part of the repository setup we did for you, where integration is the default.
@@ -99,7 +99,7 @@ Now you have a continuous integration flow in place and a better understanding o
 First, create a new branch in your repository.
 
 ```cli
-npx fathym git feature add-index-html-template
+fathym git feature add-index-html-template
 ```
 
 You'll notice you are now on the feature/add-index-html-templates branch and we can start coding. Add a new index.html file.
@@ -113,18 +113,18 @@ Then open that file and set some boilerplate HTML.
 ```html
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>My Fathym App</title>
-    </head>
-    <body>
-        <div id="fathym-inject">
-            <h1>Content Not Found</h1>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Fathym App</title>
+  </head>
+  <body>
+    <div id="fathym-inject">
+      <h1>Content Not Found</h1>
 
-            <p>The content you are trying to access is not available.</p>
-        </div>
-    </body>
+      <p>The content you are trying to access is not available.</p>
+    </div>
+  </body>
 </html>
 ```
 
@@ -135,7 +135,7 @@ Update the `README.md` file with whatever markdown you want to use.
 Now you are ready to check in and push your code.
 
 ```cli
-npx fathym git -m "Added index.html template"
+fathym git -m "Added index.html template"
 ```
 
 We leverage the above command from Fathym so that no individual developer is responsible for remembering the equivelant git commands to run:
@@ -151,7 +151,7 @@ git push origin
 git fetch --prune
 ```
 
-> **NOTE** - You can also use the `npx fathym git` command without a message to execute a sync, skipping the add and commit commands above.
+> **NOTE** - You can also use the `fathym git` command without a message to execute a sync, skipping the add and commit commands above.
 
 Upon pushing your changes to the repository, you'll be able to see the build in progress. You can view this in the Actions tab of the repository on GitHub. Alternatively, you can use your Fathym [enterprise feed](https://www.fathym.com/dashboard/activity) to see all build activity (and more) at a glance.
 
@@ -161,15 +161,15 @@ The build should complete very quickly because you aren't really building anythi
 
 In order to deploy that artifact, you'll need to create a new application again, this time for our GitHub sample.
 
-> **NOTE** - If you haven't created a project yet, head to the [previous walkthrough](./overview.md). If you don't have your project lookup and need to find it, you can use `npx fathym eac projects list`.
+> **NOTE** - If you haven't created a project yet, head to the [previous walkthrough](./overview.md). If you don't have your project lookup and need to find it, you can use `fathym eac projects list`.
 
 ```cli
-npx fathym eac applications create "My Second Application"
-npx fathym eac applications {app-lookup} lcu [options] --type github
-npx fathym eac applications {app-lookup} processor [options]
-npx fathym eac projects {project-lookup} applications {app-lookup} add
-npx fathym eac commit -m "Configured second application in project"
-npx fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac applications create "My Second Application"
+fathym eac applications {app-lookup} lcu [options] --type github
+fathym eac applications {app-lookup} processor [options]
+fathym eac projects {project-lookup} applications {app-lookup} add
+fathym eac commit -m "Configured second application in project"
+fathym eac projects {project-lookup} applications {app-lookup} preview
 ```
 
 Notice the source control being attached to the application, this set's the application up to recieve automatic deployments and will alter the action for this purpose.
@@ -191,7 +191,7 @@ In order to enable markdown composition with your index.html file, you'll need t
 First you'll configure the modifier for markdown to html.
 
 ```cli
-npx fathym eac modifier "Markdown to HTML" --pathFilter "*.(md|mdx)" --priority 500 --type MarkdownToHTML --details "{}"
+fathym eac modifier "Markdown to HTML" --pathFilter "*.(md|mdx)" --priority 500 --type MarkdownToHTML --details "{}"
 ```
 
 The priority will become important once we configure the second modifier to ensure they execute in the correct order. Higher priority modifiers execute first, then lower priority. Modifiers with the same priority execute in parallel.
@@ -199,14 +199,14 @@ The priority will become important once we configure the second modifier to ensu
 Next you will configure the modifier that will inject the formatted markdown into the HTML template.
 
 ```cli
-npx fathym eac modifier "Markdown Injector" --pathFilter "*index.html" --priority 500 --type HtmlInjector --details "{}"
+fathym eac modifier "Markdown Injector" --pathFilter "*index.html" --priority 500 --type HtmlInjector --details "{}"
 ```
 
 This will create the final aspect of our initial modifier flow, and once committed, you'll be able to preview it in your browser
 
 ```cli
-npx fathym eac commit -m "Configured second application in project"
-npx fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac commit -m "Configured second application in project"
+fathym eac projects {project-lookup} applications {app-lookup} preview
 ```
 
 ## What's Next?

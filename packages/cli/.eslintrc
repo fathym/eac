@@ -1,9 +1,24 @@
 {
   "extends": ["oclif", "oclif-typescript"],
   "rules": {
+    "arrow-parens": "off",
     "comma-dangle": "off",
+    "indent": "off",
+    "new-cap": "off",
+    "node/no-extraneous-import": "off",
     "object-curly-spacing": ["error", "always"],
-    "quotes": ["error"],
-    "semi": "off"
+    "quotes": "off",
+    "semi": "off",
+    "spaced-comment": [
+      "error",
+      "always",
+      {
+        "line": {
+          "markers": ["#region", "#endregion", "region", "endregion"]
+        }
+      }
+    ],
+    "unicorn/no-array-for-each": "off",
+    "unicorn/new-for-builtins": "off"
   }
 }

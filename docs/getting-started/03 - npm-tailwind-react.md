@@ -13,76 +13,76 @@ Now we can update our `index.html` with something more visually rich and look at
 ```html
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>My Fathym App</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Fathym App</title>
 
-        <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-        <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-        <script
-            src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"
-        >
-
-            <script>
-                tailwind.config = {
-                    theme: {
-                        extend: {},
-                    },
-                };
-        </script>
-    </head>
-    <body
-        class="font-sans font-normal leading-relaxed font-base dark:text-gray-100 text-gray-800 prose dark"
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"
     >
-        <div id="fathym-inject">
-            <h1>Content Not Found</h1>
 
-            <p>The content you are trying to access is not available.</p>
-        </div>
+      <script>
+          tailwind.config = {
+              theme: {
+                  extend: {},
+              },
+          };
+    </script>
+  </head>
+  <body
+    class="font-sans font-normal leading-relaxed font-base dark:text-gray-100 text-gray-800 prose dark"
+  >
+    <div id="fathym-inject">
+      <h1>Content Not Found</h1>
 
-        <div id="drawer"></div>
+      <p>The content you are trying to access is not available.</p>
+    </div>
 
-        <script>
-            // Create the Drawer component
-            const Drawer = () => {
-                // Use the useState hook from the global React object to store the state of the drawer
-                const [isOpen, setIsOpen] = React.useState(false);
+    <div id="drawer"></div>
 
-                // Toggle the state of the drawer when the button is clicked
-                const toggleDrawer = () => {
-                    setIsOpen(!isOpen);
-                };
+    <script>
+      // Create the Drawer component
+      const Drawer = () => {
+          // Use the useState hook from the global React object to store the state of the drawer
+          const [isOpen, setIsOpen] = React.useState(false);
 
-                // Return the JSX for the component
-                return (
-                    <>
-                        {/* Button to toggle the drawer */}
-                        <button
-                            class="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            onClick={toggleDrawer}
-                        >
-                            Toggle Drawer
-                        </button>
+          // Toggle the state of the drawer when the button is clicked
+          const toggleDrawer = () => {
+              setIsOpen(!isOpen);
+          };
 
-                        {/* Drawer component */}
-                        <aside
-                            style={{
-                                left:
-                            }}
-                            className={`fixed z-[1] top-0 bg-slate-700 text-gray-200 drop-shadow h-full w-[300px] ${isOpen ? "left-0" : "left-[-300px]"}`}
-                        >
-                            {/* Drawer content goes here */}
-                            An awesome react drawer along side tailwind
-                        </aside>
-                    </>
-                );
-            };
+          // Return the JSX for the component
+          return (
+              <>
+                  {/* Button to toggle the drawer */}
+                  <button
+                      class="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      onClick={toggleDrawer}
+                  >
+                      Toggle Drawer
+                  </button>
 
-            // Render the Drawer component to the DOM
-            ReactDOM.render(<Drawer />, document.getElementById("drawer"));
-        </script>
-    </body>
+                  {/* Drawer component */}
+                  <aside
+                      style={{
+                          left:
+                      }}
+                      className={`fixed z-[1] top-0 bg-slate-700 text-gray-200 drop-shadow h-full w-[300px] ${isOpen ? "left-0" : "left-[-300px]"}`}
+                  >
+                      {/* Drawer content goes here */}
+                      An awesome react drawer along side tailwind
+                  </aside>
+              </>
+          );
+      };
+
+      // Render the Drawer component to the DOM
+      ReactDOM.render(<Drawer />, document.getElementById("drawer"));
+    </script>
+  </body>
 </html>
 ```
 
@@ -104,14 +104,14 @@ There are a couple steps that Fathym just can't automate, and we'll walk you thr
 Now we are going to need to create a new build pipeline to generate the NPM package.
 
 ```cli
-npx fathym eac pipelines create "My Basic NPM Package Artifact" [options]
-npx fathym eac sources {username/organization} my-new-repository attach pipeline {pipeline-lookup}
+fathym eac pipelines create "My Basic NPM Package Artifact" [options]
+fathym eac sources {username/organization} my-new-repository attach pipeline {pipeline-lookup}
 ```
 
 Next we will change the LCU for our application to target NPM artifacts instead of GitHub, and inform it which source to use, along with the version (or tag) to deploy.
 
 ```cli
-npx fathym eac applications {app-lookup} lcu --type npm
+fathym eac applications {app-lookup} lcu --type npm
 ```
 
 Tag based deployments are key to our internal processes around QA and product validation. It allows us to automate deployments of features and bugs, keeping our QA environments ready to be tested at any moment.
@@ -119,8 +119,8 @@ Tag based deployments are key to our internal processes around QA and product va
 Now we can commit all of our changes to the EaC at once.
 
 ```cli
-npx fathym eac commit -m "Configured source and builds for {username/organization} my-new-repository"
-npx fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac commit -m "Configured source and builds for {username/organization} my-new-repository"
+fathym eac projects {project-lookup} applications {app-lookup} preview
 ```
 
 This will override the previous build pipeline and GitHub action. Kicking off an automatic build that once complete will deploy the latest version of our application out for preview.
@@ -132,32 +132,32 @@ This will override the previous build pipeline and GitHub action. Kicking off an
 As you may have noticed, there is a lot of nesting and relationships to work with. It is possible, in many cases with the CLI, to set an "active" value. Take for example the following commands.
 
 ```cli
-npx fathym eac projects create "My First Project"
+fathym eac projects create "My First Project"
 
-npx fathym eac applications create "My Second Application"
-npx fathym eac applications {app-lookup} lcu [options] --type github
-npx fathym eac applications {app-lookup} processor [options]
+fathym eac applications create "My Second Application"
+fathym eac applications {app-lookup} lcu [options] --type github
+fathym eac applications {app-lookup} processor [options]
 
-npx fathym eac projects {project-lookup} applications {app-lookup} add
-npx fathym eac commit -m "Configured second application in project"
-npx fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac projects {project-lookup} applications {app-lookup} add
+fathym eac commit -m "Configured second application in project"
+fathym eac projects {project-lookup} applications {app-lookup} preview
 ```
 
 And say you have multiple applications to add to the same project, or multiple other actions to take on applications within the project. Let's set the active project and applications in a couple of different ways.
 
 ```cli
-npx fathym eac projects create "My First Project"
-npx fathym eac projects {project-lookup} set
+fathym eac projects create "My First Project"
+fathym eac projects {project-lookup} set
 
-npx fathym eac applications create "My Second Application"
-npx fathym eac applications {app-lookup} set
-npx fathym eac applications lcu --type github
-npx fathym eac applications processor
+fathym eac applications create "My Second Application"
+fathym eac applications {app-lookup} set
+fathym eac applications lcu --type github
+fathym eac applications processor
 
 
-npx fathym eac projects applications add
-npx fathym eac commit -m "Configured second application in project"
-npx fathym eac projects applications preview
+fathym eac projects applications add
+fathym eac commit -m "Configured second application in project"
+fathym eac projects applications preview
 ```
 
 Let's talk through a bit of this. The project is created normally, same with the application. Then each uses the next line to `set` the active project and application respectively. After that, the only difference in the `lcu` and `processor` is we no longer need to to pass the {app-lookup} in to each call. We also don't need to pass the {project-lookup} or {app-lookup} to the `projects` based commands. You can of course pass the values in, and they will override any active values.
@@ -165,16 +165,16 @@ Let's talk through a bit of this. The project is created normally, same with the
 There is one more shorthand to use, and that is to inline the `set` operation when creating the project or application.
 
 ```cli
-npx fathym eac projects create "My First Project" --set
+fathym eac projects create "My First Project" --set
 
-npx fathym eac applications create "My Second Application" --set
+fathym eac applications create "My Second Application" --set
 ```
 
 To unset the values you can use the following commands.
 
 ```cli
-npx fathym eac projects unset
-npx fathym eac applications unset
+fathym eac projects unset
+fathym eac applications unset
 ```
 
 There are other objects within the EaC that support this, use the `--help` on commands to see if they support setting active values.

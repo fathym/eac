@@ -15,7 +15,7 @@ Fathym helps to configure the repository for automated builds and deployments fo
 There For the reason mentioned above, we are going to move our code off of the file system. The first thing you'll need to do is authorize with GitHub. Head back into VS Code and into a terminal where we will auth the user of the CLI with GitHub (in the users global GitHub auth for the active EaC).
 
 ```cli
-npx fathym github auth
+fathym github auth
 ```
 
 This will open a new window with GitHub authorization where you can determine which organizations Fathym has access to (you may have to sign up if you have not before). Grant access to the organizations you'd like us to help you manage and automate.
@@ -25,10 +25,10 @@ This will open a new window with GitHub authorization where you can determine wh
 Now we can initialize a new repository in your default user organization in GitHub.
 
 ```cli
-npx fathym eac env sources {username/organization} create my-new-repository [options]
+fathym eac env sources {username/organization} create my-new-repository [options]
 ```
 
-> **NOTE** - You can omit the `{username/organization}` whenever using your username and just call `npx fathym github {username/organization} create ...` instead.
+> **NOTE** - You can omit the `{username/organization}` whenever using your username and just call `fathym github {username/organization} create ...` instead.
 
 Detail out which options were used and what they do.
 
@@ -43,7 +43,7 @@ As mentioned previously, there are many different ways to get your deployment ar
 A Build Pipeline is a configuration of the build process. It is made up of a template and the parameters necessary to fullfill the chosen template. A source control can only have a single Build Pipeline while a Build Pipeline can have multiple source controls. This ensures understanding on how a source control is built, and allows you to make edits to a Build Pipeline that updates multiple source controls at the same time (like a standard React build), keeping your GitHub Actions in sync as your architecture evolves.
 
 ```cli
-npx fathym eac env pipelines create "My Basic Package Artifact" [options]
+fathym eac env pipelines create "My Basic Package Artifact" [options]
 ```
 
 Detail out which options were used and what they do.
@@ -51,7 +51,7 @@ Detail out which options were used and what they do.
 After creating the Build Pipeline you can now attach it to the source control.
 
 ```cli
-npx fathym eac env sources {username/organization} my-new-repository attach pipeline {pipeline-lookup} --auto-deploy
+fathym eac env sources {username/organization} my-new-repository attach pipeline {pipeline-lookup} --auto-deploy
 ```
 
 Once you attach the Build Pipeline to the source control, a new GitHub Action will be created based on the configuration of the Build Pipeline. This should kick of a build automatically based on the new build pipeline action.

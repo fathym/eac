@@ -1,6 +1,6 @@
 {
   "name": "@fathym/cli",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "The CLI used for code first flows with Fathym EaC.",
   "author": "Fathym, Inc",
   "bin": {
@@ -17,15 +17,23 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
+    "@fathym/common": "^0.0.24",
     "@oclif/core": "^1.22.0",
     "@oclif/plugin-help": "^5",
-    "@oclif/plugin-plugins": "^2.1.9"
+    "@oclif/plugin-plugins": "^2.1.9",
+    "@semanticjs/common": "^0.64.0",
+    "execa": "^6.1.0",
+    "inquirer": "^9.1.4",
+    "listr": "^0.14.3"
   },
   "devDependencies": {
     "@oclif/test": "^2.2.16",
     "@types/chai": "^4",
+    "@types/inquirer": "^9.0.3",
+    "@types/listr": "^0.14.4",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.18.10",
+    "@types/supports-color": "^8.1.1",
     "chai": "^4",
     "eslint": "^7.32.0",
     "eslint-config-oclif": "^4",
@@ -45,10 +53,14 @@
       "@oclif/plugin-help",
       "@oclif/plugin-plugins"
     ],
+    "flexibleTaxonomy": true,
+    "hooks": {
+      "command_incomplete": "./dist/hooks/command-incomplete.js"
+    },
     "topicSeparator": " ",
     "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
+      "enterprises": {
+        "description": "Used for interacting with the users available enterprises."
       }
     }
   },
@@ -56,6 +68,7 @@
     "build": "shx rm -rf dist && tsc -b",
     "deploy": "npm version patch && npm run deploy:all",
     "deploy:all": "npm run build && npm publish --access public",
+    "fathym": "npm run build && \"./bin/run.cmd\"",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "yarn lint",

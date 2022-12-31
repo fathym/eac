@@ -53,10 +53,16 @@ This will generate a deploy.zip file in the working folder that you'll use for d
 
 To start working with Fathym, you'll need to sign up for an account on [Fathym's website](https://www.fathym.com/dashboard).
 
+Then you can install the CLI globally.
+
+```cli
+npm install @fathym/cli@latest -g
+```
+
 To authenticate the Fathym connection for the CLI, run the following command:
 
 ```cli
-npx fathym auth
+fathym auth
 ```
 
 This will open your browser and prompt you to sign in with Fathym for the CLI. This will allow you to connect to your Fathym enterprises and related EaC data.
@@ -64,13 +70,13 @@ This will open your browser and prompt you to sign in with Fathym for the CLI. T
 To view a list of your available enterprises, run:
 
 ```cli
-npx fathym enterprises list
+fathym enterprises list
 ```
 
 Locate the lookup for the enterprise you want to manage and copy it. Then, set the active enterprise using:
 
 ```cli
-npx fathym enterprises set {ent-lookup}
+fathym enterprises set {ent-lookup}
 ```
 
 This will set the enterprise that you will work with and manage. If you are just starting with Fathym, this will be the lookup for your personal enterprise.
@@ -82,37 +88,37 @@ This will set the enterprise that you will work with and manage. If you are just
 With the CLI connected, we first need to create a project to house our new application. To do this, we will use Fathym's `eac` commands.
 
 ```cli
-npx fathym eac projects create "My First Project"
+fathym eac projects create "My First Project"
 ```
 
 Next, we will create an application that we can add to our project.
 
 ```cli
-npx fathym eac applications create "My First Application"
+fathym eac applications create "My First Application"
 ```
 
 The LCU is configured to manage security and server-side file modifications for the application.
 
 ```cli
-npx fathym eac applications {app-lookup} lcu [options]
+fathym eac applications {app-lookup} lcu [options]
 ```
 
 There are a number of different options for configuring how the application handles requests. To do so we configure the application's processor.
 
 ```cli
-npx fathym eac applications {app-lookup} processor [options]
+fathym eac applications {app-lookup} processor [options]
 ```
 
 Then, we can add the application to the project.
 
 ```cli
-npx fathym eac projects {project-lookup} applications {app-lookup} add
+fathym eac projects {project-lookup} applications {app-lookup} add
 ```
 
 Finally, we can commit all of our changes to the EaC at once.
 
 ```cli
-npx fathym eac commit -m "Added my first project and it's first application"
+fathym eac commit -m "Added my first project and it's first application"
 ```
 
 There are a couple of different things happening here that start to further reveal the EaC and what it does. The system is organized into multiple management groups, this particular set works with projects and how/where its applications are hosted/deployed.
@@ -122,7 +128,7 @@ There are a couple of different things happening here that start to further reve
 Finally we can get the application details to get the URL its running on. (The same can be done for projects by dropping the `applications {app-lookup}`).
 
 ```cli
-npx fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac projects {project-lookup} applications {app-lookup} preview
 ```
 
 This will give you a URL you can click to open and preview the application.
