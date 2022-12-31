@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.1 win32-x64 node-v16.17.1
+@fathym/cli/0.0.2 win32-x64 node-v16.17.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -64,7 +64,7 @@ EXAMPLES
   hello friend from oclif! (./src/commands/hello/index.ts)
 ```
 
-_See code: [dist/commands/hello/index.ts](https://github.com/fathym/eac/blob/v0.0.1/dist/commands/hello/index.ts)_
+_See code: [dist/commands/hello/index.ts](https://github.com/fathym/eac/blob/v0.0.2/dist/commands/hello/index.ts)_
 
 ## `fathym hello world`
 
