@@ -66,7 +66,12 @@ Now we can update our `index.html` with something more visually rich and look at
                         </button>
 
                         {/* Drawer component */}
-                        <aside class="bg-slate-700 text-gray-200">
+                        <aside
+                            style={{
+                                left:
+                            }}
+                            className={`fixed z-[1] top-0 bg-slate-700 text-gray-200 drop-shadow h-full w-[300px] ${isOpen ? "left-0" : "left-[-300px]"}`}
+                        >
                             {/* Drawer content goes here */}
                             An awesome react drawer along side tailwind
                         </aside>
