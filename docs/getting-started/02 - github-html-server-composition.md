@@ -25,7 +25,7 @@ This will open a new window with GitHub authorization where you can determine wh
 Now we can initialize a new repository in your EaC.
 
 ```cli
-fathym eac sources create  my-new-repository
+fathym eac sources create my-new-repository
 ```
 
 > **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `fathym eac sources {organization} create ...`. This works for all `fathym eac sources` commands.
@@ -51,7 +51,7 @@ Detail out which options were used and what they do.
 After creating the build pipeline you can now attach it to the source control.
 
 ```cli
-fathym eac sources {username/organization} my-new-repository attach pipeline {pipeline-lookup}
+fathym eac sources pipeline attach {username/organization} my-new-repository {pipeline-lookup}
 ```
 
 Now, we need to commit all of our EaC changes for the source and build pipelines.
