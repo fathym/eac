@@ -28,7 +28,7 @@ export default class Commit extends FathymCommand {
 
     return new Listr([
       {
-        title: `Committing EaC`,
+        title: `Committing EaC: ${args.message}`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
             setTimeout(() => {
