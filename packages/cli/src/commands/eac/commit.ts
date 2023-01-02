@@ -1,13 +1,10 @@
 import {} from '@oclif/core';
 import Listr from 'listr';
 import {} from '@semanticjs/common';
-import {
-  ClosureInstruction,
-  FathymCommand,
-} from '../../../../common/fathym-command';
+import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 
-export default class Preview extends FathymCommand {
-  static description = `Used for getting a preview link to a project application.`;
+export default class Commit extends FathymCommand {
+  static description = `Used for commiting changes to the EaC.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -15,27 +12,27 @@ export default class Preview extends FathymCommand {
 
   static args = [];
 
-  static title = 'Project Application Preview';
+  static title = 'EaC Commit';
 
   protected async loadInstructions(): Promise<ClosureInstruction[]> {
     return [
       {
-        Instruction: 'fathym eac projects --help',
-        Description: `You can now manage more about your project.`,
+        Instruction: 'fathym eac projects applications preview --help',
+        Description: `Load previews for any of your deployed applications.`,
       },
     ];
   }
 
   protected async loadTasks(): Promise<Listr> {
-    // const { args } = await this.parse(Preview);
+    // const { args } = await this.parse(Create);
 
     return new Listr([
       {
-        title: `Loading preview URL for project application`,
+        title: `Committing EaC`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
             setTimeout(() => {
-              task.title = `Project application preview URL loaded successfully`;
+              task.title = `EaC committed`;
 
               resolve(true);
             }, 3000);
