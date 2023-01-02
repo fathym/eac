@@ -118,7 +118,7 @@ fathym eac projects applications add {project-lookup} {app-lookup}
 Finally, we can commit all of our changes to the EaC at once.
 
 ```cli
-fathym eac commit -m "Added my first project and it's first application"
+fathym eac commit "Added my first project and it's first application"
 ```
 
 There are a couple of different things happening here that start to further reveal the EaC and what it does. The system is organized into multiple management groups, this particular set works with projects and how/where its applications are hosted/deployed.
@@ -128,7 +128,7 @@ There are a couple of different things happening here that start to further reve
 Finally we can get the application details to get the URL its running on. (The same can be done for projects by dropping the `applications {app-lookup}`).
 
 ```cli
-fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
 This will give you a URL you can click to open and preview the application.

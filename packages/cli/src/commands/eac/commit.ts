@@ -10,7 +10,7 @@ export default class Commit extends FathymCommand {
 
   static flags = {};
 
-  static args = [];
+  static args = [{ name: 'message', required: true }];
 
   static title = 'EaC Commit';
 
@@ -24,7 +24,7 @@ export default class Commit extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<Listr> {
-    // const { args } = await this.parse(Create);
+    const { args } = await this.parse(Commit);
 
     return new Listr([
       {

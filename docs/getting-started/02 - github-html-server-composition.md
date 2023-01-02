@@ -57,7 +57,7 @@ fathym eac sources {username/organization} my-new-repository attach pipeline {pi
 Now, we need to commit all of our EaC changes for the source and build pipelines.
 
 ```cli
-fathym eac commit -m "Configured source and builds for {username/organization} my-new-repository"
+fathym eac commit "Configured source and builds for {username/organization} my-new-repository"
 ```
 
 Once the commit completes the source will be created with a new GitHub Action. It should start and run automatically.
@@ -142,7 +142,7 @@ We leverage the above command from Fathym so that no individual developer is res
 
 ```cli
 git add .
-git commit -m "Added index.html template"
+git commit "Added index.html template"
 git checkout integration
 git pull
 git checkout -
@@ -168,8 +168,8 @@ fathym eac applications create "My Second Application"
 fathym eac applications {app-lookup} lcu [options] --type github
 fathym eac applications {app-lookup} processor [options]
 fathym eac projects {project-lookup} applications {app-lookup} add
-fathym eac commit -m "Configured second application in project"
-fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac commit "Configured second application in project"
+fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
 Notice the source control being attached to the application, this set's the application up to recieve automatic deployments and will alter the action for this purpose.
@@ -205,8 +205,8 @@ fathym eac modifier "Markdown Injector" --pathFilter "*index.html" --priority 50
 This will create the final aspect of our initial modifier flow, and once committed, you'll be able to preview it in your browser
 
 ```cli
-fathym eac commit -m "Configured second application in project"
-fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac commit "Configured second application in project"
+fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
 ## What's Next?

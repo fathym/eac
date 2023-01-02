@@ -119,8 +119,8 @@ Tag based deployments are key to our internal processes around QA and product va
 Now we can commit all of our changes to the EaC at once.
 
 ```cli
-fathym eac commit -m "Configured source and builds for {username/organization} my-new-repository"
-fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac commit "Configured source and builds for {username/organization} my-new-repository"
+fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
 This will override the previous build pipeline and GitHub action. Kicking off an automatic build that once complete will deploy the latest version of our application out for preview.
@@ -139,8 +139,8 @@ fathym eac applications {app-lookup} lcu [options] --type github
 fathym eac applications {app-lookup} processor [options]
 
 fathym eac projects {project-lookup} applications {app-lookup} add
-fathym eac commit -m "Configured second application in project"
-fathym eac projects {project-lookup} applications {app-lookup} preview
+fathym eac commit "Configured second application in project"
+fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
 And say you have multiple applications to add to the same project, or multiple other actions to take on applications within the project. Let's set the active project and applications in a couple of different ways.
@@ -156,7 +156,7 @@ fathym eac applications processor
 
 
 fathym eac projects applications add
-fathym eac commit -m "Configured second application in project"
+fathym eac commit "Configured second application in project"
 fathym eac projects applications preview
 ```
 
