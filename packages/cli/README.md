@@ -31,6 +31,13 @@ USAGE
 <!-- commands -->
 * [`fathym auth`](#fathym-auth)
 * [`fathym auth out`](#fathym-auth-out)
+* [`fathym eac applications create`](#fathym-eac-applications-create)
+* [`fathym eac applications lcu`](#fathym-eac-applications-lcu)
+* [`fathym eac applications processor`](#fathym-eac-applications-processor)
+* [`fathym eac commit`](#fathym-eac-commit)
+* [`fathym eac projects applications add`](#fathym-eac-projects-applications-add)
+* [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
+* [`fathym eac projects create`](#fathym-eac-projects-create)
 * [`fathym enterprises get`](#fathym-enterprises-get)
 * [`fathym enterprises list`](#fathym-enterprises-list)
 * [`fathym enterprises set ENTLOOKUP`](#fathym-enterprises-set-entlookup)
@@ -84,6 +91,132 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym auth out
+```
+
+## `fathym eac applications create`
+
+Used for creating a new application.
+
+```
+USAGE
+  $ fathym eac applications create [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a new application.
+
+EXAMPLES
+  $ fathym eac applications create
+```
+
+## `fathym eac applications lcu`
+
+Used for creating a managing application LCU settings.
+
+```
+USAGE
+  $ fathym eac applications lcu [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a managing application LCU settings.
+
+EXAMPLES
+  $ fathym eac applications lcu
+```
+
+## `fathym eac applications processor`
+
+Used for creating a managing application Processor settings.
+
+```
+USAGE
+  $ fathym eac applications processor [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a managing application Processor settings.
+
+EXAMPLES
+  $ fathym eac applications processor
+```
+
+## `fathym eac commit`
+
+Used for commiting changes to the EaC.
+
+```
+USAGE
+  $ fathym eac commit [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for commiting changes to the EaC.
+
+EXAMPLES
+  $ fathym eac commit
+```
+
+## `fathym eac projects applications add`
+
+Used for adding an application to a project.
+
+```
+USAGE
+  $ fathym eac projects applications add [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for adding an application to a project.
+
+EXAMPLES
+  $ fathym eac projects applications add
+```
+
+## `fathym eac projects applications preview`
+
+Used for getting a preview link to a project application.
+
+```
+USAGE
+  $ fathym eac projects applications preview [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for getting a preview link to a project application.
+
+EXAMPLES
+  $ fathym eac projects applications preview
+```
+
+## `fathym eac projects create`
+
+Used for creating a new project.
+
+```
+USAGE
+  $ fathym eac projects create [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a new project.
+
+EXAMPLES
+  $ fathym eac projects create
 ```
 
 ## `fathym enterprises get`
