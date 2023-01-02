@@ -105,13 +105,13 @@ Now we are going to need to create a new build pipeline to generate the NPM pack
 
 ```cli
 fathym eac pipelines create "My Basic NPM Package Artifact" [options]
-fathym eac sources {username/organization} my-new-repository attach pipeline {pipeline-lookup}
+fathym eac sources pipeline attach {username/organization} my-new-repository {pipeline-lookup}
 ```
 
 Next we will change the LCU for our application to target NPM artifacts instead of GitHub, and inform it which source to use, along with the version (or tag) to deploy.
 
 ```cli
-fathym eac applications {app-lookup} lcu --type npm
+fathym eac applications lcu {app-lookup} --type npm
 ```
 
 Tag based deployments are key to our internal processes around QA and product validation. It allows us to automate deployments of features and bugs, keeping our QA environments ready to be tested at any moment.
@@ -135,10 +135,11 @@ As you may have noticed, there is a lot of nesting and relationships to work wit
 fathym eac projects create "My First Project"
 
 fathym eac applications create "My Second Application"
-fathym eac applications {app-lookup} lcu [options] --type github
-fathym eac applications {app-lookup} processor [options]
+fathym eac applications lcu {app-lookup} [options] --type github
+fathym eac applications processor {app-lookup} [options]
 
-fathym eac projects {project-lookup} applications {app-lookup} add
+fathym eac projects applications add {project-lookup} {app-lookup}
+
 fathym eac commit "Configured second application in project"
 fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
@@ -147,15 +148,15 @@ And say you have multiple applications to add to the same project, or multiple o
 
 ```cli
 fathym eac projects create "My First Project"
-fathym eac projects {project-lookup} set
+fathym eac projects set {project-lookup}
 
 fathym eac applications create "My Second Application"
-fathym eac applications {app-lookup} set
+fathym eac applications set {app-lookup}
 fathym eac applications lcu --type github
 fathym eac applications processor
 
-
 fathym eac projects applications add
+
 fathym eac commit "Configured second application in project"
 fathym eac projects applications preview
 ```

@@ -135,7 +135,7 @@ Update the `README.md` file with whatever markdown you want to use.
 Now you are ready to check in and push your code.
 
 ```cli
-fathym git -m "Added index.html template"
+fathym git commit "Added index.html template"
 ```
 
 We leverage the above command from Fathym so that no individual developer is responsible for remembering the equivelant git commands to run:
@@ -165,9 +165,9 @@ In order to deploy that artifact, you'll need to create a new application again,
 
 ```cli
 fathym eac applications create "My Second Application"
-fathym eac applications {app-lookup} lcu [options] --type github
-fathym eac applications {app-lookup} processor [options]
-fathym eac projects {project-lookup} applications {app-lookup} add
+fathym eac applications lcu {app-lookup} --type github
+fathym eac applications processor {app-lookup}
+fathym eac projects applications add {project-lookup} {app-lookup}
 fathym eac commit "Configured second application in project"
 fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
@@ -191,7 +191,7 @@ In order to enable markdown composition with your index.html file, you'll need t
 First you'll configure the modifier for markdown to html.
 
 ```cli
-fathym eac modifier "Markdown to HTML" --pathFilter "*.(md|mdx)" --priority 500 --type MarkdownToHTML --details "{}"
+fathym eac modifiers create "Markdown to HTML" --pathFilter "*.(md|mdx)" --priority 500 --type MarkdownToHTML --details "{}"
 ```
 
 The priority will become important once we configure the second modifier to ensure they execute in the correct order. Higher priority modifiers execute first, then lower priority. Modifiers with the same priority execute in parallel.
@@ -199,7 +199,17 @@ The priority will become important once we configure the second modifier to ensu
 Next you will configure the modifier that will inject the formatted markdown into the HTML template.
 
 ```cli
-fathym eac modifier "Markdown Injector" --pathFilter "*index.html" --priority 500 --type HtmlInjector --details "{}"
+fathym eac modifiers create "Markdown Injector" --pathFilter "*index.html" --priority 400 --type HtmlInjector --details "{}"
+```
+
+With both modifiers created, you'll need to add the modifier for use. There are two ways to do this. First, you can add a modifier at the application level so that it only executes when the given application executes. Otherwise, you can add a modifier at the project level so that it executes for all applications in the project.
+
+We'll add the markdown to HTML modifier to the project, and then add the HTML injector to our specific application.
+
+```cli
+fathym eac projects modifiers add {project-lookup} {modifier-lookup}
+
+fathym eac applications modifiers add {app-lookup} {modifier-lookup}
 ```
 
 This will create the final aspect of our initial modifier flow, and once committed, you'll be able to preview it in your browser
