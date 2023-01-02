@@ -1,76 +1,60 @@
-import { Flags } from '@oclif/core';
-// import { color } from '@oclif/color';
 import Listr from 'listr';
 import {} from '@semanticjs/common';
-import { FathymCommand } from '../../common/fathym-command';
+import {
+  ClosureInstruction,
+  DisplayLookup,
+  FathymCommand,
+} from '../../common/fathym-command';
 
 export default class List extends FathymCommand {
   static description = 'Used to list the current users available enterprises.';
 
-  static examples = [
-    '<%= config.bin %> <%= command.id %>',
-    '<%= config.bin %> <%= command.id %> -f',
-  ];
+  static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {
-    force: Flags.boolean({
-      char: 'f',
-      description:
-        'Force authentication process to present sign in, even if the user is already authenticated.',
-    }),
-  };
+  static flags = {};
 
   static args = [];
 
-  public async run(): Promise<void> {
-    const { flags } = await this.parse(List);
+  static title = 'List User Enterprises';
 
-    const force = flags.force;
-
-    this.title('Executing Fathym Authentication');
-
-    let authenticated = false;
-
-    const tasks = new Listr([
+  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+    return [
       {
-        title: 'Opened browser for authentication',
-        task: () => 'Opened',
+        Instruction: 'fathym enterprises set {ent-lookup}',
+        Description: `Use this command to set the active
+enterprise for your commands.  The
+lookup comes from the light blue
+value in '()' above.`,
       },
+    ];
+  }
+
+  protected async loadLookups(): Promise<
+    { name: string; lookups: DisplayLookup[] } | undefined
+  > {
+    return {
+      name: 'ent-lookup',
+      lookups: [
+        { Lookup: 'abc-123', Name: 'ABC' },
+        { Lookup: 'xyz-789', Name: 'XYZ' },
+      ],
+    };
+  }
+
+  protected async loadTasks(): Promise<Listr> {
+    return new Listr([
       {
-        title: `${force ? 'Forcing' : 'Waiting for'} user to login`,
+        title: `Loading user enterprises`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
             setTimeout(() => {
-              authenticated = true;
+              task.title = 'User enterprises loaded';
 
-              task.title = 'User Logged In';
-
-              resolve(authenticated);
+              resolve(true);
             }, 3000);
           });
         },
       },
     ]);
-
-    tasks
-      .run()
-      .then(() => {
-        this.closure('Fathym Authentication Complete', [
-          {
-            Instruction: 'fathym eac --help',
-            Description: `You can now access the EaC via CLI,
-  to manage your enterprie setup.`,
-          },
-          {
-            Instruction: 'fathym github auth',
-            Description: `There is a lot we can do to help
-  with your GitHub management.  Auth
-  with GitHub and be ready to go.`,
-          },
-        ]);
-      })
-      .catch((error) => {
-        this.debug(error);
-      });
   }
 }

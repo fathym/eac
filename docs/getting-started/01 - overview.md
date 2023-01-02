@@ -100,19 +100,19 @@ fathym eac applications create "My First Application"
 The LCU is configured to manage security and server-side file modifications for the application.
 
 ```cli
-fathym eac applications {app-lookup} lcu [options]
+fathym eac applications lcu {app-lookup} [options]
 ```
 
 There are a number of different options for configuring how the application handles requests. To do so we configure the application's processor.
 
 ```cli
-fathym eac applications {app-lookup} processor [options]
+fathym eac applications processor {app-lookup} [options]
 ```
 
 Then, we can add the application to the project.
 
 ```cli
-fathym eac projects {project-lookup} applications {app-lookup} add
+fathym eac projects applications add {project-lookup} {app-lookup}
 ```
 
 Finally, we can commit all of our changes to the EaC at once.

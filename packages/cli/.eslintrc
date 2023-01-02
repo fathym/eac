@@ -4,6 +4,7 @@
     "arrow-parens": "off",
     "comma-dangle": "off",
     "indent": "off",
+    "keyword-spacing": "off",
     "new-cap": "off",
     "node/no-extraneous-import": "off",
     "object-curly-spacing": ["error", "always"],

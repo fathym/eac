@@ -59,8 +59,11 @@
     },
     "topicSeparator": " ",
     "topics": {
+      "auth": {
+        "description": "Commands used for managing user authentication with Fathym."
+      },
       "enterprises": {
-        "description": "Used for interacting with the users available enterprises."
+        "description": "Commands used for interacting with the users available enterprises."
       }
     }
   },

@@ -1,11 +1,13 @@
 import {} from '@oclif/core';
 import Listr from 'listr';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import {
+  ClosureInstruction,
+  FathymCommand,
+} from '../../../../common/fathym-command';
 
-export default class Out extends FathymCommand {
-  static description =
-    'Used to sign out, so your CLI will NOT work with the EaC and other features.';
+export default class Preview extends FathymCommand {
+  static description = `Used for getting a preview link to a project application.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -13,29 +15,27 @@ export default class Out extends FathymCommand {
 
   static args = [];
 
-  static title = 'Fathym Sign Out';
+  static title = 'Project Application Preview';
 
   protected async loadInstructions(): Promise<ClosureInstruction[]> {
     return [
       {
-        Instruction: 'fathym auth',
-        Description: `Use this to sign back in.`,
+        Instruction: 'fathym eac projects --help',
+        Description: `You can now manage more about your project.`,
       },
     ];
   }
 
   protected async loadTasks(): Promise<Listr> {
+    // const { args } = await this.parse(Add);
+
     return new Listr([
       {
-        title: 'Opened browser for sign out',
-        task: () => 'Opened',
-      },
-      {
-        title: `Waiting for sign out`,
+        title: `Loading preview URL for project application`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
             setTimeout(() => {
-              task.title = 'User Signed Out';
+              task.title = `Project application preview URL loaded successfully`;
 
               resolve(true);
             }, 3000);

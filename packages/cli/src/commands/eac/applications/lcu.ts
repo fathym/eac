@@ -1,11 +1,13 @@
 import {} from '@oclif/core';
 import Listr from 'listr';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import {
+  ClosureInstruction,
+  FathymCommand,
+} from '../../../common/fathym-command';
 
-export default class Out extends FathymCommand {
-  static description =
-    'Used to sign out, so your CLI will NOT work with the EaC and other features.';
+export default class LCU extends FathymCommand {
+  static description = `Used for creating a managing application LCU settings.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -13,29 +15,27 @@ export default class Out extends FathymCommand {
 
   static args = [];
 
-  static title = 'Fathym Sign Out';
+  static title = 'Manage LCU Settings';
 
   protected async loadInstructions(): Promise<ClosureInstruction[]> {
     return [
       {
-        Instruction: 'fathym auth',
-        Description: `Use this to sign back in.`,
+        Instruction: 'fathym eac applications security --help',
+        Description: `You can manage more about your application.`,
       },
     ];
   }
 
   protected async loadTasks(): Promise<Listr> {
+    // const { args } = await this.parse(LCU);
+
     return new Listr([
       {
-        title: 'Opened browser for sign out',
-        task: () => 'Opened',
-      },
-      {
-        title: `Waiting for sign out`,
+        title: `Updating application LCU settings`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
             setTimeout(() => {
-              task.title = 'User Signed Out';
+              task.title = `Updated application LCU settings`;
 
               resolve(true);
             }, 3000);
