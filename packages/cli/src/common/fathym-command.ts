@@ -38,18 +38,26 @@ export abstract class FathymCommand extends Command {
 
     const tasks = await this.loadTasks();
 
-    const instructions = await this.loadInstructions();
-
-    const lookups = await this.loadLookups();
-
     tasks
       ?.run()
-      .then(() => {
+      .then(async () => {
+        const lookups = await this.loadLookups();
+
+        const instructions = await this.loadInstructions();
+
+        const result = await this.loadResult();
+
         if (lookups) {
           this.lookups(lookups.name, lookups.lookups);
         }
 
+        if (result) {
+          this.result(result);
+        }
+
         this.closure(`${CurCmd.title} Executed`, instructions);
+
+        this.log('\n\n');
       })
       .catch((error) => {
         this.debug(error);
@@ -114,6 +122,10 @@ export abstract class FathymCommand extends Command {
     return undefined;
   }
 
+  protected async loadResult(): Promise<string | undefined> {
+    return undefined;
+  }
+
   protected abstract loadTasks(): Promise<Listr>;
 
   protected lookups(name: string, lookups: DisplayLookup[]): void {
@@ -124,6 +136,12 @@ export abstract class FathymCommand extends Command {
     lookups.forEach((ent) => {
       this.log(this.indent(`${ent.Name} (${color.blueBright(ent.Lookup)})`));
     });
+  }
+
+  protected result(result: string): void {
+    this.log();
+
+    this.log(this.indent(result));
   }
 
   protected title(title: string): void {

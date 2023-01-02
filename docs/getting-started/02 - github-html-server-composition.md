@@ -15,17 +15,17 @@ Fathym helps to configure the repository for automated builds and deployments fo
 For the reason mentioned above, we are going to move our code off of the file system. The first thing you'll need to do is authorize with GitHub. Head back into VS Code and into a terminal where we will auth the user of the CLI with GitHub (in the users global GitHub auth for the active EaC).
 
 ```cli
-fathym github auth
+fathym git auth
 ```
 
 This will open a new window with GitHub authorization where you can determine which organizations Fathym has access to (you may have to sign up if you have not before). Grant access to the organizations you'd like us to help you manage and automate.
 
 > **NOTE** - You can run this command anytime you want to adjust the authorizations in GitHub for new or existing organizations.
 
-Now we can initialize a new repository in your GitHub user.
+Now we can initialize a new repository in your EaC.
 
 ```cli
-fathym eac sources create my-new-repository
+fathym eac sources create  my-new-repository
 ```
 
 > **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `fathym eac sources {organization} create ...`. This works for all `fathym eac sources` commands.
@@ -75,7 +75,7 @@ The next step is going to be cloning your repository. Navigate into the folder w
 Now clone the repository.
 
 ```cli
-fathym git {username/organization} my-new-repository clone
+fathym git clone  {username/organization} my-new-repository
 ```
 
 You'll notice after cloning that the `integration` branch is the initially selected branch. This is a part of the repository setup we did for you, where integration is the default.

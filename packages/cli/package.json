@@ -1,6 +1,6 @@
 {
   "name": "@fathym/cli",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "The CLI used for code first flows with Fathym EaC.",
   "author": "Fathym, Inc",
   "bin": {
@@ -20,10 +20,11 @@
     "@fathym/common": "^0.0.24",
     "@oclif/core": "^1.22.0",
     "@oclif/plugin-help": "^5",
+    "@oclif/plugin-not-found": "^2.3.13",
     "@oclif/plugin-plugins": "^2.1.9",
     "@semanticjs/common": "^0.64.0",
     "execa": "^6.1.0",
-    "inquirer": "^9.1.4",
+    "inquirer": "^8.2.5",
     "listr": "^0.14.3"
   },
   "devDependencies": {
@@ -51,6 +52,7 @@
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",
+      "@oclif/plugin-not-found",
       "@oclif/plugin-plugins"
     ],
     "flexibleTaxonomy": true,
