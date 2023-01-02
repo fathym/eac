@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.5 win32-x64 node-v16.17.1
+@fathym/cli/0.0.6 win32-x64 node-v16.17.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -34,13 +34,25 @@ USAGE
 * [`fathym eac applications create`](#fathym-eac-applications-create)
 * [`fathym eac applications lcu`](#fathym-eac-applications-lcu)
 * [`fathym eac applications processor`](#fathym-eac-applications-processor)
+* [`fathym eac changes`](#fathym-eac-changes)
 * [`fathym eac commit MESSAGE`](#fathym-eac-commit-message)
+* [`fathym eac export`](#fathym-eac-export)
+* [`fathym eac pipelines create`](#fathym-eac-pipelines-create)
 * [`fathym eac projects applications add`](#fathym-eac-projects-applications-add)
 * [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
 * [`fathym eac projects create`](#fathym-eac-projects-create)
+* [`fathym eac sources create`](#fathym-eac-sources-create)
+* [`fathym eac sources pipeline attach`](#fathym-eac-sources-pipeline-attach)
 * [`fathym enterprises get`](#fathym-enterprises-get)
 * [`fathym enterprises list`](#fathym-enterprises-list)
 * [`fathym enterprises set ENTLOOKUP`](#fathym-enterprises-set-entlookup)
+* [`fathym git`](#fathym-git)
+* [`fathym git auth`](#fathym-git-auth)
+* [`fathym git clone`](#fathym-git-clone)
+* [`fathym git commit`](#fathym-git-commit)
+* [`fathym git feature`](#fathym-git-feature)
+* [`fathym git hotfix`](#fathym-git-hotfix)
+* [`fathym git sync`](#fathym-git-sync)
 * [`fathym help [COMMAND]`](#fathym-help-command)
 * [`fathym plugins`](#fathym-plugins)
 * [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
@@ -73,7 +85,7 @@ EXAMPLES
   $ fathym auth -f
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.5/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.6/dist/commands/auth/index.ts)_
 
 ## `fathym auth out`
 
@@ -147,6 +159,24 @@ EXAMPLES
   $ fathym eac applications processor
 ```
 
+## `fathym eac changes`
+
+Used to retrieve the current changes to EaC that are queued for commit.
+
+```
+USAGE
+  $ fathym eac changes [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used to retrieve the current changes to EaC that are queued for commit.
+
+EXAMPLES
+  $ fathym eac changes
+```
+
 ## `fathym eac commit MESSAGE`
 
 Used for commiting changes to the EaC.
@@ -163,6 +193,42 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac commit
+```
+
+## `fathym eac export`
+
+Used for exporting the EaC.
+
+```
+USAGE
+  $ fathym eac export [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for exporting the EaC.
+
+EXAMPLES
+  $ fathym eac export
+```
+
+## `fathym eac pipelines create`
+
+Used for creating a new build pipeline.
+
+```
+USAGE
+  $ fathym eac pipelines create [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a new build pipeline.
+
+EXAMPLES
+  $ fathym eac pipelines create
 ```
 
 ## `fathym eac projects applications add`
@@ -219,6 +285,42 @@ EXAMPLES
   $ fathym eac projects create
 ```
 
+## `fathym eac sources create`
+
+Used for creating a new source control.
+
+```
+USAGE
+  $ fathym eac sources create [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a new source control.
+
+EXAMPLES
+  $ fathym eac sources create
+```
+
+## `fathym eac sources pipeline attach`
+
+Used for attaching a build pipeline to a source control.
+
+```
+USAGE
+  $ fathym eac sources pipeline attach [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for attaching a build pipeline to a source control.
+
+EXAMPLES
+  $ fathym eac sources pipeline attach
+```
+
 ## `fathym enterprises get`
 
 Get's the current user's active enterprise for the CLI. Determines
@@ -273,6 +375,147 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym enterprises set
+```
+
+## `fathym git`
+
+Used for committing changes to the current working branch.
+
+```
+USAGE
+  $ fathym git [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for committing changes to the current working branch.
+
+ALIASES
+  $ fathym git commit
+  $ fathym git sync
+
+EXAMPLES
+  $ fathym git
+```
+
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.6/dist/commands/git/index.ts)_
+
+## `fathym git auth`
+
+Used for authenticating the user with Git.
+
+```
+USAGE
+  $ fathym git auth [-i] [-f]
+
+FLAGS
+  -f, --force        Force authentication process to present git rights, even if the user is already authenticated.
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for authenticating the user with Git.
+
+EXAMPLES
+  $ fathym git auth
+```
+
+## `fathym git clone`
+
+Used for cloning the source control for Git.
+
+```
+USAGE
+  $ fathym git clone [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for cloning the source control for Git.
+
+EXAMPLES
+  $ fathym git clone
+```
+
+## `fathym git commit`
+
+Used for committing changes to the current working branch.
+
+```
+USAGE
+  $ fathym git commit [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for committing changes to the current working branch.
+
+ALIASES
+  $ fathym git commit
+  $ fathym git sync
+
+EXAMPLES
+  $ fathym git commit
+```
+
+## `fathym git feature`
+
+Used for creating a feature branch from 'integration' in git.
+
+```
+USAGE
+  $ fathym git feature [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a feature branch from 'integration' in git.
+
+EXAMPLES
+  $ fathym git feature
+```
+
+## `fathym git hotfix`
+
+Used for creating a hotfix branch from 'main' in git.
+
+```
+USAGE
+  $ fathym git hotfix [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a hotfix branch from 'main' in git.
+
+EXAMPLES
+  $ fathym git hotfix
+```
+
+## `fathym git sync`
+
+Used for committing changes to the current working branch.
+
+```
+USAGE
+  $ fathym git sync [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for committing changes to the current working branch.
+
+ALIASES
+  $ fathym git commit
+  $ fathym git sync
+
+EXAMPLES
+  $ fathym git sync
 ```
 
 ## `fathym help [COMMAND]`
