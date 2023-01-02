@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.3 win32-x64 node-v16.17.1
+@fathym/cli/0.0.4 win32-x64 node-v16.17.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -29,9 +29,11 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`fathym auth [FILE]`](#fathym-auth-file)
-* [`fathym hello PERSON`](#fathym-hello-person)
-* [`fathym hello world`](#fathym-hello-world)
+* [`fathym auth`](#fathym-auth)
+* [`fathym auth out`](#fathym-auth-out)
+* [`fathym enterprises get`](#fathym-enterprises-get)
+* [`fathym enterprises list`](#fathym-enterprises-list)
+* [`fathym enterprises set ENTLOOKUP`](#fathym-enterprises-set-entlookup)
 * [`fathym help [COMMAND]`](#fathym-help-command)
 * [`fathym plugins`](#fathym-plugins)
 * [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
@@ -43,65 +45,101 @@ USAGE
 * [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-2)
 * [`fathym plugins update`](#fathym-plugins-update)
 
-## `fathym auth [FILE]`
+## `fathym auth`
 
-Used to start the authentication process with Fathym, so your application can work with the EaC and other features.
+Used to start the authentication process with Fathym, so your CLI can work with the EaC and other features.
 
 ```
 USAGE
-  $ fathym auth [FILE] [-n <value>] [-f]
+  $ fathym auth [-i] [-f]
 
 FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
+  -f, --force        Force authentication process to present sign in, even if the user is already authenticated.
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
 
 DESCRIPTION
-  Used to start the authentication process with Fathym, so your application can work with the EaC and other features.
+  Used to start the authentication process with Fathym, so your CLI can work with the EaC and other features.
 
 EXAMPLES
   $ fathym auth
+
+  $ fathym auth -f
 ```
 
-_See code: [dist/commands/auth.ts](https://github.com/fathym/eac/blob/v0.0.3/dist/commands/auth.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.4/dist/commands/auth/index.ts)_
 
-## `fathym hello PERSON`
+## `fathym auth out`
 
-Say hello
+Used to sign out, so your CLI will NOT work with the EaC and other features.
 
 ```
 USAGE
-  $ fathym hello [PERSON] -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
+  $ fathym auth out [-i]
 
 FLAGS
-  -f, --from=<value>  (required) Who is saying hello
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
 
 DESCRIPTION
-  Say hello
+  Used to sign out, so your CLI will NOT work with the EaC and other features.
 
 EXAMPLES
-  $ oex hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
+  $ fathym auth out
 ```
 
-_See code: [dist/commands/hello/index.ts](https://github.com/fathym/eac/blob/v0.0.3/dist/commands/hello/index.ts)_
+## `fathym enterprises get`
 
-## `fathym hello world`
-
-Say hello world
+Get's the current user's active enterprise for the CLI. Determines
 
 ```
 USAGE
-  $ fathym hello world
+  $ fathym enterprises get [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
 
 DESCRIPTION
-  Say hello world
+  Get's the current user's active enterprise for the CLI. Determines
+  which enterprise commands are executed against.
 
 EXAMPLES
-  $ fathym hello world
-  hello world! (./src/commands/hello/world.ts)
+  $ fathym enterprises get
+```
+
+## `fathym enterprises list`
+
+Used to list the current users available enterprises.
+
+```
+USAGE
+  $ fathym enterprises list [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used to list the current users available enterprises.
+
+EXAMPLES
+  $ fathym enterprises list
+```
+
+## `fathym enterprises set ENTLOOKUP`
+
+Set's the current user's active enterprise for the CLI. Determines
+
+```
+USAGE
+  $ fathym enterprises set [ENTLOOKUP] [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Set's the current user's active enterprise for the CLI. Determines
+  which enterprise commands are executed against.
+
+EXAMPLES
+  $ fathym enterprises set
 ```
 
 ## `fathym help [COMMAND]`
