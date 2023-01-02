@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.4 win32-x64 node-v16.17.1
+@fathym/cli/0.0.5 win32-x64 node-v16.17.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -34,7 +34,7 @@ USAGE
 * [`fathym eac applications create`](#fathym-eac-applications-create)
 * [`fathym eac applications lcu`](#fathym-eac-applications-lcu)
 * [`fathym eac applications processor`](#fathym-eac-applications-processor)
-* [`fathym eac commit`](#fathym-eac-commit)
+* [`fathym eac commit MESSAGE`](#fathym-eac-commit-message)
 * [`fathym eac projects applications add`](#fathym-eac-projects-applications-add)
 * [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
 * [`fathym eac projects create`](#fathym-eac-projects-create)
@@ -73,7 +73,7 @@ EXAMPLES
   $ fathym auth -f
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.4/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.5/dist/commands/auth/index.ts)_
 
 ## `fathym auth out`
 
@@ -147,13 +147,13 @@ EXAMPLES
   $ fathym eac applications processor
 ```
 
-## `fathym eac commit`
+## `fathym eac commit MESSAGE`
 
 Used for commiting changes to the EaC.
 
 ```
 USAGE
-  $ fathym eac commit [-i]
+  $ fathym eac commit [MESSAGE] [-i]
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
