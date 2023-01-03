@@ -45,15 +45,30 @@ with GitHub and be ready to go.`,
 
     return new Listr([
       {
-        title: 'Opened browser for authentication',
+        title: `Loading user sign in path`,
+        task: (ctx, task) => {
+          fetch('http://localhost:')
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              task.title = 'User sign in path loaded';
+
+              ctx.signInPath = '';
+
+              resolve(true);
+            }, 3000);
+          });
+        },
+      },
+      {
+        title: 'Opened browser for user sign in',
         task: () => 'Opened',
       },
       {
-        title: `${flags.force ? 'Forcing' : 'Waiting for'} user to login`,
+        title: `${flags.force ? 'Forcing' : 'Waiting for'} user to sign in`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
             setTimeout(() => {
-              task.title = 'User Logged In';
+              task.title = 'User Signed In';
 
               resolve(true);
             }, 3000);

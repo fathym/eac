@@ -33,26 +33,31 @@ USAGE
 * [`fathym auth out`](#fathym-auth-out)
 * [`fathym eac applications create`](#fathym-eac-applications-create)
 * [`fathym eac applications lcu`](#fathym-eac-applications-lcu)
+* [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
 * [`fathym eac applications processor`](#fathym-eac-applications-processor)
+* [`fathym eac applications set APPLOOKUP`](#fathym-eac-applications-set-applookup)
 * [`fathym eac changes`](#fathym-eac-changes)
 * [`fathym eac commit MESSAGE`](#fathym-eac-commit-message)
 * [`fathym eac export`](#fathym-eac-export)
+* [`fathym eac modifiers create`](#fathym-eac-modifiers-create)
 * [`fathym eac pipelines create`](#fathym-eac-pipelines-create)
 * [`fathym eac projects applications add`](#fathym-eac-projects-applications-add)
 * [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
 * [`fathym eac projects create`](#fathym-eac-projects-create)
+* [`fathym eac projects modifiers add`](#fathym-eac-projects-modifiers-add)
+* [`fathym eac projects set APPLOOKUP`](#fathym-eac-projects-set-applookup)
 * [`fathym eac sources create`](#fathym-eac-sources-create)
 * [`fathym eac sources pipeline attach`](#fathym-eac-sources-pipeline-attach)
 * [`fathym enterprises get`](#fathym-enterprises-get)
 * [`fathym enterprises list`](#fathym-enterprises-list)
 * [`fathym enterprises set ENTLOOKUP`](#fathym-enterprises-set-entlookup)
-* [`fathym git`](#fathym-git)
+* [`fathym git [MESSAGE]`](#fathym-git-message)
 * [`fathym git auth`](#fathym-git-auth)
 * [`fathym git clone`](#fathym-git-clone)
-* [`fathym git commit`](#fathym-git-commit)
+* [`fathym git commit [MESSAGE]`](#fathym-git-commit-message)
 * [`fathym git feature`](#fathym-git-feature)
 * [`fathym git hotfix`](#fathym-git-hotfix)
-* [`fathym git sync`](#fathym-git-sync)
+* [`fathym git sync [MESSAGE]`](#fathym-git-sync-message)
 * [`fathym help [COMMAND]`](#fathym-help-command)
 * [`fathym plugins`](#fathym-plugins)
 * [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
@@ -141,6 +146,24 @@ EXAMPLES
   $ fathym eac applications lcu
 ```
 
+## `fathym eac applications modifiers add`
+
+Used for adding a DFS modifier to a application.
+
+```
+USAGE
+  $ fathym eac applications modifiers add [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for adding a DFS modifier to a application.
+
+EXAMPLES
+  $ fathym eac applications modifiers add
+```
+
 ## `fathym eac applications processor`
 
 Used for creating a managing application Processor settings.
@@ -157,6 +180,24 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac applications processor
+```
+
+## `fathym eac applications set APPLOOKUP`
+
+Used for setting an active application lookup for use in other commands.
+
+```
+USAGE
+  $ fathym eac applications set [APPLOOKUP] [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for setting an active application lookup for use in other commands.
+
+EXAMPLES
+  $ fathym eac applications set
 ```
 
 ## `fathym eac changes`
@@ -211,6 +252,24 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac export
+```
+
+## `fathym eac modifiers create`
+
+Used for creating a new DFS modifier.
+
+```
+USAGE
+  $ fathym eac modifiers create [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for creating a new DFS modifier.
+
+EXAMPLES
+  $ fathym eac modifiers create
 ```
 
 ## `fathym eac pipelines create`
@@ -283,6 +342,42 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac projects create
+```
+
+## `fathym eac projects modifiers add`
+
+Used for adding a DFS modifier to a project.
+
+```
+USAGE
+  $ fathym eac projects modifiers add [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for adding a DFS modifier to a project.
+
+EXAMPLES
+  $ fathym eac projects modifiers add
+```
+
+## `fathym eac projects set APPLOOKUP`
+
+Used for setting an active project lookup for use in other commands.
+
+```
+USAGE
+  $ fathym eac projects set [APPLOOKUP] [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for setting an active project lookup for use in other commands.
+
+EXAMPLES
+  $ fathym eac projects set
 ```
 
 ## `fathym eac sources create`
@@ -377,13 +472,13 @@ EXAMPLES
   $ fathym enterprises set
 ```
 
-## `fathym git`
+## `fathym git [MESSAGE]`
 
 Used for committing changes to the current working branch.
 
 ```
 USAGE
-  $ fathym git [-i]
+  $ fathym git [MESSAGE] [-i]
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
@@ -438,13 +533,13 @@ EXAMPLES
   $ fathym git clone
 ```
 
-## `fathym git commit`
+## `fathym git commit [MESSAGE]`
 
 Used for committing changes to the current working branch.
 
 ```
 USAGE
-  $ fathym git commit [-i]
+  $ fathym git commit [MESSAGE] [-i]
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
@@ -496,13 +591,13 @@ EXAMPLES
   $ fathym git hotfix
 ```
 
-## `fathym git sync`
+## `fathym git sync [MESSAGE]`
 
 Used for committing changes to the current working branch.
 
 ```
 USAGE
-  $ fathym git sync [-i]
+  $ fathym git sync [MESSAGE] [-i]
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
