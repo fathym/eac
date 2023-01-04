@@ -19,7 +19,7 @@ export default class Clone extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<Listr> {
-    return new Listr([
+    return [
       {
         title: `Cloning the source control`,
         task: (ctx, task) => {
@@ -32,6 +32,6 @@ export default class Clone extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

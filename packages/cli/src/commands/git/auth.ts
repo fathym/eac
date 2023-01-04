@@ -32,7 +32,7 @@ export default class Auth extends FathymCommand {
   protected async loadTasks(): Promise<Listr> {
     const { flags } = await this.parse(Auth);
 
-    return new Listr([
+    return [
       {
         title: 'Opened browser for authentication',
         task: () => 'Opened',
@@ -49,6 +49,6 @@ export default class Auth extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

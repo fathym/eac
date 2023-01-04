@@ -24,7 +24,7 @@ export default class Add extends FathymCommand {
   protected async loadTasks(): Promise<Listr> {
     // const { args } = await this.parse(Add);
 
-    return new Listr([
+    return [
       {
         title: `Adding DFS modifier to application`,
         task: (ctx, task) => {
@@ -37,6 +37,6 @@ export default class Add extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

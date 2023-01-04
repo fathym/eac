@@ -29,7 +29,7 @@ export default class Preview extends FathymCommand {
   protected async loadTasks(): Promise<Listr> {
     // const { args } = await this.parse(Preview);
 
-    return new Listr([
+    return [
       {
         title: `Loading preview URL for project application`,
         task: (ctx, task) => {
@@ -42,6 +42,6 @@ export default class Preview extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

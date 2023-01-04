@@ -13,16 +13,18 @@ export default class Auth extends FathymCommand {
   ];
 
   static flags = {
-    force: Flags.boolean({
-      char: 'f',
-      description:
-        'Force authentication process to present sign in, even if the user is already authenticated.',
-    }),
+    // force: Flags.boolean({
+    //   char: 'f',
+    //   description:
+    //     'Force authentication process to present sign in, even if the user is already authenticated.',
+    // }),
   };
 
   static args = [];
 
   static title = 'Fathym Sign In';
+
+  static useAuth = false;
 
   protected async loadInstructions(): Promise<ClosureInstruction[]> {
     return [
@@ -40,14 +42,14 @@ with GitHub and be ready to go.`,
     ];
   }
 
-  protected async loadTasks(): Promise<Listr> {
-    const { flags } = await this.parse(Auth);
+  protected async loadTasks(): Promise<Listr.ListrTask<any>[]> {
+    // const { flags } = await this.parse(Auth);
 
-    return new Listr([
+    return [
       {
         title: `Loading user sign in path`,
         task: (ctx, task) => {
-          fetch('http://localhost:')
+          // fetch('http://localhost:');
           return new Promise((resolve) => {
             setTimeout(() => {
               task.title = 'User sign in path loaded';
@@ -64,7 +66,7 @@ with GitHub and be ready to go.`,
         task: () => 'Opened',
       },
       {
-        title: `${flags.force ? 'Forcing' : 'Waiting for'} user to sign in`,
+        title: `Waiting for user to sign in`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
             setTimeout(() => {
@@ -75,6 +77,6 @@ with GitHub and be ready to go.`,
           });
         },
       },
-    ]);
+    ];
   }
 }

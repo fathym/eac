@@ -42,7 +42,7 @@ value in '()' above.`,
   }
 
   protected async loadTasks(): Promise<Listr> {
-    return new Listr([
+    return [
       {
         title: `Loading user enterprises`,
         task: (ctx, task) => {
@@ -55,6 +55,6 @@ value in '()' above.`,
           });
         },
       },
-    ]);
+    ];
   }
 }

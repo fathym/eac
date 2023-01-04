@@ -29,7 +29,7 @@ export default class LCU extends FathymCommand {
   protected async loadTasks(): Promise<Listr> {
     // const { args } = await this.parse(LCU);
 
-    return new Listr([
+    return [
       {
         title: `Updating application LCU settings`,
         task: (ctx, task) => {
@@ -42,6 +42,6 @@ export default class LCU extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

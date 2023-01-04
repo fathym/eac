@@ -29,7 +29,7 @@ export default class Feature extends FathymCommand {
     // git rebase integration
     // git push origin
     // git fetch --prune
-    return new Listr([
+    return [
       {
         title: `Commiting git changes`,
         task: (ctx, task) => {
@@ -42,6 +42,6 @@ export default class Feature extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

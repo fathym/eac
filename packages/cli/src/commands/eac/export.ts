@@ -23,7 +23,7 @@ export default class Export extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<Listr> {
-    return new Listr([
+    return [
       {
         title: `Exporting EaC`,
         task: (ctx, task) => {
@@ -36,6 +36,6 @@ export default class Export extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

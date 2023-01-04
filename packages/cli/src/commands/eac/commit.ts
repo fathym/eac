@@ -26,7 +26,7 @@ export default class Commit extends FathymCommand {
   protected async loadTasks(): Promise<Listr> {
     const { args } = await this.parse(Commit);
 
-    return new Listr([
+    return [
       {
         title: `Committing EaC: ${args.message}`,
         task: (ctx, task) => {
@@ -39,6 +39,6 @@ export default class Commit extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

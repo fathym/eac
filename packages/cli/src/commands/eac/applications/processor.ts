@@ -29,7 +29,7 @@ export default class Processor extends FathymCommand {
   protected async loadTasks(): Promise<Listr> {
     // const { args } = await this.parse(Processor);
 
-    return new Listr([
+    return [
       {
         title: `Updating application Processor settings`,
         task: (ctx, task) => {
@@ -42,6 +42,6 @@ export default class Processor extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

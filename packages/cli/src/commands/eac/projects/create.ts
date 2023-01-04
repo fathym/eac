@@ -29,7 +29,7 @@ export default class Create extends FathymCommand {
   protected async loadTasks(): Promise<Listr> {
     // const { args } = await this.parse(Create);
 
-    return new Listr([
+    return [
       {
         title: `Creating new project`,
         task: (ctx, task) => {
@@ -42,6 +42,6 @@ export default class Create extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

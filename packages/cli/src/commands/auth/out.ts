@@ -25,7 +25,7 @@ export default class Out extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<Listr> {
-    return new Listr([
+    return [
       {
         title: 'Opened browser for sign out',
         task: () => 'Opened',
@@ -42,6 +42,6 @@ export default class Out extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

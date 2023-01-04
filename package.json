@@ -20,5 +20,11 @@
   },
   "bugs": {
     "url": "https://github.com/fathym/eac/issues"
+  },
+  "dependencies": {
+    "simple-oauth2": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/simple-oauth2": "^4.1.1"
   }
 }

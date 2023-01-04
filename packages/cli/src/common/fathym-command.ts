@@ -1,6 +1,7 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import Listr from 'listr';
+import * as simpleOauth2 from 'simple-oauth2';
 // import { indent } from '@semanticjs/common';
 
 export class ClosureInstruction {
@@ -26,6 +27,20 @@ export abstract class FathymCommand extends Command {
 
   static title: string;
 
+  static useAuth = true;
+
+  protected oauth2Client = simpleOauth2.create({
+    client: {
+      id: 'your-client-id',
+      secret: 'your-client-secret',
+    },
+    auth: {
+      tokenHost: 'https://login.microsoftonline.com',
+      tokenPath: '/your-tenant-id/oauth2/v2.0/token',
+      authorizePath: '/your-tenant-id/oauth2/v2.0/authorize',
+    },
+  });
+
   public async run(): Promise<void> {
     await this.runCommandCycle();
   }
@@ -36,10 +51,32 @@ export abstract class FathymCommand extends Command {
 
     this.title(`Executing ${CurCmd.title}`);
 
-    const tasks = await this.loadTasks();
+    let tasks = await this.loadTasks();
 
-    tasks
-      ?.run()
+    if (CurCmd.useAuth) {
+      tasks = [
+        {
+          title: 'Refreshing access token',
+          task: (ctx, task) => {
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                task.title = 'User access token refreshed';
+
+                ctx.signInPath = '';
+
+                resolve(true);
+              }, 3000);
+            });
+          },
+        },
+        ...tasks,
+      ];
+    }
+
+    const listr = new Listr(tasks);
+
+    listr
+      .run()
       .then(async () => {
         const lookups = await this.loadLookups();
 
@@ -126,7 +163,7 @@ export abstract class FathymCommand extends Command {
     return undefined;
   }
 
-  protected abstract loadTasks(): Promise<Listr>;
+  protected abstract loadTasks(): Promise<Listr.ListrTask<any>[]>;
 
   protected lookups(name: string, lookups: DisplayLookup[]): void {
     this.log();

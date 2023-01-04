@@ -19,7 +19,7 @@ export default class Feature extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<Listr> {
-    return new Listr([
+    return [
       {
         title: `Creating new feature branch from 'integration'`,
         task: (ctx, task) => {
@@ -32,6 +32,6 @@ export default class Feature extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }

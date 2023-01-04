@@ -28,7 +28,7 @@ to manage your enterprie setup.`,
   protected async loadTasks(): Promise<Listr> {
     const { args } = await this.parse(Set);
 
-    return new Listr([
+    return [
       {
         title: `Setting the user's active enterprise to '${args.entLookup}'`,
         task: (ctx, task) => {
@@ -41,6 +41,6 @@ to manage your enterprie setup.`,
           });
         },
       },
-    ]);
+    ];
   }
 }

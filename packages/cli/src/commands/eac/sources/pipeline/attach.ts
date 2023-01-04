@@ -22,7 +22,7 @@ export default class Attach extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<Listr> {
-    return new Listr([
+    return [
       {
         title: `Attaching build pipeline to source control`,
         task: (ctx, task) => {
@@ -35,6 +35,6 @@ export default class Attach extends FathymCommand {
           });
         },
       },
-    ]);
+    ];
   }
 }
