@@ -1,7 +1,7 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import Listr from 'listr';
-import * as simpleOauth2 from 'simple-oauth2';
+import { AuthorizationCode, ModuleOptions } from 'simple-oauth2';
 // import { indent } from '@semanticjs/common';
 
 export class ClosureInstruction {
@@ -29,17 +29,9 @@ export abstract class FathymCommand extends Command {
 
   static useAuth = true;
 
-  protected oauth2Client = simpleOauth2.create({
-    client: {
-      id: 'your-client-id',
-      secret: 'your-client-secret',
-    },
-    auth: {
-      tokenHost: 'https://login.microsoftonline.com',
-      tokenPath: '/your-tenant-id/oauth2/v2.0/token',
-      authorizePath: '/your-tenant-id/oauth2/v2.0/authorize',
-    },
-  });
+  static forceRefresh = true;
+
+  static authPort = 8119;
 
   public async run(): Promise<void> {
     await this.runCommandCycle();
@@ -53,16 +45,59 @@ export abstract class FathymCommand extends Command {
 
     let tasks = await this.loadTasks();
 
-    if (CurCmd.useAuth) {
+    if (CurCmd.useAuth || CurCmd.forceRefresh) {
+      tasks = [
+        {
+          title: 'Loading Fathym auth client',
+          task: (ctx, task) => {
+            return new Promise((resolve) => {
+              const clientId = '800193b8-028a-44dd-ba05-73e82ee8066a'; //prod
+              // const clientId = '4ad51adf-6bad-4e5a-b885-c14d34a4c147'; //int
+
+              ctx.authClient = new AuthorizationCode({
+                client: {
+                  id: clientId,
+                  secret: '',
+                },
+                auth: {
+                  tokenHost: `https://auth.fathym.com`,
+                  tokenPath:
+                    '/fathymcloudprd.onmicrosoft.com/oauth2/v2.0/token',
+                  authorizePath:
+                    '/fathymcloudprd.onmicrosoft.com/oauth2/v2.0/authorize',
+                },
+              });
+
+              task.title = 'Fathym auth client loaded successfully';
+
+              resolve(true);
+            });
+          },
+        },
+        ...tasks,
+      ];
+    }
+
+    if (CurCmd.forceRefresh) {
       tasks = [
         {
           title: 'Refreshing access token',
           task: (ctx, task) => {
             return new Promise((resolve) => {
+              const authClient = ctx.authClient as AuthorizationCode;
+
+              authClient.authorizeURL({
+                redirect_uri: `http://localhost:${CurCmd.authPort}/oauth`,
+                scope: 'openid offline_access',
+                // response_mode: 'form_post',
+                // response_type: 'code id_token',
+                // nonce: 'nonce',
+                state: 'state',
+                // prompt: 'login',
+              });
+
               setTimeout(() => {
                 task.title = 'User access token refreshed';
-
-                ctx.signInPath = '';
 
                 resolve(true);
               }, 3000);

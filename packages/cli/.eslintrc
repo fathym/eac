@@ -2,6 +2,7 @@
   "extends": ["oclif", "oclif-typescript"],
   "rules": {
     "arrow-parens": "off",
+    "camelcase": "off",
     "comma-dangle": "off",
     "indent": "off",
     "keyword-spacing": "off",

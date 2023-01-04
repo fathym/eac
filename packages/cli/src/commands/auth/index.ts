@@ -1,5 +1,7 @@
 import { Flags } from '@oclif/core';
 import Listr from 'listr';
+import { ModuleOptions } from 'simple-oauth2';
+import express from 'express';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 
@@ -24,7 +26,7 @@ export default class Auth extends FathymCommand {
 
   static title = 'Fathym Sign In';
 
-  static useAuth = false;
+  static forceRefresh = false;
 
   protected async loadInstructions(): Promise<ClosureInstruction[]> {
     return [
@@ -43,6 +45,8 @@ with GitHub and be ready to go.`,
   }
 
   protected async loadTasks(): Promise<Listr.ListrTask<any>[]> {
+    const CurCmd = <typeof FathymCommand>this.constructor;
+
     // const { flags } = await this.parse(Auth);
 
     return [
@@ -53,8 +57,6 @@ with GitHub and be ready to go.`,
           return new Promise((resolve) => {
             setTimeout(() => {
               task.title = 'User sign in path loaded';
-
-              ctx.signInPath = '';
 
               resolve(true);
             }, 3000);
@@ -69,14 +71,31 @@ with GitHub and be ready to go.`,
         title: `Waiting for user to sign in`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = 'User Signed In';
+            const app = express();
+
+            app.get('/oauth', async (req, res) => {
+              const code = req.query.code as string;
+
+              console.log(`Received authorization code: ${code}`);
+
+              await this.requestAccessTokenAndStore(code);
+
+              task.title =
+                'User signed in successfully, access token is available.';
 
               resolve(true);
-            }, 3000);
+
+              res.send('Authorization complete. You may close this window.');
+            });
+
+            app.listen(CurCmd.authPort, () => {
+              console.log(`Listening on port ${CurCmd.authPort}`);
+            });
           });
         },
       },
     ];
   }
+
+  protected async requestAccessTokenAndStore(code: string): Promise<void> {}
 }
