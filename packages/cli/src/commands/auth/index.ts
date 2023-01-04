@@ -4,6 +4,11 @@ import { ModuleOptions } from 'simple-oauth2';
 import express from 'express';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import {
+  getAccessToken,
+  getAuthorizationCode,
+  getAuthorizationUrl,
+} from '../../common/eac-services';
 
 export default class Auth extends FathymCommand {
   static description =
@@ -51,16 +56,14 @@ with GitHub and be ready to go.`,
 
     return [
       {
-        title: `Loading user sign in path`,
-        task: (ctx, task) => {
-          // fetch('http://localhost:');
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = 'User sign in path loaded';
+        title: 'Get authorization URL',
+        task: async (ctx) => {
+          // get the authorization URL from the helper service
+          const authorizationUrl = await getAuthorizationUrl();
 
-              resolve(true);
-            }, 3000);
-          });
+          // print the authorization URL to the console and open it in the default browser
+          console.log(authorizationUrl);
+          await open(authorizationUrl);
         },
       },
       {
@@ -69,29 +72,26 @@ with GitHub and be ready to go.`,
       },
       {
         title: `Waiting for user to sign in`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            const app = express();
+        task: async (ctx) => {
+          // get the authorization code from the helper service
+          ctx.authorizationCode = await getAuthorizationCode();
 
-            app.get('/oauth', async (req, res) => {
-              const code = req.query.code as string;
+          task.title =
+            'User signed in successfully, access token is available.';
+        },
+      },
+      {
+        title: `Loading access token`,
+        task: async (ctx) => {
+          // get the access token from the helper service using the authorization code from the context
+          const accessToken = await getAccessToken(ctx.authorizationCode);
 
-              console.log(`Received authorization code: ${code}`);
-
-              await this.requestAccessTokenAndStore(code);
-
-              task.title =
-                'User signed in successfully, access token is available.';
-
-              resolve(true);
-
-              res.send('Authorization complete. You may close this window.');
-            });
-
-            app.listen(CurCmd.authPort, () => {
-              console.log(`Listening on port ${CurCmd.authPort}`);
-            });
-          });
+          // store the access token in the system's keychain
+          await keytar.setPassword(
+            'your-service-name',
+            'access_token',
+            accessToken
+          );
         },
       },
     ];
