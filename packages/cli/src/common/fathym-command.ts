@@ -1,7 +1,8 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import Listr from 'listr';
-import { AuthorizationCode, ModuleOptions } from 'simple-oauth2';
+import keytar from 'keytar';
+import { refreshAccessToken } from './eac-services';
 // import { indent } from '@semanticjs/common';
 
 export class ClosureInstruction {
@@ -27,8 +28,6 @@ export abstract class FathymCommand extends Command {
 
   static title: string;
 
-  static useAuth = true;
-
   static forceRefresh = true;
 
   static authPort = 8119;
@@ -45,63 +44,27 @@ export abstract class FathymCommand extends Command {
 
     let tasks = await this.loadTasks();
 
-    if (CurCmd.useAuth || CurCmd.forceRefresh) {
-      tasks = [
-        {
-          title: 'Loading Fathym auth client',
-          task: (ctx, task) => {
-            return new Promise((resolve) => {
-              const clientId = '800193b8-028a-44dd-ba05-73e82ee8066a'; //prod
-              // const clientId = '4ad51adf-6bad-4e5a-b885-c14d34a4c147'; //int
-
-              ctx.authClient = new AuthorizationCode({
-                client: {
-                  id: clientId,
-                  secret: '',
-                },
-                auth: {
-                  tokenHost: `https://auth.fathym.com`,
-                  tokenPath:
-                    '/fathymcloudprd.onmicrosoft.com/oauth2/v2.0/token',
-                  authorizePath:
-                    '/fathymcloudprd.onmicrosoft.com/oauth2/v2.0/authorize',
-                },
-              });
-
-              task.title = 'Fathym auth client loaded successfully';
-
-              resolve(true);
-            });
-          },
-        },
-        ...tasks,
-      ];
-    }
-
     if (CurCmd.forceRefresh) {
       tasks = [
         {
-          title: 'Refreshing access token',
-          task: (ctx, task) => {
-            return new Promise((resolve) => {
-              const authClient = ctx.authClient as AuthorizationCode;
+          title: `Refreshing access token`,
+          task: async () => {
+            const oldRefreshToken = await keytar.getPassword(
+              'fathym-cli',
+              'refresh_token'
+            );
 
-              authClient.authorizeURL({
-                redirect_uri: `http://localhost:${CurCmd.authPort}/oauth`,
-                scope: 'openid offline_access',
-                // response_mode: 'form_post',
-                // response_type: 'code id_token',
-                // nonce: 'nonce',
-                state: 'state',
-                // prompt: 'login',
-              });
+            const { accessToken, refreshToken } = await refreshAccessToken(
+              oldRefreshToken || ''
+            );
 
-              setTimeout(() => {
-                task.title = 'User access token refreshed';
+            await keytar.setPassword('fathym-cli', 'access_token', accessToken);
 
-                resolve(true);
-              }, 3000);
-            });
+            await keytar.setPassword(
+              'fathym-cli',
+              'refresh_token',
+              refreshToken
+            );
           },
         },
         ...tasks,

@@ -1,5 +1,5 @@
 import {} from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 
@@ -25,7 +25,7 @@ to manage your enterprie setup.`,
     ];
   }
 
-  protected async loadTasks(): Promise<Listr> {
+  protected async loadTasks(): Promise<ListrTask[]> {
     const { args } = await this.parse(Set);
 
     return [

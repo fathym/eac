@@ -1,5 +1,5 @@
 import {} from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 
@@ -23,7 +23,7 @@ export default class Commit extends FathymCommand {
     ];
   }
 
-  protected async loadTasks(): Promise<Listr> {
+  protected async loadTasks(): Promise<ListrTask[]> {
     const { args } = await this.parse(Commit);
 
     return [

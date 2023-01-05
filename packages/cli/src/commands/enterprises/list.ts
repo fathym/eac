@@ -1,4 +1,4 @@
-import Listr from 'listr';
+import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import {
   ClosureInstruction,
@@ -41,7 +41,7 @@ value in '()' above.`,
     };
   }
 
-  protected async loadTasks(): Promise<Listr> {
+  protected async loadTasks(): Promise<ListrTask[]> {
     return [
       {
         title: `Loading user enterprises`,

@@ -1,12 +1,13 @@
 import {} from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { confirmGitRepo } from '../../common/git-tasks';
 
-export default class Feature extends FathymCommand {
-  static aliases = ['git:commit', 'git:sync'];
+export default class Commit extends FathymCommand {
+  static aliases = ['git commit', 'git sync'];
 
-  static description = `Used for committing changes to the current working branch.`;
+  static description = `Used for committing changes to the current working branch and syncing with integration.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -20,7 +21,7 @@ export default class Feature extends FathymCommand {
     return [];
   }
 
-  protected async loadTasks(): Promise<Listr> {
+  protected async loadTasks(): Promise<ListrTask[]> {
     // git add .
     // git commit "Added index.html template"
     // git checkout integration
@@ -29,19 +30,6 @@ export default class Feature extends FathymCommand {
     // git rebase integration
     // git push origin
     // git fetch --prune
-    return [
-      {
-        title: `Commiting git changes`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Git changes committed`;
-
-              resolve(true);
-            }, 3000);
-          });
-        },
-      },
-    ];
+    return [confirmGitRepo()];
   }
 }

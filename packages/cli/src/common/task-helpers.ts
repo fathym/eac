@@ -1,29 +1,15 @@
-import { ListrTask } from 'listr';
+import { exec } from 'node:child_process';
 
-export function createSendDataTask<TData>(
-  title: string,
-  completeTitle: string,
-  fetchPath: string,
-  data: TData
-): ListrTask {
-  return {
-    title: title,
-    task: async (ctx, task) => {
-      // send the data to the API endpoint
-      const response = await fetch(fetchPath, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+export async function execa(command: string, args: string[]): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const cmd = [command, ...args].join(' ');
 
-      // parse the response from the API
-      const apiResponse = await response.json();
-
-      // store the response in the task context
-      ctx.response = apiResponse;
-
-      // update the task title
-      task.title = completeTitle;
-    },
-  };
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout);
+      }
+    });
+  });
 }

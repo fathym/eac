@@ -1,5 +1,5 @@
 import {} from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 
@@ -18,7 +18,7 @@ export default class Clone extends FathymCommand {
     return [];
   }
 
-  protected async loadTasks(): Promise<Listr> {
+  protected async loadTasks(): Promise<ListrTask[]> {
     return [
       {
         title: `Cloning the source control`,

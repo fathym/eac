@@ -1,24 +1,47 @@
 import express from 'express';
+import axios from 'axios';
+import { ListrTask } from 'listr';
+import loadAxios from './axios';
 
 export async function getAuthorizationUrl(): Promise<any> {
-  const response = await fetch('http://localhost:7119/api/GetAuthorizationUrl');
+  const response = await axios.post(`http://localhost:7119/api/GetAuthUrl`, {});
 
-  return response.json();
+  return response.data;
 }
 
-export async function getAccessToken(code: string): Promise<any> {
-  const response = await fetch(
-    `http://localhost:7119/api/GetAccessToken?code=${code}`
+export async function getAccessToken(authCode: string): Promise<any> {
+  const response = await axios.post(
+    `http://localhost:7119/api/GetAccessToken`,
+    {},
+    {
+      headers: {
+        'lcu-auth-code': authCode,
+      },
+    }
   );
 
-  return response.json();
+  return response.data;
+}
+
+export async function refreshAccessToken(refreshToken: string): Promise<any> {
+  const response = await axios.post(
+    `http://localhost:7119/api/RefreshAccessToken`,
+    {},
+    {
+      headers: {
+        'lcu-refresh-token': refreshToken,
+      },
+    }
+  );
+
+  return response.data;
 }
 
 export async function getAuthorizationCode(): Promise<string> {
   return new Promise((resolve, reject) => {
     // start an express server that listens for the authorization response
     const app = express();
-    app.get('/callback', (req, res) => {
+    app.get('/oauth', (req, res) => {
       // store the authorization code in the Listr context
       const authorizationCode = req.query.code;
 
@@ -38,4 +61,25 @@ export async function getAuthorizationCode(): Promise<string> {
     });
     const server = app.listen(8119);
   });
+}
+
+export function createSendDataTask<TData>(
+  title: string,
+  completeTitle: string,
+  path: string,
+  data: TData
+): ListrTask {
+  return {
+    title: title,
+    task: async (ctx, task) => {
+      const axios = await loadAxios();
+
+      const response = await axios.post(path, data);
+
+      ctx.response = response.data;
+
+      // update the task title
+      task.title = completeTitle;
+    },
+  };
 }

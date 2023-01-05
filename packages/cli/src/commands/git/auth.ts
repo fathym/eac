@@ -1,5 +1,5 @@
 import { Flags } from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 
@@ -29,7 +29,7 @@ export default class Auth extends FathymCommand {
     ];
   }
 
-  protected async loadTasks(): Promise<Listr> {
+  protected async loadTasks(): Promise<ListrTask[]> {
     const { flags } = await this.parse(Auth);
 
     return [

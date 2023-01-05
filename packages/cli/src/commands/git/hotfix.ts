@@ -1,9 +1,9 @@
 import {} from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 
-export default class Feature extends FathymCommand {
+export default class Hotfix extends FathymCommand {
   static description = `Used for creating a hotfix branch from 'main' in git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -18,7 +18,7 @@ export default class Feature extends FathymCommand {
     return [];
   }
 
-  protected async loadTasks(): Promise<Listr> {
+  protected async loadTasks(): Promise<ListrTask[]> {
     return [
       {
         title: `Creating new hotfix branch from 'main'`,

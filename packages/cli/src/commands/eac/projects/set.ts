@@ -1,5 +1,5 @@
 import {} from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import {
   ClosureInstruction,
@@ -21,7 +21,7 @@ export default class LCU extends FathymCommand {
     return [];
   }
 
-  protected async loadTasks(): Promise<Listr> {
+  protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(LCU);
 
     return [

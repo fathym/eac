@@ -1,7 +1,7 @@
-import { Flags } from '@oclif/core';
+import {} from '@oclif/core';
 import Listr from 'listr';
-import { ModuleOptions } from 'simple-oauth2';
-import express from 'express';
+import keytar from 'keytar';
+import open from 'open';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 import {
@@ -50,52 +50,42 @@ with GitHub and be ready to go.`,
   }
 
   protected async loadTasks(): Promise<Listr.ListrTask<any>[]> {
-    const CurCmd = <typeof FathymCommand>this.constructor;
-
-    // const { flags } = await this.parse(Auth);
-
     return [
       {
         title: 'Get authorization URL',
         task: async (ctx) => {
-          // get the authorization URL from the helper service
-          const authorizationUrl = await getAuthorizationUrl();
-
-          // print the authorization URL to the console and open it in the default browser
-          console.log(authorizationUrl);
-          await open(authorizationUrl);
+          ctx.authorizationUrl = await getAuthorizationUrl();
         },
       },
       {
-        title: 'Opened browser for user sign in',
-        task: () => 'Opened',
+        title: 'Open browser for user sign in',
+        task: async (ctx) => {
+          open(ctx.authorizationUrl);
+        },
       },
       {
         title: `Waiting for user to sign in`,
-        task: async (ctx) => {
-          // get the authorization code from the helper service
+        task: async (ctx, task) => {
+          // get the authorization code from th "e helper service
           ctx.authorizationCode = await getAuthorizationCode();
 
-          task.title =
-            'User signed in successfully, access token is available.';
+          task.title = 'User signed in successfully, auth code is available.';
         },
       },
       {
-        title: `Loading access token`,
+        title: `Load access token`,
         task: async (ctx) => {
           // get the access token from the helper service using the authorization code from the context
-          const accessToken = await getAccessToken(ctx.authorizationCode);
+          const { accessToken, refreshToken } = await getAccessToken(
+            ctx.authorizationCode
+          );
 
           // store the access token in the system's keychain
-          await keytar.setPassword(
-            'your-service-name',
-            'access_token',
-            accessToken
-          );
+          await keytar.setPassword('fathym-cli', 'access_token', accessToken);
+
+          await keytar.setPassword('fathym-cli', 'refresh_token', refreshToken);
         },
       },
     ];
   }
-
-  protected async requestAccessTokenAndStore(code: string): Promise<void> {}
 }
