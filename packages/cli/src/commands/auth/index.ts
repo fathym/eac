@@ -1,6 +1,5 @@
 import {} from '@oclif/core';
 import Listr from 'listr';
-import keytar from 'keytar';
 import open from 'open';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
@@ -8,7 +7,7 @@ import {
   getAccessToken,
   getAuthorizationCode,
   getAuthorizationUrl,
-} from '../../common/eac-services';
+} from '../../common/auth-helpers';
 
 export default class Auth extends FathymCommand {
   static description =
@@ -76,14 +75,7 @@ with GitHub and be ready to go.`,
         title: `Load access token`,
         task: async (ctx) => {
           // get the access token from the helper service using the authorization code from the context
-          const { accessToken, refreshToken } = await getAccessToken(
-            ctx.authorizationCode
-          );
-
-          // store the access token in the system's keychain
-          await keytar.setPassword('fathym-cli', 'access_token', accessToken);
-
-          await keytar.setPassword('fathym-cli', 'refresh_token', refreshToken);
+          await getAccessToken(ctx.authorizationCode);
         },
       },
     ];

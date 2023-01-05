@@ -1,8 +1,7 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import Listr from 'listr';
-import keytar from 'keytar';
-import { refreshAccessToken } from './eac-services';
+import { refreshAccessToken } from './auth-helpers';
 // import { indent } from '@semanticjs/common';
 
 export class ClosureInstruction {
@@ -49,22 +48,7 @@ export abstract class FathymCommand extends Command {
         {
           title: `Refreshing access token`,
           task: async () => {
-            const oldRefreshToken = await keytar.getPassword(
-              'fathym-cli',
-              'refresh_token'
-            );
-
-            const { accessToken, refreshToken } = await refreshAccessToken(
-              oldRefreshToken || ''
-            );
-
-            await keytar.setPassword('fathym-cli', 'access_token', accessToken);
-
-            await keytar.setPassword(
-              'fathym-cli',
-              'refresh_token',
-              refreshToken
-            );
+            await refreshAccessToken();
           },
         },
         ...tasks,
