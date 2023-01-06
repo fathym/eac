@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.6 win32-x64 node-v16.17.1
+@fathym/cli/0.0.9 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -52,12 +52,12 @@ USAGE
 * [`fathym enterprises list`](#fathym-enterprises-list)
 * [`fathym enterprises set ENTLOOKUP`](#fathym-enterprises-set-entlookup)
 * [`fathym git [MESSAGE]`](#fathym-git-message)
+* [`fathym git commit [MESSAGE]`](#fathym-git-commit-message)
+* [`fathym git sync [MESSAGE]`](#fathym-git-sync-message)
 * [`fathym git auth`](#fathym-git-auth)
 * [`fathym git clone`](#fathym-git-clone)
-* [`fathym git commit [MESSAGE]`](#fathym-git-commit-message)
 * [`fathym git feature`](#fathym-git-feature)
 * [`fathym git hotfix`](#fathym-git-hotfix)
-* [`fathym git sync [MESSAGE]`](#fathym-git-sync-message)
 * [`fathym help [COMMAND]`](#fathym-help-command)
 * [`fathym plugins`](#fathym-plugins)
 * [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
@@ -75,10 +75,9 @@ Used to start the authentication process with Fathym, so your CLI can work with 
 
 ```
 USAGE
-  $ fathym auth [-i] [-f]
+  $ fathym auth [-i]
 
 FLAGS
-  -f, --force        Force authentication process to present sign in, even if the user is already authenticated.
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
 
 DESCRIPTION
@@ -90,7 +89,7 @@ EXAMPLES
   $ fathym auth -f
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.6/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.9/dist/commands/auth/index.ts)_
 
 ## `fathym auth out`
 
@@ -474,7 +473,7 @@ EXAMPLES
 
 ## `fathym git [MESSAGE]`
 
-Used for committing changes to the current working branch.
+Used for committing changes to the current working branch and syncing with integration.
 
 ```
 USAGE
@@ -484,7 +483,7 @@ FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
 
 DESCRIPTION
-  Used for committing changes to the current working branch.
+  Used for committing changes to the current working branch and syncing with integration.
 
 ALIASES
   $ fathym git commit
@@ -494,7 +493,51 @@ EXAMPLES
   $ fathym git
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.6/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.9/dist/commands/git/index.ts)_
+
+## `fathym git commit [MESSAGE]`
+
+Used for committing changes to the current working branch and syncing with integration.
+
+```
+USAGE
+  $ fathym git commit [MESSAGE] [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for committing changes to the current working branch and syncing with integration.
+
+ALIASES
+  $ fathym git commit
+  $ fathym git sync
+
+EXAMPLES
+  $ fathym git commit
+```
+
+## `fathym git sync [MESSAGE]`
+
+Used for committing changes to the current working branch and syncing with integration.
+
+```
+USAGE
+  $ fathym git sync [MESSAGE] [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used for committing changes to the current working branch and syncing with integration.
+
+ALIASES
+  $ fathym git commit
+  $ fathym git sync
+
+EXAMPLES
+  $ fathym git sync
+```
 
 ## `fathym git auth`
 
@@ -533,28 +576,6 @@ EXAMPLES
   $ fathym git clone
 ```
 
-## `fathym git commit [MESSAGE]`
-
-Used for committing changes to the current working branch.
-
-```
-USAGE
-  $ fathym git commit [MESSAGE] [-i]
-
-FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
-
-DESCRIPTION
-  Used for committing changes to the current working branch.
-
-ALIASES
-  $ fathym git commit
-  $ fathym git sync
-
-EXAMPLES
-  $ fathym git commit
-```
-
 ## `fathym git feature`
 
 Used for creating a feature branch from 'integration' in git.
@@ -591,28 +612,6 @@ EXAMPLES
   $ fathym git hotfix
 ```
 
-## `fathym git sync [MESSAGE]`
-
-Used for committing changes to the current working branch.
-
-```
-USAGE
-  $ fathym git sync [MESSAGE] [-i]
-
-FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
-
-DESCRIPTION
-  Used for committing changes to the current working branch.
-
-ALIASES
-  $ fathym git commit
-  $ fathym git sync
-
-EXAMPLES
-  $ fathym git sync
-```
-
 ## `fathym help [COMMAND]`
 
 Display help for fathym.
@@ -631,7 +630,7 @@ DESCRIPTION
   Display help for fathym.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.20/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.22/src/commands/help.ts)_
 
 ## `fathym plugins`
 
@@ -651,7 +650,7 @@ EXAMPLES
   $ fathym plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.9/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.12/src/commands/plugins/index.ts)_
 
 ## `fathym plugins:install PLUGIN...`
 
