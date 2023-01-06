@@ -86,22 +86,22 @@ Now we can update our `index.html` with something more visually rich and look at
 </html>
 ```
 
-Typically this isn't how you'd would bring in TailwindCSS and React, but in the case of tinkering, you can.
+Typically this isn't how you would bring in TailwindCSS and React, but in the case of tinkering, you can.
 
 It's also pretty cool because you can use html in your markdown, allowing you to bring rich styling and capabilities into your docs, blogs, and other static sites.
 
 ## Deployment artifacts with NPM packages
 
-When using the GitHub build artifact as your deployment artifact, there is one limiting factor, and that is the retention time on those artifacts. While not common to jump back several versions that might be outdated, it is possible that the current version, if unchanged for longer than the retention time, will itself not be deployable. One of the key benefits of hosting with fathym is being able to host any version of your artifact, on any route, based on your needs (production, staging, test, etc.).
+When using the GitHub build artifact as your deployment artifact there is one limiting factor – the retention time on those artifacts. While not common to jump back several versions that might be outdated, it is possible that the current version, if unchanged for longer than the retention time, will itself not be deployable. One of the key benefits of hosting with Fathym is being able to host any version of your artifact, on any route, based on your needs (production, staging, test, etc.).
 
-Using NPM packages, we can maintain a complete deployment history. Using NPM tags, we can create a simple way for qa, dev, and product owners to work together to validate stories are complete through all requirements. In addition, these can be used to support automation with tools like Chromatic and Applitools.
+Using NPM packages, we can maintain a complete deployment history. Using NPM tags, we can create a simple way for qa, dev, and product owners to work together to validate that stories are complete through all requirements. In addition, these can be used to support automation with tools like Chromatic and Applitools.
 
 There are a couple steps that Fathym just can't automate, and we'll walk you through those now:
 
-1. (Create a new organization)[https://github.com/organizations/plan] (a free plan will do for this, keep in mind that is public) in GitHub. We think its important to look for organization names that are also available at npmjs.org. We use this at Fathym to keep our repos and npm packages aligned for simplicity
+1. (Create a new organization)[https://github.com/organizations/plan] (a free plan will do for this, keep in mind that is public) in GitHub. We think it's important to look for organization names that are also available at npmjs.org. We use this at Fathym to keep our repos and npm packages aligned for simplicity.
 2. (Creat a new organization)[https://www.npmjs.com/org/create] (a free plan will do for this, keep in mind that is public) in NPM.
 
-Now we are going to need to create a new build pipeline to generate the NPM package.
+Now we need to create a new build pipeline to generate the NPM package.
 
 ```cli
 fathym eac pipelines create "My Basic NPM Package Artifact" [options]
@@ -123,13 +123,13 @@ fathym eac commit "Configured source and builds for {username/organization} my-n
 fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
-This will override the previous build pipeline and GitHub action. Kicking off an automatic build that once complete will deploy the latest version of our application out for preview.
+This will override the previous build pipeline and GitHub action, kicking off an automatic build that once complete will deploy the latest version of our application for preview.
 
 ## Adding google analytics tracking and other thrid party libraries
 
 ## Bonus - working with the CLI
 
-As you may have noticed, there is a lot of nesting and relationships to work with. It is possible, in many cases with the CLI, to set an "active" value. Take for example the following commands.
+As you may have noticed, there is a lot of nesting and relationships to work with. It is possible in many cases with the CLI, to set an "active" value. Take for example the following commands.
 
 ```cli
 fathym eac projects create "My First Project"
