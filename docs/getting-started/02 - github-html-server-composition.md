@@ -12,7 +12,7 @@ Fathym helps to configure the repository for automated builds and deployments fo
 
 ## Get your code to GitHub
 
-For the reason mentioned above, we are going to move our code off of the file system. The first thing you'll need to do is authorize with GitHub. Head back into VS Code and into a terminal where we will auth the user of the CLI with GitHub (in the users global GitHub auth for the active EaC).
+For the reason mentioned above, we are going to move our code off of the file system. The first thing you'll need to do is authorize with GitHub. Head back into VS Code and into a terminal where we will auth the user of the CLI with GitHub (in the user's global GitHub auth for the active EaC).
 
 ```cli
 fathym git auth
@@ -62,9 +62,9 @@ fathym eac commit "Configured source and builds for {username/organization} my-n
 
 Once the commit completes the source will be created with a new GitHub Action. It should start and run automatically.
 
-> **NOTE** - If the GitHub Action does not start automatically, you may need to enable actions for your repository. Once doing that, a build will start on your next committed change (which we will do shortly).
+> **NOTE** - If the GitHub Action does not start automatically, you may need to enable actions for your repository. Once done, a build will start on your next committed change (which we will do shortly).
 
-This is a big step for yourself and/or team, as you've setup a complete continuous integration workflow to automate your project builds. You've also laid the ground work for continuous deployment.
+This is a big step for yourself and/or team, as you've set up a complete continuous integration workflow to automate your project builds. You've also laid the ground work for continuous deployment.
 
 ## Cracking open the source control
 
@@ -78,7 +78,7 @@ Now clone the repository.
 fathym git clone  {username/organization} my-new-repository
 ```
 
-You'll notice after cloning that the `integration` branch is the initially selected branch. This is a part of the repository setup we did for you, where integration is the default.
+You'll notice after cloning that the `integration` branch is the initially selected branch. This is part of the repository setup we did for you, where integration is the default.
 
 Your `main` branch is locked down, and can only be merged to with a pull request. This ensures that your `main` branch stays pure and its changes can be related to what is in production.
 
@@ -157,7 +157,7 @@ Upon pushing your changes to the repository, you'll be able to see the build in 
 
 ## Deploy the GitHub artifact
 
-The build should complete very quickly because you aren't really building anything, you'll notice if you look at your action file that it is simply exporting everything at the root of your repository as a GitHub build artifact.
+The build should complete very quickly because you aren't really building anything. You'll notice, if you look at your action file, that it is simply exporting everything at the root of your repository as a GitHub build artifact.
 
 In order to deploy that artifact, you'll need to create a new application again, this time for our GitHub sample.
 
@@ -172,13 +172,13 @@ fathym eac commit "Configured second application in project"
 fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
-Notice the source control being attached to the application, this set's the application up to recieve automatic deployments and will alter the action for this purpose.
+Notice the source control being attached to the application, this sets the application up to recieve automatic deployments and will alter the action for this purpose.
 
-That's it, use the printed preview URL once available and you should see the contents of your index.html file. You might be wondering where the markdown is, but don't worry we're about to configure the system to render the markdown.
+That's it. Use the printed preview URL once available and you should see the contents of your index.html file. You might be wondering where the markdown is, but don't worry, we're about to configure the system to render the markdown.
 
 ## Exploring the Distributed File System (DFS) and Modifiers
 
-We won't go into too much detail on the DFS yet, but its important to note that when your deployment artifacts are uploaded to Fathym they are stored in the DFS. The Fathym Runtime then works with the DFS to determine which files to serve for a given request.
+We won't go into too much detail on the DFS yet, but it's important to note that when your deployment artifacts are uploaded to Fathym they are stored in the DFS. The Fathym Runtime then works with the DFS to determine which files to serve for a given request.
 
 Once a file is chosen for a request it will pass through any configured modifiers. These modifiers will act on the file to change it (minify, compress), augment it (google analytics tracking, cookie consent integration), or compose it (wordpress, markdown, BaseHref).
 
@@ -186,7 +186,7 @@ Once a file is chosen for a request it will pass through any configured modifier
 
 ## Configuring the markdown composition
 
-In order to enable markdown composition with your index.html file, you'll need to setup a couple of different modifiers. One that will convert any markdown to HTML using the Markdown to Html Modifier and after converted to HTML. The other modifier will format it into the defined template, you'll use the HTML Inject Modifier for this.
+In order to enable markdown composition with your index.html file, you'll need to setup a couple of different modifiers. One will convert any markdown to HTML using the Markdown to Html Modifier. The other one, the HTML Inject Modifier, will format it into the defined template.
 
 First you'll configure the modifier for markdown to html.
 
@@ -221,8 +221,8 @@ fathym eac projects applications preview {project-lookup} {app-lookup}
 
 ## What's Next?
 
-There is a lot that you've got setup over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through the code-to-deploy. Next you'll expand what you've been doing with this blog to bring in some interactivity, and bring in TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM.
+There is a lot that you have set up over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through code-to-deploy. Next, you'll expand what you've been doing with this blog to bring in some interactivity and bring in TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM.
 
 ## Bonus - Global Edge CDN
 
-When deploying with Fathym, your solutions are delivered via Azure Global Edge CDN. Bringing your information closer to all your users.
+When deploying with Fathym, your solutions are delivered via Azure Global Edge CDN – bringing your information closer to all your users.
