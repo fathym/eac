@@ -1,7 +1,8 @@
 import express from 'express';
 import oauth2 from 'simple-oauth2';
-import keytar from 'keytar';
-import axios from 'axios';
+// import keytar from 'keytar';
+import { ListrTask } from 'listr';
+import { withConfig } from './config-helpers';
 
 const tenant = 'fathymcloudprd';
 const clientId = '800193b8-028a-44dd-ba05-73e82ee8066a';
@@ -21,6 +22,17 @@ const oauthCodeClient = new oauth2.AuthorizationCode({
   },
 });
 
+export class UserAuthConfig {
+  public AccessToken!: oauth2.AccessToken;
+}
+
+export async function withUserAuthConfig(
+  configDir: string,
+  action?: (config: UserAuthConfig) => Promise<UserAuthConfig>
+): Promise<UserAuthConfig> {
+  return withConfig<UserAuthConfig>('user-auth.config.json', configDir, action);
+}
+
 export async function getAuthorizationUrl(state?: any): Promise<any> {
   const authorizationUri = oauthCodeClient.authorizeURL({
     redirect_uri: redirectUri,
@@ -32,42 +44,59 @@ export async function getAuthorizationUrl(state?: any): Promise<any> {
   return authorizationUri;
 }
 
-export async function getAccessToken(authCode: string): Promise<void> {
-  try {
-    const tokenConfig = {
-      redirect_uri: redirectUri,
-      scope: scope,
-      code: authCode,
-    };
+export async function getAccessToken(
+  configDir: string,
+  authCode: string
+): Promise<void> {
+  const tokenConfig = {
+    redirect_uri: redirectUri,
+    scope: scope,
+    code: authCode,
+  };
 
-    const accessToken = await oauthCodeClient.getToken(tokenConfig);
+  const accessToken = await oauthCodeClient.getToken(tokenConfig);
 
-    await keytar.setPassword(
-      'fathym-cli',
-      'access_token',
-      JSON.stringify(accessToken)
-    );
-  } catch (error) {
-    console.log(error);
-  }
+  await withUserAuthConfig(configDir, async (cfg) => {
+    cfg.AccessToken = accessToken;
+
+    return cfg;
+  });
 }
 
-export async function refreshAccessToken(refreshWindow = 300): Promise<void> {
-  const accessTokenStr = await keytar.getPassword('fathym-cli', 'access_token');
+export async function refreshAccessTokenTask(
+  configDir: string,
+  refreshWindow = 300
+): Promise<ListrTask> {
+  const accessToken = await loadAccessToken(configDir);
 
-  let accessToken = await oauthCodeClient.createToken(
-    JSON.parse(accessTokenStr || '')
-  );
+  return {
+    title: `Refreshing access token`,
+    enabled: () => accessToken.expired(refreshWindow),
+    task: async () => {
+      await refreshAccessToken(configDir, accessToken);
+    },
+  };
+}
 
-  if (accessToken.expired(refreshWindow)) {
-    accessToken = await accessToken.refresh({ scope: scope });
+export async function refreshAccessToken(
+  configDir: string,
+  accessToken: oauth2.AccessToken
+): Promise<void> {
+  accessToken = await accessToken.refresh({ scope: scope });
 
-    await keytar.setPassword(
-      'fathym-cli',
-      'access_token',
-      JSON.stringify(accessToken)
-    );
-  }
+  await withUserAuthConfig(configDir, async (cfg) => {
+    cfg.AccessToken = accessToken;
+
+    return cfg;
+  });
+}
+
+export async function loadAccessToken(
+  configDir: string
+): Promise<oauth2.AccessToken> {
+  const config = await withUserAuthConfig(configDir);
+
+  return oauthCodeClient.createToken(config.AccessToken);
 }
 
 export async function getAuthorizationCode(): Promise<string> {

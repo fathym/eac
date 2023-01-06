@@ -49,6 +49,7 @@ with GitHub and be ready to go.`,
   }
 
   protected async loadTasks(): Promise<Listr.ListrTask<any>[]> {
+    this.log('configDir: ' + this.config.configDir);
     return [
       {
         title: 'Get authorization URL',
@@ -74,8 +75,7 @@ with GitHub and be ready to go.`,
       {
         title: `Load access token`,
         task: async (ctx) => {
-          // get the access token from the helper service using the authorization code from the context
-          await getAccessToken(ctx.authorizationCode);
+          await getAccessToken(this.config.configDir, ctx.authorizationCode);
         },
       },
     ];

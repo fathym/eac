@@ -1,7 +1,7 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import Listr from 'listr';
-import { refreshAccessToken } from './auth-helpers';
+import { refreshAccessTokenTask } from './auth-helpers';
 // import { indent } from '@semanticjs/common';
 
 export class ClosureInstruction {
@@ -44,15 +44,7 @@ export abstract class FathymCommand extends Command {
     let tasks = await this.loadTasks();
 
     if (CurCmd.forceRefresh) {
-      tasks = [
-        {
-          title: `Refreshing access token`,
-          task: async () => {
-            await refreshAccessToken();
-          },
-        },
-        ...tasks,
-      ];
+      tasks = [await refreshAccessTokenTask(this.config.configDir), ...tasks];
     }
 
     const listr = new Listr(tasks);
@@ -75,8 +67,6 @@ export abstract class FathymCommand extends Command {
         }
 
         this.closure(`${CurCmd.title} Executed`, instructions);
-
-        this.log('\n\n');
       })
       .catch((error) => {
         this.debug(error);
