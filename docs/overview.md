@@ -14,9 +14,9 @@ But Fathym is more than just code and UX - it also includes a thoughtful DevOps 
 
 It's a common question - how does Fathym compare to Terraform, Azure ARM, AWS CloudFormation, Fly.io, Netlify, and Vercel? The answer is simple - we don't try to compete with these tools, we work with them. Our philosophy is about finding ways to make all of these tools work together seamlessly for you.
 
-So, what is Fathym, and what can you compare it to? At its core, Fathym is a solution that allows you to efficiently craft custom, open source, and SaaS/third party solutions by combining LowCodeUnits (LCUs).
+So, what is Fathym, and what can you compare it to? At its core, Fathym is a solution that allows you to efficiently craft custom, open source, and SaaS/third party solutions by combining LowCodeUnits (LCUs) – reusable software components. 
 
-## Fathym: Your Kitchen, You the Chef
+## Fathym is the kitchen. You're the Chef.
 
 Imagine walking into a fully stocked kitchen as the chef, with all the ingredients you could ever need (well, not quite all of them, but we'll get to that). Fathym provides the ingredients - the LCUs - that you can use to create solutions, just like a chef creates dishes with various ingredients.
 
