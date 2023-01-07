@@ -31,7 +31,6 @@ export function commitChanges(commitMessage: string): ListrTask {
     title: 'Committing uncommitted changes',
     skip: () => hasCommittedChanges(),
     task: async () => {
-      // await execa('git', ['add', '.']);
       await execa('git', ['commit', '-a', '-m', `"${commitMessage}"`]);
     },
   };
