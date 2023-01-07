@@ -5,7 +5,9 @@ import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 import {
   commitChanges,
   confirmGitRepo,
+  fetchPrune,
   hasCommittedChanges,
+  pushOrigin,
 } from '../../common/git-tasks';
 import { execa } from '../../common/task-helpers';
 import inquirer from 'inquirer';
@@ -51,6 +53,8 @@ export default class Feature extends FathymCommand {
           await execa(`git checkout`, [`-b feature/${name}`, 'integration']);
         },
       },
+      pushOrigin(),
+      fetchPrune(),
     ];
   }
 }
