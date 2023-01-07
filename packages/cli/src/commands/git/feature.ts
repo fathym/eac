@@ -19,7 +19,13 @@ export default class Feature extends FathymCommand {
 
   static flags = {};
 
-  static args = [{ name: 'name', required: true }];
+  static args = [
+    {
+      name: 'name',
+      required: true,
+      description: 'Name for the new feature branch',
+    },
+  ];
 
   static title = 'Create Feature Branch';
 
