@@ -50,7 +50,6 @@ export default class Commit extends FathymCommand {
       confirmGitRepo(),
       commitChanges(message),
       fetchChange(),
-      pull(),
       rebaseIntegration(),
       pull(),
       pushOrigin(),
