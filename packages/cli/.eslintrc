@@ -6,6 +6,7 @@
     "comma-dangle": "off",
     "indent": "off",
     "keyword-spacing": "off",
+    "max-params": "off",
     "new-cap": "off",
     "node/no-extraneous-import": "off",
     "object-curly-spacing": ["error", "always"],

@@ -1,8 +1,12 @@
 import axios from 'axios';
-import keytar from 'keytar';
+import { withUserAuthConfig } from './auth-helpers';
 
-export default async function loadAxios(): Promise<typeof axios> {
-  const accessToken = await keytar.getPassword('fathym-cli', 'access_token');
+export default async function loadAxios(
+  configDir: string
+): Promise<typeof axios> {
+  const config = await withUserAuthConfig(configDir);
+
+  const accessToken = config.AccessToken.token.toString();
 
   if (accessToken) {
     axios.defaults.headers['lcu-access-token'] = accessToken;

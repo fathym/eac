@@ -3,7 +3,8 @@
 import { ListrTask } from 'listr';
 import loadAxios from './axios';
 
-export function createSendDataTask<TData>(
+export function editEaCDraftTask<TData>(
+  configDir: string,
   title: string,
   completeTitle: string,
   path: string,
@@ -12,7 +13,7 @@ export function createSendDataTask<TData>(
   return {
     title: title,
     task: async (ctx, task) => {
-      const axios = await loadAxios();
+      const axios = await loadAxios(configDir);
 
       const response = await axios.post(path, data);
 
