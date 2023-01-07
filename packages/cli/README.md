@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.10 win32-x64 node-v18.12.1
+@fathym/cli/0.0.11 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -30,6 +30,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`fathym auth`](#fathym-auth)
+* [`fathym auth config`](#fathym-auth-config)
 * [`fathym auth out`](#fathym-auth-out)
 * [`fathym eac applications create`](#fathym-eac-applications-create)
 * [`fathym eac applications lcu`](#fathym-eac-applications-lcu)
@@ -85,11 +86,27 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym auth
-
-  $ fathym auth -f
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.10/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.11/dist/commands/auth/index.ts)_
+
+## `fathym auth config`
+
+Used to retrieve the current auth config for the user.
+
+```
+USAGE
+  $ fathym auth config [-i]
+
+FLAGS
+  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+
+DESCRIPTION
+  Used to retrieve the current auth config for the user.
+
+EXAMPLES
+  $ fathym auth config
+```
 
 ## `fathym auth out`
 
@@ -493,7 +510,7 @@ EXAMPLES
   $ fathym git
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.10/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.11/dist/commands/git/index.ts)_
 
 ## `fathym git commit [MESSAGE]`
 
