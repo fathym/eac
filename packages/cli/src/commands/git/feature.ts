@@ -2,8 +2,13 @@ import {} from '@oclif/core';
 import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
-import { commitChanges, confirmGitRepo } from '../../common/git-tasks';
+import {
+  commitChanges,
+  confirmGitRepo,
+  hasCommittedChanges,
+} from '../../common/git-tasks';
 import { execa } from '../../common/task-helpers';
+import inquirer from 'inquirer';
 
 export default class Feature extends FathymCommand {
   static description = `Used for creating a feature branch from 'integration' in git.`;
@@ -21,9 +26,21 @@ export default class Feature extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<ListrTask[]> {
+    let message = '';
+
+    if (!(await hasCommittedChanges())) {
+      const { commitMessage } = await inquirer.prompt({
+        type: 'input',
+        name: 'commitMessage',
+        message: 'Enter commit message:',
+      });
+
+      message = commitMessage;
+    }
+
     return [
       confirmGitRepo(),
-      commitChanges(),
+      commitChanges(message),
       {
         title: 'Create new feature branch',
         task: async () => {

@@ -2,7 +2,15 @@ import {} from '@oclif/core';
 import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
-import { commitChanges, confirmGitRepo } from '../../common/git-tasks';
+import {
+  commitChanges,
+  confirmGitRepo,
+  fetchChange,
+  fetchPrune,
+  pushOrigin,
+  rebaseIntegration,
+} from '../../common/git-tasks';
+import inquirer from 'inquirer';
 
 export default class Commit extends FathymCommand {
   static aliases = ['git commit', 'git sync'];
@@ -22,15 +30,31 @@ export default class Commit extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<ListrTask[]> {
-    // git add .
-    // git commit "Added index.html template"
+    const { args } = await this.parse(Commit);
 
-    // git checkout integration
-    // git pull
-    // git checkout -
-    // git rebase integration
-    // git push origin
-    // git fetch --prune
-    return [confirmGitRepo(), commitChanges()];
+    let { message } = args;
+
+    if (!message) {
+      const { commitMessage } = await inquirer.prompt({
+        type: 'input',
+        name: 'commitMessage',
+        message: 'Enter commit message:',
+      });
+
+      message = commitMessage;
+    }
+
+    return [
+      confirmGitRepo(),
+      commitChanges(message),
+      fetchChange(),
+      // These may not be necessary as we are rebasing with origin
+      // git checkout integration
+      // git pull
+      // git checkout -
+      rebaseIntegration(),
+      pushOrigin(),
+      fetchPrune(),
+    ];
   }
 }
