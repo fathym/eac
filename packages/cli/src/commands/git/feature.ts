@@ -17,7 +17,7 @@ export default class Feature extends FathymCommand {
 
   static flags = {};
 
-  static args = [];
+  static args = [{ name: 'name', required: true }];
 
   static title = 'Create Feature Branch';
 
@@ -26,6 +26,10 @@ export default class Feature extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<ListrTask[]> {
+    const { args } = await this.parse(Feature);
+
+    const { name } = args;
+
     let message = '';
 
     if (!(await hasCommittedChanges())) {
