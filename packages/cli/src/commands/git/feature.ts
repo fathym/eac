@@ -59,6 +59,12 @@ export default class Feature extends FathymCommand {
           await execa(`git checkout`, [`-b feature/${name}`, 'integration']);
         },
       },
+      {
+        title: 'Setting upstream for feature branch',
+        task: async () => {
+          await execa(`git push`, ['--set-upstream origin', `feature/${name}`]);
+        },
+      },
       pushOrigin(),
       fetchPrune(),
     ];
