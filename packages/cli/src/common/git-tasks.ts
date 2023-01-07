@@ -108,7 +108,7 @@ export function pull(): ListrTask {
 
 export function rebaseIntegration(): ListrTask {
   return {
-    title: 'Rebase changes onto integration',
+    title: 'Rebase changes from integration',
     task: async () => {
       await execa('git', ['rebase', 'origin/integration']);
     },
