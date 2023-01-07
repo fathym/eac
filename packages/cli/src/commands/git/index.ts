@@ -7,6 +7,7 @@ import {
   confirmGitRepo,
   fetchChange,
   fetchPrune,
+  pull,
   pushOrigin,
   rebaseIntegration,
 } from '../../common/git-tasks';
@@ -48,10 +49,7 @@ export default class Commit extends FathymCommand {
       confirmGitRepo(),
       commitChanges(message),
       fetchChange(),
-      // These may not be necessary as we are rebasing with origin
-      // git checkout integration
-      // git pull
-      // git checkout -
+      pull(),
       rebaseIntegration(),
       pushOrigin(),
       fetchPrune(),

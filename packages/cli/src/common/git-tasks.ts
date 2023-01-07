@@ -97,6 +97,15 @@ export function pushOrigin(): ListrTask {
   };
 }
 
+export function pull(): ListrTask {
+  return {
+    title: 'Pull',
+    task: async () => {
+      await execa('git', ['pull']);
+    },
+  };
+}
+
 export function rebaseIntegration(): ListrTask {
   return {
     title: 'Rebase changes onto integration',
