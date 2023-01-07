@@ -7,6 +7,7 @@ import {
   confirmGitRepo,
   fetchChange,
   fetchPrune,
+  hasCommittedChanges,
   pull,
   pushOrigin,
   rebaseIntegration,
@@ -35,7 +36,7 @@ export default class Commit extends FathymCommand {
 
     let { message } = args;
 
-    if (!message) {
+    if (!message && !(await hasCommittedChanges())) {
       const { commitMessage } = await inquirer.prompt({
         type: 'input',
         name: 'commitMessage',
