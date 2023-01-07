@@ -13,18 +13,9 @@ export default class Auth extends FathymCommand {
   static description =
     'Used to start the authentication process with Fathym, so your CLI can work with the EaC and other features.';
 
-  static examples = [
-    '<%= config.bin %> <%= command.id %>',
-    '<%= config.bin %> <%= command.id %> -f',
-  ];
+  static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {
-    // force: Flags.boolean({
-    //   char: 'f',
-    //   description:
-    //     'Force authentication process to present sign in, even if the user is already authenticated.',
-    // }),
-  };
+  static flags = {};
 
   static args = [];
 
@@ -49,7 +40,6 @@ with GitHub and be ready to go.`,
   }
 
   protected async loadTasks(): Promise<Listr.ListrTask<any>[]> {
-    this.log('configDir: ' + this.config.configDir);
     return [
       {
         title: 'Get authorization URL',

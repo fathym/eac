@@ -1,4 +1,5 @@
-import { ListrTask } from 'listr';
+import inquirer from 'inquirer';
+import Listr, { ListrTask } from 'listr';
 import { execa } from './task-helpers';
 // import inquirer from 'inquirer';
 
@@ -17,46 +18,61 @@ export function confirmGitRepo(): ListrTask {
   };
 }
 
-// export async function commitChanges(
-//   commitMessage?: string
-// ): Promise<ListrTask> {
-//   return {
-//     title: 'Committing uncommitted changes',
-//     skip: () => hasCommittedChanges(),
-//     task: async () => {
-//       if (!commitMessage) {
-//         const { message } = await inquirer.prompt({
-//           type: 'input',
-//           name: 'message',
-//           message: 'Enter commit message:',
-//         });
+export function ensureOrganization(organization: string): ListrTask {
+  return {
+    title: `Ensuring organization`,
+    task: async (ctx, task) => {
+      if (!organization) {
+        const user = (await execa('git', ['config', '--get user.name']))
+          .toString()
+          .trim();
 
-//         commitMessage = message;
-//       }
+        ctx.organization = user;
+      }
 
-//       return new Listr([
-//         {
-//           title: 'Stage changes',
-//           task: async () => {
-//             await execa('git', ['add', '.']);
-//           },
-//         },
-//         {
-//           title: 'Commit changes',
-//           task: async () => {
-//             await execa('git', ['commit', '-m', commitMessage!]);
-//           },
-//         },
-//       ]);
-//     },
-//   };
-// }
+      task.title = `Set organization to ${ctx.organization}`;
+    },
+  };
+}
 
-// export async function hasCommittedChanges(): Promise<boolean> {
-//   const { stdout } = await execa('git', ['status', '--porcelain']);
+export function commitChanges(commitMessage?: string): ListrTask {
+  return {
+    title: 'Committing uncommitted changes',
+    skip: () => hasCommittedChanges(),
+    task: async () => {
+      if (!commitMessage) {
+        const { message } = await inquirer.prompt({
+          type: 'input',
+          name: 'message',
+          message: 'Enter commit message:',
+        });
 
-//   return stdout === '';
-// }
+        commitMessage = message;
+      }
+
+      return new Listr([
+        {
+          title: 'Stage changes',
+          task: async () => {
+            await execa('git', ['add', '.']);
+          },
+        },
+        {
+          title: 'Commit changes',
+          task: async () => {
+            await execa('git', ['commit', '-m', commitMessage!]);
+          },
+        },
+      ]);
+    },
+  };
+}
+
+export async function hasCommittedChanges(): Promise<boolean> {
+  const stdout = await execa('git', ['status', '--porcelain']);
+
+  return stdout === '';
+}
 
 // export const pullLatestIntegration: ListrTask = {
 //   title: 'Pull latest integration changes',

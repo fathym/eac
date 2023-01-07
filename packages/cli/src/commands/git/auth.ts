@@ -21,12 +21,7 @@ export default class Auth extends FathymCommand {
   static title = 'Git Authentication';
 
   protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac applications security --help',
-        Description: `You can manage more about your application.`,
-      },
-    ];
+    return [];
   }
 
   protected async loadTasks(): Promise<ListrTask[]> {

@@ -1,16 +1,31 @@
-import {} from '@oclif/core';
+import { Flags } from '@oclif/core';
 import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { confirmGitRepo, ensureOrganization } from '../../common/git-tasks';
+import { execa } from '../../common/task-helpers';
+import path from 'node:path';
 
 export default class Clone extends FathymCommand {
   static description = `Used for cloning the source control for Git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    depth: Flags.integer({
+      char: 'd',
+      description: 'Specifies the depth of the clone',
+    }),
+    branch: Flags.string({
+      char: 'b',
+      description: 'Specifies the branch or tag to clone',
+    }),
+  };
 
-  static args = [];
+  static args = [
+    { name: 'organization', required: false },
+    { name: 'repository', required: true },
+  ];
 
   static title = 'Git Clone';
 
@@ -19,17 +34,27 @@ export default class Clone extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<ListrTask[]> {
-    return [
-      {
-        title: `Cloning the source control`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = 'Source control cloned';
+    const { args, flags } = await this.parse(Clone);
 
-              resolve(true);
-            }, 3000);
-          });
+    const { organization, repository } = args;
+
+    const depth = flags.depth ? `--depth ${flags.depth}` : '';
+
+    const branch = flags.branch ? `--branch ${flags.branch}` : '';
+
+    return [
+      confirmGitRepo(),
+      ensureOrganization(organization),
+      {
+        title: `Cloning repository ${organization}/${repository}`,
+        task: async (ctx, task) => {
+          const destination = path.join(process.cwd(), repository);
+
+          const gitPath = `https://github.com/${organization}/${repository}.git`;
+
+          await execa(`git clone ${gitPath} ${destination}`, [depth, branch]);
+
+          task.title = `Repository ${organization}/${repository} cloned`;
         },
       },
     ];

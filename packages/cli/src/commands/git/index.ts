@@ -2,7 +2,7 @@ import {} from '@oclif/core';
 import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
-import { confirmGitRepo } from '../../common/git-tasks';
+import { commitChanges, confirmGitRepo } from '../../common/git-tasks';
 
 export default class Commit extends FathymCommand {
   static aliases = ['git commit', 'git sync'];
@@ -24,12 +24,13 @@ export default class Commit extends FathymCommand {
   protected async loadTasks(): Promise<ListrTask[]> {
     // git add .
     // git commit "Added index.html template"
+
     // git checkout integration
     // git pull
     // git checkout -
     // git rebase integration
     // git push origin
     // git fetch --prune
-    return [confirmGitRepo()];
+    return [confirmGitRepo(), commitChanges()];
   }
 }

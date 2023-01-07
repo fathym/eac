@@ -2,6 +2,7 @@ import {} from '@oclif/core';
 import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { confirmGitRepo } from '../../common/git-tasks';
 
 export default class Hotfix extends FathymCommand {
   static description = `Used for creating a hotfix branch from 'main' in git.`;
@@ -20,6 +21,7 @@ export default class Hotfix extends FathymCommand {
 
   protected async loadTasks(): Promise<ListrTask[]> {
     return [
+      confirmGitRepo(),
       {
         title: `Creating new hotfix branch from 'main'`,
         task: (ctx, task) => {
