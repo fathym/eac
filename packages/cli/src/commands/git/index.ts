@@ -52,6 +52,7 @@ export default class Commit extends FathymCommand {
       fetchChange(),
       pull(),
       rebaseIntegration(),
+      pull(),
       pushOrigin(),
       fetchPrune(),
     ];
