@@ -14,7 +14,7 @@ export async function withEaCDraft(
   return withConfig<EaCDraft>('eac.draft.json', configDir, action);
 }
 
-export function submitCommitTask<TData>(
+export function commitDraftTask<TData>(
   configDir: string,
   data: TData
 ): ListrTask {
