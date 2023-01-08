@@ -1,26 +1,36 @@
 // import express from 'express';
 // import axios from 'axios';
+import { EnterpriseAsCode } from '@semanticjs/common';
 import { ListrTask } from 'listr';
 import loadAxios from './axios';
+import { withConfig } from './config-helpers';
 
-export function editEaCDraftTask<TData>(
+export class EaCDraft extends EnterpriseAsCode {}
+
+export async function withEaCDraft(
   configDir: string,
-  title: string,
-  completeTitle: string,
-  path: string,
+  action?: (config: EaCDraft) => Promise<EaCDraft>
+): Promise<EaCDraft> {
+  return withConfig<EaCDraft>('eac.draft.json', configDir, action);
+}
+
+export function submitCommitTask<TData>(
+  configDir: string,
   data: TData
 ): ListrTask {
   return {
-    title: title,
+    title: 'Commiting EaC Draft',
     task: async (ctx, task) => {
       const axios = await loadAxios(configDir);
 
-      const response = await axios.post(path, data);
+      const response = await axios.post(
+        'http://localhost:8119/api/eac/commit',
+        data
+      );
 
-      ctx.response = response.data;
+      const draftId = response.data;
 
-      // update the task title
-      task.title = completeTitle;
+      task.title = `EaC Draft Committed: ${draftId}`;
     },
   };
 }
