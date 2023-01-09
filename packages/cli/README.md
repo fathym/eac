@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.11 win32-x64 node-v18.12.1
+@fathym/cli/0.0.12 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -56,9 +56,9 @@ USAGE
 * [`fathym git commit [MESSAGE]`](#fathym-git-commit-message)
 * [`fathym git sync [MESSAGE]`](#fathym-git-sync-message)
 * [`fathym git auth`](#fathym-git-auth)
-* [`fathym git clone`](#fathym-git-clone)
-* [`fathym git feature`](#fathym-git-feature)
-* [`fathym git hotfix`](#fathym-git-hotfix)
+* [`fathym git clone [ORGANIZATION] REPOSITORY`](#fathym-git-clone-organization-repository)
+* [`fathym git feature NAME`](#fathym-git-feature-name)
+* [`fathym git hotfix NAME`](#fathym-git-hotfix-name)
 * [`fathym help [COMMAND]`](#fathym-help-command)
 * [`fathym plugins`](#fathym-plugins)
 * [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
@@ -88,7 +88,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.11/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.12/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -510,7 +510,7 @@ EXAMPLES
   $ fathym git
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.11/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.12/dist/commands/git/index.ts)_
 
 ## `fathym git commit [MESSAGE]`
 
@@ -575,16 +575,18 @@ EXAMPLES
   $ fathym git auth
 ```
 
-## `fathym git clone`
+## `fathym git clone [ORGANIZATION] REPOSITORY`
 
 Used for cloning the source control for Git.
 
 ```
 USAGE
-  $ fathym git clone [-i]
+  $ fathym git clone [ORGANIZATION] [REPOSITORY] [-i] [-d <value>] [-b <value>]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  -b, --branch=<value>  Specifies the branch or tag to clone
+  -d, --depth=<value>   Specifies the depth of the clone
+  -i, --interactive     Run command in interactive mode, allowing prompts for missing required args and flags.
 
 DESCRIPTION
   Used for cloning the source control for Git.
@@ -593,13 +595,16 @@ EXAMPLES
   $ fathym git clone
 ```
 
-## `fathym git feature`
+## `fathym git feature NAME`
 
 Used for creating a feature branch from 'integration' in git.
 
 ```
 USAGE
-  $ fathym git feature [-i]
+  $ fathym git feature [NAME] [-i]
+
+ARGUMENTS
+  NAME  Name for the new feature branch
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
@@ -611,13 +616,16 @@ EXAMPLES
   $ fathym git feature
 ```
 
-## `fathym git hotfix`
+## `fathym git hotfix NAME`
 
 Used for creating a hotfix branch from 'main' in git.
 
 ```
 USAGE
-  $ fathym git hotfix [-i]
+  $ fathym git hotfix [NAME] [-i]
+
+ARGUMENTS
+  NAME  Name for the new hotfix branch
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
