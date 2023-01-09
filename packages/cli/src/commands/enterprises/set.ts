@@ -28,6 +28,8 @@ to manage your enterprie setup.`,
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args } = await this.parse(Set);
 
+    // Add task to check for draft changes, if draft changes then block other aspects and return information that tells user to first commit or reset EaC changes before changing...  Maybe offer a way for inquierer to ask the user what they want to do if there are EaC Draft changes... Provide a commit flow prior to changing EaCs
+
     return [
       {
         title: `Setting the user's active enterprise to '${args.entLookup}'`,
