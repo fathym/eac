@@ -36,7 +36,7 @@ to manage your enterprie setup.`,
         task: (ctx, task) => {
           return new Promise((resolve) => {
             setTimeout(() => {
-              task.title = `Active enterprise set to '${args.entLookup}' for the user`;
+              task.title = `Active enterprise set to '${args.entLookup}'`;
 
               resolve(true);
             }, 3000);
