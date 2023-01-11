@@ -4,7 +4,10 @@
   "description": "The CLI used for code first flows with Fathym EaC.",
   "author": "Fathym, Inc",
   "bin": {
-    "fathym": "./bin/run"
+    "fathym": "./bin/run",
+    "fym": "./bin/run",
+    "thinky": "./bin/run",
+    "tky": "./bin/run"
   },
   "homepage": "https://github.com/fathym/eac",
   "license": "MIT",
