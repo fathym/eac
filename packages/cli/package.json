@@ -6,6 +6,7 @@
   "bin": {
     "fathym": "./bin/run",
     "fym": "./bin/run",
+    "ftm": "./bin/run",
     "thinky": "./bin/run",
     "tky": "./bin/run"
   },
