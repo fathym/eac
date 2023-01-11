@@ -3,7 +3,6 @@ import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 import {
-  addChanges,
   commitChanges,
   confirmGitRepo,
   fetchChange,
