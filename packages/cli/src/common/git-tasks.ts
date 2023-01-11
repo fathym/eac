@@ -5,6 +5,7 @@ import { execa } from './task-helpers';
 export function addChanges(): ListrTask {
   return {
     title: 'Add changes',
+    skip: () => hasCommittedChanges(),
     task: async () => {
       await execa('git', ['add', '.']);
     },
@@ -31,8 +32,6 @@ export function commitChanges(commitMessage: string): ListrTask {
     title: 'Committing uncommitted changes',
     skip: () => hasCommittedChanges(),
     task: async () => {
-      await execa('git', ['add', '.']);
-
       await execa('git', ['commit', '-a', '-m', `"${commitMessage}"`]);
     },
   };
