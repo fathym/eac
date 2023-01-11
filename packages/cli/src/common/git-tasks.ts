@@ -7,7 +7,7 @@ export function addChanges(): ListrTask {
     title: 'Add changes',
     skip: () => hasCommittedChanges(),
     task: async () => {
-      await execa('git', ['add', '.']);
+      await execa('git', ['add', '.', '-A']);
     },
   };
 }
