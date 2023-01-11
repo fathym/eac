@@ -49,7 +49,6 @@ export default class Commit extends FathymCommand {
 
     return [
       confirmGitRepo(),
-      addChanges(),
       commitChanges(message),
       fetchChange(),
       rebaseIntegration(),
