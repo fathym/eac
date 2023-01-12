@@ -6,7 +6,7 @@ export default async function loadAxios(
 ): Promise<typeof axios> {
   const config = await withUserAuthConfig(configDir);
 
-  const accessToken = config.AccessToken.token.toString();
+  const accessToken = (config.AccessToken as any).access_token;
 
   if (accessToken) {
     axios.defaults.headers['lcu-access-token'] = accessToken;

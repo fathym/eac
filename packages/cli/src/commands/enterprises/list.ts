@@ -1,10 +1,11 @@
 import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
+import { EaCEnterpriseDetails } from '@semanticjs/common';
 import {
   ClosureInstruction,
   DisplayLookup,
   FathymCommand,
 } from '../../common/fathym-command';
+import loadAxios from '../../common/axios';
 
 export default class List extends FathymCommand {
   static description = 'Used to list the current users available enterprises.';
@@ -16,6 +17,8 @@ export default class List extends FathymCommand {
   static args = [];
 
   static title = 'List User Enterprises';
+
+  protected entLookups: DisplayLookup[] = [];
 
   protected async loadInstructions(): Promise<ClosureInstruction[]> {
     return [
@@ -34,25 +37,48 @@ value in '()' above.`,
   > {
     return {
       name: 'ent-lookup',
-      lookups: [
-        { Lookup: 'abc-123', Name: 'ABC' },
-        { Lookup: 'xyz-789', Name: 'XYZ' },
-      ],
+      lookups: this.entLookups,
     };
+  }
+
+  protected async listEnterprises(
+    configDir: string
+  ): Promise<{ [lookup: string]: EaCEnterpriseDetails }> {
+    const axios = await loadAxios(configDir);
+    console.log('there');
+
+    const response = await axios.get(
+      // 'http://localhost:8119/api/user/enterprises'
+      'http://127.0.0.1:7077/api/user/enterprises'
+    );
+    console.log('now');
+
+    return response.data;
   }
 
   protected async loadTasks(): Promise<ListrTask[]> {
     return [
       {
         title: `Loading user enterprises`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = 'User enterprises loaded';
+        task: async (ctx, task) => {
+          task.title = 'Loading...';
 
-              resolve(true);
-            }, 3000);
-          });
+          const ents = await this.listEnterprises(this.config.configDir);
+
+          task.title = JSON.stringify(ents);
+
+          this.log(JSON.stringify(ents));
+
+          this.entLookups = [
+            { Lookup: 'abc-123', Name: 'ABC' },
+            { Lookup: 'xyz-789', Name: 'XYZ' },
+          ];
+
+          task.title = JSON.stringify(this.entLookups);
+
+          this.log(JSON.stringify(this.entLookups));
+
+          task.title = 'User enterprises loaded';
         },
       },
     ];
