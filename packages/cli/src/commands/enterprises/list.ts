@@ -48,8 +48,8 @@ value in '()' above.`,
     console.log('there');
 
     const response = await axios.get(
-      // 'http://localhost:8119/api/user/enterprises'
-      'http://127.0.0.1:7077/api/user/enterprises'
+      'http://localhost:7077/api/user/enterprises'
+      //'http://127.0.0.1:7077/api/user/enterprises'
     );
     console.log('now');
 
