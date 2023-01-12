@@ -48,8 +48,8 @@ value in '()' above.`,
     const axios = await loadAxios(configDir);
 
     const response = await axios.get(
-      'http://localhost:7119/api/user/enterprises'
-      //'http://127.0.0.1:7077/api/user/enterprises'
+      'http://localhost:7077/api/user/enterprises'
+      // S'http://127.0.0.1:7077/api/user/enterprises'
     );
 
     //  TODO: Handle bad stati
