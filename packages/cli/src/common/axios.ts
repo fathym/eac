@@ -9,7 +9,7 @@ export default async function loadAxios(
   const accessToken = (config.AccessToken as any).access_token;
 
   if (accessToken) {
-    axios.defaults.headers['lcu-access-token'] = accessToken;
+    axios.defaults.headers.Authorization = `Bearer ${accessToken}`;
   } else {
     throw new Error(
       'Access token not available, use `fathym auth` to sign in.'

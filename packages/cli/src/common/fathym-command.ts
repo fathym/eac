@@ -140,7 +140,9 @@ export abstract class FathymCommand extends Command {
   protected lookups(name: string, lookups: DisplayLookup[]): void {
     this.log();
 
-    this.log(this.indent(`{Name} ({${color.blueBright(name)}})`));
+    this.log(
+      this.indent(color.underline(`{Name} ({${color.blueBright(name)}})`))
+    );
 
     lookups.forEach((ent) => {
       this.log(this.indent(`${ent.Name} (${color.blueBright(ent.Lookup)})`));

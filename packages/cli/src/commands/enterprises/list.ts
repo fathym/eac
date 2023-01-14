@@ -1,3 +1,4 @@
+import { color } from '@oclif/color';
 import { ListrTask } from 'listr';
 import { EaCEnterpriseDetails } from '@semanticjs/common';
 import {
@@ -45,15 +46,15 @@ value in '()' above.`,
     configDir: string
   ): Promise<{ [lookup: string]: EaCEnterpriseDetails }> {
     const axios = await loadAxios(configDir);
-    console.log('there');
 
     const response = await axios.get(
-      // 'http://localhost:8119/api/user/enterprises'
-      'http://127.0.0.1:7077/api/user/enterprises'
+      'http://127.0.0.1:7119/api/user/enterprises'
+      // 'http://127.0.0.1:7077/api/user/enterprises'
     );
-    console.log('now');
 
-    return response.data;
+    //  TODO: Handle bad stati
+
+    return response.data?.Model || [];
   }
 
   protected async loadTasks(): Promise<ListrTask[]> {
@@ -61,22 +62,16 @@ value in '()' above.`,
       {
         title: `Loading user enterprises`,
         task: async (ctx, task) => {
-          task.title = 'Loading...';
-
           const ents = await this.listEnterprises(this.config.configDir);
 
-          task.title = JSON.stringify(ents);
+          const entLookups = Object.keys(ents);
 
-          this.log(JSON.stringify(ents));
-
-          this.entLookups = [
-            { Lookup: 'abc-123', Name: 'ABC' },
-            { Lookup: 'xyz-789', Name: 'XYZ' },
-          ];
-
-          task.title = JSON.stringify(this.entLookups);
-
-          this.log(JSON.stringify(this.entLookups));
+          this.entLookups = entLookups.map((entLookup) => {
+            return {
+              Lookup: entLookup,
+              Name: ents[entLookup].Name,
+            } as DisplayLookup;
+          });
 
           task.title = 'User enterprises loaded';
         },

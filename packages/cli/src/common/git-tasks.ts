@@ -103,6 +103,20 @@ export function pushOrigin(): ListrTask {
 export function pull(): ListrTask {
   return {
     title: 'Pull',
+    skip: async () => {
+      const currentBranch = await execa('git', [
+        'rev-parse',
+        '--abbrev-ref HEAD',
+      ]);
+
+      const exists = await execa('git', [
+        'ls-remote',
+        '--heads origin',
+        currentBranch,
+      ]);
+
+      return exists;
+    },
     task: async () => {
       await execa('git', ['pull']);
     },
