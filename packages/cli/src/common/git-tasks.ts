@@ -95,7 +95,12 @@ export function pushOrigin(): ListrTask {
   return {
     title: 'Push to origin',
     task: async () => {
-      await execa('git', ['push', 'origin']);
+      const currentBranch = await execa('git', [
+        'rev-parse',
+        '--abbrev-ref HEAD',
+      ]);
+
+      await execa('git', ['push', 'origin', currentBranch]);
     },
   };
 }
