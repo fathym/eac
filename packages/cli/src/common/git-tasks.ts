@@ -120,6 +120,8 @@ export function pull(): ListrTask {
         currentBranch,
       ]);
 
+      console.log(exists);
+
       if (!exists) {
         await execa(`git push`, ['--set-upstream origin', `feature/${name}`]);
       }
