@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.19 win32-x64 node-v18.12.1
+@fathym/cli/0.0.20 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -88,7 +88,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.19/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.20/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -494,10 +494,11 @@ Used for committing changes to the current working branch and syncing with integ
 
 ```
 USAGE
-  $ fathym git [MESSAGE] [-i]
+  $ fathym git [MESSAGE] [-i] [-r]
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  -r, --rebase       When specified does a rebase instead of a merge.
 
 DESCRIPTION
   Used for committing changes to the current working branch and syncing with integration.
@@ -510,7 +511,7 @@ EXAMPLES
   $ fathym git
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.19/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.20/dist/commands/git/index.ts)_
 
 ## `fathym git commit [MESSAGE]`
 
@@ -518,10 +519,11 @@ Used for committing changes to the current working branch and syncing with integ
 
 ```
 USAGE
-  $ fathym git commit [MESSAGE] [-i]
+  $ fathym git commit [MESSAGE] [-i] [-r]
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  -r, --rebase       When specified does a rebase instead of a merge.
 
 DESCRIPTION
   Used for committing changes to the current working branch and syncing with integration.
@@ -540,10 +542,11 @@ Used for committing changes to the current working branch and syncing with integ
 
 ```
 USAGE
-  $ fathym git sync [MESSAGE] [-i]
+  $ fathym git sync [MESSAGE] [-i] [-r]
 
 FLAGS
   -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  -r, --rebase       When specified does a rebase instead of a merge.
 
 DESCRIPTION
   Used for committing changes to the current working branch and syncing with integration.
