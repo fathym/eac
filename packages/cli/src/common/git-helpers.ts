@@ -9,10 +9,8 @@ export async function ensureMessage(message: string): Promise<string> {
       message: 'Enter commit message:',
     });
 
-    message = commitMessage;
+    message = commitMessage || (await ensureMessage(message));
   }
-
-  message = message || (await ensureMessage(message));
 
   return message;
 }
