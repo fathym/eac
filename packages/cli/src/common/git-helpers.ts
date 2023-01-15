@@ -1,4 +1,21 @@
 import { execa } from './task-helpers';
+import inquirer from 'inquirer';
+
+export async function ensureMessage(message: string): Promise<string> {
+  if (!message && (await hasNotCommittedChanges())) {
+    const { commitMessage } = await inquirer.prompt({
+      type: 'input',
+      name: 'commitMessage',
+      message: 'Enter commit message:',
+    });
+
+    message = commitMessage;
+  }
+
+  message = message || (await ensureMessage(message));
+
+  return message;
+}
 
 export async function getCurrentBranch(): Promise<string> {
   const currentBranch = await execa('git', ['rev-parse', '--abbrev-ref HEAD']);

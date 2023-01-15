@@ -1,4 +1,4 @@
-import {} from '@oclif/core';
+import { Flags } from '@oclif/core';
 import { ListrTask } from 'listr';
 import {} from '@semanticjs/common';
 import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
@@ -7,12 +7,12 @@ import {
   confirmGitRepo,
   fetchChange,
   fetchPrune,
-  hasCommittedChanges,
+  mergeIntegration,
   pull,
   pushOrigin,
   rebaseIntegration,
 } from '../../common/git-tasks';
-import inquirer from 'inquirer';
+import { ensureMessage } from '../../common/git-helpers';
 
 export default class Commit extends FathymCommand {
   static aliases = ['git commit', 'git sync'];
@@ -21,7 +21,12 @@ export default class Commit extends FathymCommand {
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    rebase: Flags.boolean({
+      char: 'r',
+      description: 'When specified does a rebase instead of a merge.',
+    }),
+  };
 
   static args = [{ name: 'message' }];
 
@@ -32,25 +37,19 @@ export default class Commit extends FathymCommand {
   }
 
   protected async loadTasks(): Promise<ListrTask[]> {
-    const { args } = await this.parse(Commit);
+    const { args, flags } = await this.parse(Commit);
+
+    const { rebase } = flags;
 
     let { message } = args;
 
-    if (!message && !(await hasCommittedChanges())) {
-      const { commitMessage } = await inquirer.prompt({
-        type: 'input',
-        name: 'commitMessage',
-        message: 'Enter commit message:',
-      });
-
-      message = commitMessage;
-    }
+    message = await ensureMessage(message);
 
     return [
       confirmGitRepo(),
       commitChanges(message),
       fetchChange(),
-      rebaseIntegration(),
+      rebase ? mergeIntegration() : rebaseIntegration(),
       pull(),
       pushOrigin(),
       fetchPrune(),

@@ -1,4 +1,5 @@
 import { ListrTask } from 'listr';
+import { hasCommittedChanges } from './git-helpers';
 import { execa } from './task-helpers';
 // import inquirer from 'inquirer';
 
@@ -74,10 +75,13 @@ export function fetchPrune(): ListrTask {
   };
 }
 
-export async function hasCommittedChanges(): Promise<boolean> {
-  const stdout = await execa('git', ['status', '--porcelain']);
-
-  return stdout === '';
+export function mergeIntegration(): ListrTask {
+  return {
+    title: 'Merge changes from integration',
+    task: async () => {
+      await execa('git', ['merge', 'origin/integration']);
+    },
+  };
 }
 
 export function pullLatestIntegration(): ListrTask {

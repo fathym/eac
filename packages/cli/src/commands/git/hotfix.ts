@@ -6,11 +6,10 @@ import {
   commitChanges,
   confirmGitRepo,
   fetchPrune,
-  hasCommittedChanges,
   pushOrigin,
 } from '../../common/git-tasks';
 import { execa } from '../../common/task-helpers';
-import inquirer from 'inquirer';
+import { ensureMessage } from '../../common/git-helpers';
 
 export default class Hotfix extends FathymCommand {
   static description = `Used for creating a hotfix branch from 'main' in git.`;
@@ -38,17 +37,7 @@ export default class Hotfix extends FathymCommand {
 
     const { name } = args;
 
-    let message = '';
-
-    if (!(await hasCommittedChanges())) {
-      const { commitMessage } = await inquirer.prompt({
-        type: 'input',
-        name: 'commitMessage',
-        message: 'Enter commit message:',
-      });
-
-      message = commitMessage;
-    }
+    const message = await ensureMessage('');
 
     return [
       confirmGitRepo(),
