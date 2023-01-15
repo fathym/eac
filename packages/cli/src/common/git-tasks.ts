@@ -1,5 +1,9 @@
 import { ListrTask } from 'listr';
-import { hasCommittedChanges } from './git-helpers';
+import {
+  getCurrentBranch,
+  hasCommittedChanges,
+  remoteExists,
+} from './git-helpers';
 import { execa } from './task-helpers';
 // import inquirer from 'inquirer';
 
@@ -113,18 +117,9 @@ export function pull(): ListrTask {
   return {
     title: 'Pull',
     task: async () => {
-      const currentBranch = await execa('git', [
-        'rev-parse',
-        '--abbrev-ref HEAD',
-      ]);
+      const currentBranch = await getCurrentBranch();
 
-      const exists = await execa('git', [
-        'ls-remote',
-        '--heads origin',
-        currentBranch,
-      ]);
-
-      console.log(exists);
+      const exists = await remoteExists(currentBranch);
 
       if (!exists) {
         await execa(`git push`, ['--set-upstream origin', `feature/${name}`]);
