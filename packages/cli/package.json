@@ -1,6 +1,6 @@
 {
   "name": "@fathym/cli",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "The CLI used for code first flows with Fathym EaC.",
   "author": "Fathym, Inc",
   "bin": {
@@ -85,8 +85,8 @@
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
-    "deploy": "npm run fathym git && npm version patch && npm run deploy:all && git commit -m \"Deploy complete, syncing versions and readme updates\"",
-    "deploy:all": "npm run build && npm publish --access public",
+    "deploy": "npm run fathym git && npm version patch && npm run deploy:all && npx sleep 1 && fathym git \"Deploy complete, syncing versions and readme updates\" && npm i @fathym/cli@latest -g",
+    "deploy:all": "npm publish --access public",
     "fathym": "npm run build && \"./bin/run.cmd\"",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "shx rm -f oclif.manifest.json",
