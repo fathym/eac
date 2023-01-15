@@ -49,7 +49,7 @@ export default class Commit extends FathymCommand {
       confirmGitRepo(),
       commitChanges(message),
       fetchChange(),
-      rebase ? mergeIntegration() : rebaseIntegration(),
+      rebase ? rebaseIntegration() : mergeIntegration(),
       pull(),
       pushOrigin(),
       fetchPrune(),
