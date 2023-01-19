@@ -15,7 +15,7 @@ import {
 import { ensureMessage } from '../../common/git-helpers';
 
 export default class Commit extends FathymCommand {
-  static aliases = ['git commit', 'git sync'];
+  static aliases = ['commit', 'sync'];
 
   static description = `Used for committing changes to the current working branch and syncing with integration.`;
 

@@ -1,7 +1,9 @@
 import { Command, Flags } from '@oclif/core';
+import { ListrTask } from 'listr';
+import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
 
-export default class Install extends Command {
-  static aliases = ['lcu install', 'lcu', 'install', 'i'];
+export default class Install extends FathymCommand {
+  static aliases = ['install', 'i']; // How to get all variations working 'lcu install', 'lcu i',
 
   static description =
     'Used to install, or walk a user through installing an LCU.';
@@ -9,22 +11,32 @@ export default class Install extends Command {
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {
-    force: Flags.boolean({ char: 'f' }),
+    // lcu: Flags.string({
+    //   char: 't',
+    //   description: 'Specifies the template to be used for installing the lcu',
+    // }),
   };
 
-  static args = [{ name: 'template', required: true }];
+  static args = [{ name: 'lcu', required: true }];
 
-  public async run(): Promise<void> {
+  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+    return [];
+  }
+
+  protected async loadTasks(): Promise<ListrTask[]> {
     const { args, flags } = await this.parse(Install);
 
-    const { template } = args;
+    const { lcu } = args;
 
-    this.log(
-      `hello ${template} from C:\\fathym\\os\\fathym\\eac\\packages\\cli\\src\\commands\\lcu\\index.ts`
-    );
+    return [this.task()];
+  }
 
-    if (flags.force) {
-      this.log(`you input --force`);
-    }
+  public task(): ListrTask {
+    return {
+      title: 'Fetch changes',
+      task: async (ctx, task) => {
+        task.title = `hello from C:\\fathym\\os\\fathym\\eac\\packages\\cli\\src\\commands\\lcu\\index.ts`;
+      },
+    };
   }
 }
