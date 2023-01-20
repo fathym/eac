@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.33 win32-x64 node-v18.12.1
+@fathym/cli/0.0.34 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -32,7 +32,6 @@ USAGE
 * [`fathym auth`](#fathym-auth)
 * [`fathym auth config`](#fathym-auth-config)
 * [`fathym auth out`](#fathym-auth-out)
-* [`fathym commit [MESSAGE]`](#fathym-commit-message)
 * [`fathym eac applications create`](#fathym-eac-applications-create)
 * [`fathym eac applications lcu`](#fathym-eac-applications-lcu)
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
@@ -60,8 +59,6 @@ USAGE
 * [`fathym git hotfix NAME`](#fathym-git-hotfix-name)
 * [`fathym git import [ORGANIZATION] REPOSITORY REMOTE`](#fathym-git-import-organization-repository-remote)
 * [`fathym help [COMMAND]`](#fathym-help-command)
-* [`fathym i LCU`](#fathym-i-lcu)
-* [`fathym install LCU`](#fathym-install-lcu)
 * [`fathym lcu LCU`](#fathym-lcu-lcu)
 * [`fathym plugins`](#fathym-plugins)
 * [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
@@ -72,7 +69,6 @@ USAGE
 * [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-1)
 * [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-2)
 * [`fathym plugins update`](#fathym-plugins-update)
-* [`fathym sync [MESSAGE]`](#fathym-sync-message)
 
 ## `fathym auth`
 
@@ -92,7 +88,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.33/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.34/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -128,29 +124,6 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym auth out
-```
-
-## `fathym commit [MESSAGE]`
-
-Used for committing changes to the current working branch and syncing with integration.
-
-```
-USAGE
-  $ fathym commit [MESSAGE] [--ci] [-r]
-
-FLAGS
-  -r, --rebase  When specified does a rebase instead of a merge.
-  --ci          Run command in yield mode for automation, to prevent prompts.
-
-DESCRIPTION
-  Used for committing changes to the current working branch and syncing with integration.
-
-ALIASES
-  $ fathym commit
-  $ fathym sync
-
-EXAMPLES
-  $ fathym commit "Commit messag here"
 ```
 
 ## `fathym eac applications create`
@@ -530,15 +503,11 @@ FLAGS
 DESCRIPTION
   Used for committing changes to the current working branch and syncing with integration.
 
-ALIASES
-  $ fathym commit
-  $ fathym sync
-
 EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.33/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.34/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -661,52 +630,6 @@ DESCRIPTION
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.22/src/commands/help.ts)_
 
-## `fathym i LCU`
-
-Used to install, or walk a user through installing an LCU.
-
-```
-USAGE
-  $ fathym i [LCU] [--ci] [-p <value>]
-
-FLAGS
-  -p, --parameters=<value>  Specify values to use in the parameters list. ({ paramName: paramValue })
-  --ci                      Run command in yield mode for automation, to prevent prompts.
-
-DESCRIPTION
-  Used to install, or walk a user through installing an LCU.
-
-ALIASES
-  $ fathym install
-  $ fathym i
-
-EXAMPLES
-  $ fathym i
-```
-
-## `fathym install LCU`
-
-Used to install, or walk a user through installing an LCU.
-
-```
-USAGE
-  $ fathym install [LCU] [--ci] [-p <value>]
-
-FLAGS
-  -p, --parameters=<value>  Specify values to use in the parameters list. ({ paramName: paramValue })
-  --ci                      Run command in yield mode for automation, to prevent prompts.
-
-DESCRIPTION
-  Used to install, or walk a user through installing an LCU.
-
-ALIASES
-  $ fathym install
-  $ fathym i
-
-EXAMPLES
-  $ fathym install
-```
-
 ## `fathym lcu LCU`
 
 Used to install, or walk a user through installing an LCU.
@@ -722,15 +645,11 @@ FLAGS
 DESCRIPTION
   Used to install, or walk a user through installing an LCU.
 
-ALIASES
-  $ fathym install
-  $ fathym i
-
 EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.33/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.34/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
@@ -960,28 +879,5 @@ FLAGS
 
 DESCRIPTION
   Update installed plugins.
-```
-
-## `fathym sync [MESSAGE]`
-
-Used for committing changes to the current working branch and syncing with integration.
-
-```
-USAGE
-  $ fathym sync [MESSAGE] [--ci] [-r]
-
-FLAGS
-  -r, --rebase  When specified does a rebase instead of a merge.
-  --ci          Run command in yield mode for automation, to prevent prompts.
-
-DESCRIPTION
-  Used for committing changes to the current working branch and syncing with integration.
-
-ALIASES
-  $ fathym commit
-  $ fathym sync
-
-EXAMPLES
-  $ fathym sync "Commit messag here"
 ```
 <!-- commandsstop -->
