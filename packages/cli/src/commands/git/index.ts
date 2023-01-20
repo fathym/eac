@@ -33,10 +33,6 @@ export default class Commit extends FathymCommand<any> {
 
   static title = 'Git Commit';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask<any>[]> {
     const { args, flags } = await this.parse(Commit);
 

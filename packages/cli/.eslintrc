@@ -25,6 +25,7 @@
     "unicorn/no-array-for-each": "off",
     "unicorn/new-for-builtins": "off",
     "@typescript-eslint/no-inferrable-types": "off",
-    "@typescript-eslint/no-empty-interfac": "off"
+    "@typescript-eslint/no-empty-interfac": "off",
+    "@typescript-eslint/no-unused-vars": "off"
   }
 }

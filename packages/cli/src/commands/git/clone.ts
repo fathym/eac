@@ -30,10 +30,6 @@ export default class Clone extends FathymCommand<any> {
 
   static title = 'Git Clone';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args, flags } = await this.parse(Clone);
 

@@ -29,10 +29,6 @@ export default class Hotfix extends FathymCommand<any> {
 
   static title = 'Create Hotfix Branch';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args } = await this.parse(Hotfix);
 

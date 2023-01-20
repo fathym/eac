@@ -19,7 +19,9 @@ export default class List extends FathymCommand<any> {
 
   protected entLookups: DisplayLookup[] = [];
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(
+    context: any
+  ): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym enterprises set {ent-lookup}',
@@ -31,9 +33,9 @@ value in '()' above.`,
     ];
   }
 
-  protected async loadLookups(): Promise<
-    { name: string; lookups: DisplayLookup[] } | undefined
-  > {
+  protected async loadLookups(
+    context: any
+  ): Promise<{ name: string; lookups: DisplayLookup[] } | undefined> {
     return {
       name: 'ent-lookup',
       lookups: this.entLookups,

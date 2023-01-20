@@ -20,10 +20,6 @@ export default class Import extends Clone {
 
   static title = 'Git Import';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args, flags } = await this.parse(Import);
 

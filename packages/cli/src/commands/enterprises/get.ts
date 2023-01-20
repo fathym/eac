@@ -16,7 +16,9 @@ export default class Get extends FathymCommand<any> {
 
   static title = 'Get Active Enterprise';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(
+    context: any
+  ): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym eac --help',

@@ -15,7 +15,9 @@ export default class Commit extends FathymCommand<any> {
 
   static title = 'EaC Commit';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(
+    context: any
+  ): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym eac projects applications preview --help',

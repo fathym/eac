@@ -15,11 +15,7 @@ export default class Changes extends FathymCommand<any> {
 
   static title = 'EaC Changes';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
-  protected async loadResult(): Promise<string | undefined> {
+  protected async loadResult(context: any): Promise<string | undefined> {
     return JSON.stringify({} as EnterpriseAsCode);
   }
 

@@ -15,10 +15,6 @@ export default class Add extends FathymCommand<any> {
 
   static title = 'Add Project DFS Modifier';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(Add);
 

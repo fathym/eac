@@ -16,7 +16,9 @@ export default class Out extends FathymCommand<any> {
 
   static title = 'Fathym Sign Out';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(
+    context: any
+  ): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym auth',

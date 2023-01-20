@@ -15,10 +15,6 @@ export default class LCU extends FathymCommand<any> {
 
   static title = 'Set Active Project';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(LCU);
 

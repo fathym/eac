@@ -24,7 +24,9 @@ export default class Auth extends FathymCommand<any> {
 
   static forceRefresh = false;
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(
+    context: any
+  ): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym eac --help',

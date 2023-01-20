@@ -15,10 +15,6 @@ export default class Attach extends FathymCommand<any> {
 
   static title = 'Attach Build Pipeline to Source Control';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     return [
       {

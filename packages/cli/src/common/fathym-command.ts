@@ -42,13 +42,13 @@ export abstract class FathymCommand<TContext> extends Command {
     const listr = new Listr<TContext>(tasks);
 
     try {
-      await listr.run();
+      const context = await listr.run();
 
-      const lookups = await this.loadLookups();
+      const lookups = await this.loadLookups(context);
 
-      const instructions = await this.loadInstructions();
+      const instructions = await this.loadInstructions(context);
 
-      const result = await this.loadResult();
+      const result = await this.loadResult(context);
 
       if (lookups) {
         this.lookups(lookups.name, lookups.lookups);
@@ -112,17 +112,19 @@ export abstract class FathymCommand<TContext> extends Command {
     return indentedStr;
   }
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(
+    context: TContext
+  ): Promise<ClosureInstruction[]> {
     return [];
   }
 
-  protected async loadLookups(): Promise<
-    { name: string; lookups: DisplayLookup[] } | undefined
-  > {
+  protected async loadLookups(
+    context: TContext
+  ): Promise<{ name: string; lookups: DisplayLookup[] } | undefined> {
     return undefined;
   }
 
-  protected async loadResult(): Promise<string | undefined> {
+  protected async loadResult(context: TContext): Promise<string | undefined> {
     return undefined;
   }
 

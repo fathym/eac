@@ -15,7 +15,9 @@ export default class Add extends FathymCommand<any> {
 
   static title = 'Add Project Application';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(
+    context: any
+  ): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym eac projects --help',

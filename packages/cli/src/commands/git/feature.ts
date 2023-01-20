@@ -29,10 +29,6 @@ export default class Feature extends FathymCommand<any> {
 
   static title = 'Create Feature Branch';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args } = await this.parse(Feature);
 

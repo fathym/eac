@@ -15,7 +15,9 @@ export default class Create extends FathymCommand<any> {
 
   static title = 'Create Project';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(
+    context: any
+  ): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym eac projects --help',

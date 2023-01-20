@@ -37,10 +37,6 @@ export default class Install extends FathymCommand<InstallContext> {
 
   static title = 'Install LCU';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args, flags } = await this.parse(Install);
 
