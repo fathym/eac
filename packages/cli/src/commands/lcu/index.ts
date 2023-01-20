@@ -7,7 +7,10 @@ import { runProc } from '../../common/task-helpers';
 import { LcuPackageConfig } from '../../common/LcuPackageConfig';
 import path from 'node:path';
 import { compile } from 'handlebars';
-import { AccessTokenTaskContext } from '../../common/auth-helpers';
+import {
+  AccessTokenTaskContext,
+  loadApiRootUrl,
+} from '../../common/core-helpers';
 import { tsPath } from '@oclif/core/lib/config';
 import loadAxios from '../../common/axios';
 
@@ -128,10 +131,12 @@ export default class Install extends FathymCommand<InstallContext> {
   protected async installLcu(configDir: string): Promise<void> {
     const axios = await loadAxios(configDir);
 
-    const response = await axios.post(
-      `http://127.0.0.1:7119/api/{entLookup}/cli/lcu/install/{project}`,
-      {}
+    const apiUrl = await loadApiRootUrl(
+      configDir,
+      `{entLookup}/cli/lcu/install/{project}`
     );
+
+    const response = await axios.post(apiUrl, {});
 
     //  TODO: Handle bad stati
 

@@ -8,7 +8,7 @@ import {
   getAccessToken,
   getAuthorizationCode,
   getAuthorizationUrl,
-} from '../../common/auth-helpers';
+} from '../../common/core-helpers';
 
 export default class Auth extends FathymCommand<any> {
   static description =

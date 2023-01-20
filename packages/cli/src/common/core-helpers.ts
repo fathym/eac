@@ -10,6 +10,10 @@ const policy = 'b2c_1_sign_up_sign_in';
 const redirectUri = 'http://localhost:8119/oauth';
 const scope = `openid offline_access ${clientId}`;
 
+export class SystemConfig {
+  public APIRoot!: string;
+}
+
 export class UserAuthConfig {
   public AccessToken!: oauth2.AccessToken;
 
@@ -129,6 +133,15 @@ export async function loadActieEnterpriseLookup(
   return ActiveEnterpriseLookup;
 }
 
+export async function loadApiRootUrl(
+  configDir: string,
+  url: string
+): Promise<string> {
+  const config = await withSystemConfig(configDir);
+
+  return `${config.APIRoot}/${url}`;
+}
+
 export async function refreshAccessTokenTask<
   TContext extends AccessTokenTaskContext
 >(configDir: string, refreshWindow = 300): Promise<ListrTask<TContext>> {
@@ -161,6 +174,23 @@ export async function refreshAccessToken(
   });
 
   return accessToken;
+}
+
+export async function withSystemConfig(
+  configDir: string,
+  action?: (config: SystemConfig) => Promise<SystemConfig>
+): Promise<SystemConfig> {
+  return withConfig<SystemConfig>('lcu.system.json', configDir, async (cfg) => {
+    if (!cfg.APIRoot) {
+      cfg.APIRoot = `http://127.0.0.1:7119/api`;
+    }
+
+    if (action) {
+      cfg = await action(cfg);
+    }
+
+    return cfg;
+  });
 }
 
 export async function withUserAuthConfig(

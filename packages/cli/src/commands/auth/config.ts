@@ -3,7 +3,7 @@ import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
-import { withUserAuthConfig } from '../../common/auth-helpers';
+import { withUserAuthConfig } from '../../common/core-helpers';
 
 export default class Auth extends FathymCommand<any> {
   static description = 'Used to retrieve the current auth config for the user.';

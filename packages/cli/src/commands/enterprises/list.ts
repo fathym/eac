@@ -5,7 +5,10 @@ import { FathymCommand } from '../../common/fathym-command';
 import { DisplayLookup } from '../../common/DisplayLookup';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import loadAxios from '../../common/axios';
-import { ensureActiveEnterprise } from '../../common/auth-helpers';
+import {
+  ensureActiveEnterprise,
+  loadApiRootUrl,
+} from '../../common/core-helpers';
 
 export default class List extends FathymCommand<any> {
   static description = 'Used to list the current users available enterprises.';
@@ -48,9 +51,9 @@ value in '()' above.`,
   ): Promise<(EaCEnterpriseDetails & { Lookup: string })[]> {
     const axios = await loadAxios(configDir);
 
-    const response = await axios.get(
-      'http://127.0.0.1:7119/api/user/enterprises'
-    );
+    const apiUrl = await loadApiRootUrl(configDir, `user/enterprises`);
+
+    const response = await axios.get(apiUrl);
 
     //  TODO: Handle bad stati
 

@@ -1,7 +1,7 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { Listr, ListrTask } from 'listr2';
-import { AccessTokenTaskContext, refreshAccessTokenTask } from './auth-helpers';
+import { AccessTokenTaskContext, refreshAccessTokenTask } from './core-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
 import { DisplayLookup } from './DisplayLookup';
 

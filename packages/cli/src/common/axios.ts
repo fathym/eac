@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { withUserAuthConfig } from './auth-helpers';
+import { withUserAuthConfig } from './core-helpers';
 
 export default async function loadAxios(
   configDir: string

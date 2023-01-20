@@ -8,7 +8,7 @@ import {
   ActiveEnterpriseTaskContext,
   ensureActiveEnterprise,
   loadActieEnterpriseLookup,
-} from '../../common/auth-helpers';
+} from '../../common/core-helpers';
 
 interface GetContext
   extends AccessTokenTaskContext,
