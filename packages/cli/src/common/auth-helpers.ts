@@ -10,6 +10,20 @@ const policy = 'b2c_1_sign_up_sign_in';
 const redirectUri = 'http://localhost:8119/oauth';
 const scope = `openid offline_access ${clientId}`;
 
+export class UserAuthConfig {
+  public AccessToken!: oauth2.AccessToken;
+
+  public ActiveEnterpriseLookup!: string;
+}
+
+export interface AccessTokenTaskContext {
+  AccessToken: oauth2.AccessToken;
+}
+
+export interface ActiveEnterpriseTaskContext {
+  ActiveEnterpriseLookup: string;
+}
+
 const oauthCodeClient = new oauth2.AuthorizationCode({
   client: {
     id: clientId,
@@ -22,8 +36,23 @@ const oauthCodeClient = new oauth2.AuthorizationCode({
   },
 });
 
-export class UserAuthConfig {
-  public AccessToken!: oauth2.AccessToken;
+export function ensureActiveEnterprise<
+  TContext extends ActiveEnterpriseTaskContext
+>(configDir: string, refreshWindow = 300): ListrTask<TContext> {
+  return {
+    title: `Ensuring active enterprise`,
+    task: async (ctx, task) => {
+      ctx.ActiveEnterpriseLookup = await loadActieEnterpriseLookup(configDir);
+
+      if (ctx.ActiveEnterpriseLookup) {
+        task.title = `Active enterprise set to ${ctx.ActiveEnterpriseLookup}`;
+      } else {
+        throw new Error(
+          `Active enterprise must be set with 'fathym enterprises set' command.`
+        );
+      }
+    },
+  };
 }
 
 export async function getAccessToken(
@@ -92,8 +121,12 @@ export async function loadAccessToken(
   return oauthCodeClient.createToken(config.AccessToken);
 }
 
-export interface AccessTokenTaskContext {
-  AccessToken: oauth2.AccessToken;
+export async function loadActieEnterpriseLookup(
+  configDir: string
+): Promise<string> {
+  const { ActiveEnterpriseLookup } = await withUserAuthConfig(configDir);
+
+  return ActiveEnterpriseLookup;
 }
 
 export async function refreshAccessTokenTask<
@@ -104,7 +137,11 @@ export async function refreshAccessTokenTask<
     task: async (ctx) => {
       ctx.AccessToken = await loadAccessToken(configDir);
 
-      if (ctx.AccessToken.expired(refreshWindow)) {
+      if (!ctx.AccessToken) {
+        throw new Error(
+          `Access token is required, use 'fathym auth' command to sign in.`
+        );
+      } else if (ctx.AccessToken.expired(refreshWindow)) {
         ctx.AccessToken = await refreshAccessToken(configDir, ctx.AccessToken);
       }
     },

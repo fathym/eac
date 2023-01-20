@@ -9,6 +9,7 @@ import path from 'node:path';
 import { compile } from 'handlebars';
 import { AccessTokenTaskContext } from '../../common/auth-helpers';
 import { tsPath } from '@oclif/core/lib/config';
+import loadAxios from '../../common/axios';
 
 interface InstallContext extends AccessTokenTaskContext {
   EaCDraft: any;
@@ -52,7 +53,7 @@ export default class Install extends FathymCommand<InstallContext> {
       this.unpackLcu(),
       this.loadLcuConfig(),
       await this.confirmParameters(ci, parameters),
-      this.prepareLcuEaCDraft(),
+      // this.prepareLcuEaCDraft(),
       this.cleanupLcuFiles(),
     ];
   }
@@ -124,6 +125,19 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
+  protected async installLcu(configDir: string): Promise<void> {
+    const axios = await loadAxios(configDir);
+
+    const response = await axios.post(
+      `http://127.0.0.1:7119/api/{entLookup}/cli/lcu/install/{project}`,
+      {}
+    );
+
+    //  TODO: Handle bad stati
+
+    return response.data?.Model || [];
+  }
+
   protected async loadFileAsJson<T>(
     pckgFiles: string,
     filename: string
@@ -191,25 +205,25 @@ export default class Install extends FathymCommand<InstallContext> {
     return { Prompts: prompts, ParameterKeys: paramKeys };
   }
 
-  protected prepareLcuEaCDraft(): ListrTask<InstallContext> {
-    return {
-      title: `Preparing EaC for commit`,
-      task: async (ctx, task) => {
-        const eacDraftTemplate = await this.loadFileAsString(
-          ctx.LCUPackageFiles,
-          path.join('assets', 'eac.json')
-        );
+  // protected prepareLcuEaCDraft(): ListrTask<InstallContext> {
+  //   return {
+  //     title: `Preparing EaC for commit`,
+  //     task: async (ctx, task) => {
+  //       const eacDraftTemplate = await this.loadFileAsString(
+  //         ctx.LCUPackageFiles,
+  //         path.join('assets', 'eac.json')
+  //       );
 
-        const template = compile(eacDraftTemplate);
+  //       const template = compile(eacDraftTemplate);
 
-        const eacDraftStr = template(ctx.LCUParamAnswers);
+  //       const eacDraftStr = template(ctx.LCUParamAnswers);
 
-        ctx.EaCDraft = JSON.parse(eacDraftStr);
+  //       ctx.EaCDraft = JSON.parse(eacDraftStr);
 
-        task.title = 'EaC draft prepared for commit';
-      },
-    };
-  }
+  //       task.title = 'EaC draft prepared for commit';
+  //     },
+  //   };
+  // }
 
   protected unpackLcu(): ListrTask<InstallContext> {
     return {

@@ -5,6 +5,7 @@ import { FathymCommand } from '../../common/fathym-command';
 import { DisplayLookup } from '../../common/DisplayLookup';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import loadAxios from '../../common/axios';
+import { ensureActiveEnterprise } from '../../common/auth-helpers';
 
 export default class List extends FathymCommand<any> {
   static description = 'Used to list the current users available enterprises.';
@@ -44,12 +45,11 @@ value in '()' above.`,
 
   protected async listEnterprises(
     configDir: string
-  ): Promise<{ [lookup: string]: EaCEnterpriseDetails }> {
+  ): Promise<(EaCEnterpriseDetails & { Lookup: string })[]> {
     const axios = await loadAxios(configDir);
 
     const response = await axios.get(
-      'http://localhost:7119/api/user/enterprises'
-      // 'http://127.0.0.1:7077/api/user/enterprises'
+      'http://127.0.0.1:7119/api/user/enterprises'
     );
 
     //  TODO: Handle bad stati
@@ -64,12 +64,10 @@ value in '()' above.`,
         task: async (ctx, task) => {
           const ents = await this.listEnterprises(this.config.configDir);
 
-          const entLookups = Object.keys(ents);
-
-          this.entLookups = entLookups.map((entLookup) => {
+          this.entLookups = ents.map((ent) => {
             return {
-              Lookup: entLookup,
-              Name: ents[entLookup].Name,
+              Lookup: ent.Lookup,
+              Name: ent.Name,
             } as DisplayLookup;
           });
 

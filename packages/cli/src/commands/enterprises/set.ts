@@ -3,6 +3,7 @@ import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
+import { withUserAuthConfig } from '../../common/auth-helpers';
 
 export default class Set extends FathymCommand<any> {
   static description = `Set's the current user's active enterprise for the CLI. Determines
@@ -36,13 +37,11 @@ to manage your enterprie setup.`,
     return [
       {
         title: `Setting the user's active enterprise to '${args.entLookup}'`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Active enterprise set to '${args.entLookup}'`;
+        task: async (ctx, task) => {
+          await withUserAuthConfig(this.config.configDir, async (cfg) => {
+            cfg.ActiveEnterpriseLookup = args.entLookup;
 
-              resolve(true);
-            }, 3000);
+            return cfg;
           });
         },
       },

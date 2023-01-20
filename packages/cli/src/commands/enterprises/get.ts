@@ -3,8 +3,17 @@ import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
+import {
+  AccessTokenTaskContext,
+  ActiveEnterpriseTaskContext,
+  ensureActiveEnterprise,
+  loadActieEnterpriseLookup,
+} from '../../common/auth-helpers';
 
-export default class Get extends FathymCommand<any> {
+interface GetContext
+  extends AccessTokenTaskContext,
+    ActiveEnterpriseTaskContext {}
+export default class Get extends FathymCommand<GetContext> {
   static description = `Get's the current user's active enterprise for the CLI. Determines
   which enterprise commands are executed against.`;
 
@@ -17,7 +26,7 @@ export default class Get extends FathymCommand<any> {
   static title = 'Get Active Enterprise';
 
   protected async loadInstructions(
-    context: any
+    context: GetContext
   ): Promise<ClosureInstruction[]> {
     return [
       {
@@ -28,20 +37,15 @@ to manage your enterprie setup.`,
     ];
   }
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<GetContext>[]> {
     const { args } = await this.parse(Get);
 
     return [
+      ensureActiveEnterprise(this.config.configDir),
       {
-        title: `Getting the user's active enterprise to '${args.entLookup}'`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Active enterprise '${args.entLookup}' retrieved for the user`;
-
-              resolve(true);
-            }, 3000);
-          });
+        title: `Getting the user's active enterprise`,
+        task: async (ctx, task) => {
+          task.title = `Active enterprise is set to ${ctx.ActiveEnterpriseLookup}`;
         },
       },
     ];
