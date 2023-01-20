@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.32 win32-x64 node-v18.12.1
+@fathym/cli/0.0.33 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -80,10 +80,10 @@ Used to start the authentication process with Fathym, so your CLI can work with 
 
 ```
 USAGE
-  $ fathym auth [-i]
+  $ fathym auth [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to start the authentication process with Fathym, so your CLI can work with the EaC and other features.
@@ -92,7 +92,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.32/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.33/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -100,10 +100,10 @@ Used to retrieve the current auth config for the user.
 
 ```
 USAGE
-  $ fathym auth config [-i]
+  $ fathym auth config [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to retrieve the current auth config for the user.
@@ -118,10 +118,10 @@ Used to sign out, so your CLI will NOT work with the EaC and other features.
 
 ```
 USAGE
-  $ fathym auth out [-i]
+  $ fathym auth out [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to sign out, so your CLI will NOT work with the EaC and other features.
@@ -136,11 +136,11 @@ Used for committing changes to the current working branch and syncing with integ
 
 ```
 USAGE
-  $ fathym commit [MESSAGE] [-i] [-r]
+  $ fathym commit [MESSAGE] [--ci] [-r]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
-  -r, --rebase       When specified does a rebase instead of a merge.
+  -r, --rebase  When specified does a rebase instead of a merge.
+  --ci          Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for committing changes to the current working branch and syncing with integration.
@@ -150,7 +150,7 @@ ALIASES
   $ fathym sync
 
 EXAMPLES
-  $ fathym commit
+  $ fathym commit "Commit messag here"
 ```
 
 ## `fathym eac applications create`
@@ -159,10 +159,10 @@ Used for creating a new application.
 
 ```
 USAGE
-  $ fathym eac applications create [-i]
+  $ fathym eac applications create [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a new application.
@@ -177,10 +177,10 @@ Used for creating a managing application LCU settings.
 
 ```
 USAGE
-  $ fathym eac applications lcu [-i]
+  $ fathym eac applications lcu [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a managing application LCU settings.
@@ -195,10 +195,10 @@ Used for adding a DFS modifier to a application.
 
 ```
 USAGE
-  $ fathym eac applications modifiers add [-i]
+  $ fathym eac applications modifiers add [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for adding a DFS modifier to a application.
@@ -213,10 +213,10 @@ Used for creating a managing application Processor settings.
 
 ```
 USAGE
-  $ fathym eac applications processor [-i]
+  $ fathym eac applications processor [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a managing application Processor settings.
@@ -231,10 +231,10 @@ Used for setting an active application lookup for use in other commands.
 
 ```
 USAGE
-  $ fathym eac applications set [APPLOOKUP] [-i]
+  $ fathym eac applications set [APPLOOKUP] [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for setting an active application lookup for use in other commands.
@@ -249,10 +249,10 @@ Used to retrieve the current changes to EaC that are queued for commit.
 
 ```
 USAGE
-  $ fathym eac changes [-i]
+  $ fathym eac changes [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to retrieve the current changes to EaC that are queued for commit.
@@ -267,10 +267,10 @@ Used for commiting changes to the EaC.
 
 ```
 USAGE
-  $ fathym eac commit [MESSAGE] [-i]
+  $ fathym eac commit [MESSAGE] [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for commiting changes to the EaC.
@@ -285,10 +285,10 @@ Used for exporting the EaC.
 
 ```
 USAGE
-  $ fathym eac export [-i]
+  $ fathym eac export [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for exporting the EaC.
@@ -303,10 +303,10 @@ Used for creating a new DFS modifier.
 
 ```
 USAGE
-  $ fathym eac modifiers create [-i]
+  $ fathym eac modifiers create [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a new DFS modifier.
@@ -321,10 +321,10 @@ Used for creating a new build pipeline.
 
 ```
 USAGE
-  $ fathym eac pipelines create [-i]
+  $ fathym eac pipelines create [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a new build pipeline.
@@ -339,10 +339,10 @@ Used for adding an application to a project.
 
 ```
 USAGE
-  $ fathym eac projects applications add [-i]
+  $ fathym eac projects applications add [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for adding an application to a project.
@@ -357,10 +357,10 @@ Used for getting a preview link to a project application.
 
 ```
 USAGE
-  $ fathym eac projects applications preview [-i]
+  $ fathym eac projects applications preview [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for getting a preview link to a project application.
@@ -375,10 +375,10 @@ Used for creating a new project.
 
 ```
 USAGE
-  $ fathym eac projects create [-i]
+  $ fathym eac projects create [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a new project.
@@ -393,10 +393,10 @@ Used for adding a DFS modifier to a project.
 
 ```
 USAGE
-  $ fathym eac projects modifiers add [-i]
+  $ fathym eac projects modifiers add [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for adding a DFS modifier to a project.
@@ -411,10 +411,10 @@ Used for setting an active project lookup for use in other commands.
 
 ```
 USAGE
-  $ fathym eac projects set [APPLOOKUP] [-i]
+  $ fathym eac projects set [APPLOOKUP] [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for setting an active project lookup for use in other commands.
@@ -429,10 +429,10 @@ Used for creating a new source control.
 
 ```
 USAGE
-  $ fathym eac sources create [-i]
+  $ fathym eac sources create [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a new source control.
@@ -447,10 +447,10 @@ Used for attaching a build pipeline to a source control.
 
 ```
 USAGE
-  $ fathym eac sources pipeline attach [-i]
+  $ fathym eac sources pipeline attach [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for attaching a build pipeline to a source control.
@@ -465,10 +465,10 @@ Get's the current user's active enterprise for the CLI. Determines
 
 ```
 USAGE
-  $ fathym enterprises get [-i]
+  $ fathym enterprises get [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Get's the current user's active enterprise for the CLI. Determines
@@ -484,10 +484,10 @@ Used to list the current users available enterprises.
 
 ```
 USAGE
-  $ fathym enterprises list [-i]
+  $ fathym enterprises list [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to list the current users available enterprises.
@@ -502,10 +502,10 @@ Set's the current user's active enterprise for the CLI. Determines
 
 ```
 USAGE
-  $ fathym enterprises set [ENTLOOKUP] [-i]
+  $ fathym enterprises set [ENTLOOKUP] [--ci]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Set's the current user's active enterprise for the CLI. Determines
@@ -521,11 +521,11 @@ Used for committing changes to the current working branch and syncing with integ
 
 ```
 USAGE
-  $ fathym git [MESSAGE] [-i] [-r]
+  $ fathym git [MESSAGE] [--ci] [-r]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
-  -r, --rebase       When specified does a rebase instead of a merge.
+  -r, --rebase  When specified does a rebase instead of a merge.
+  --ci          Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for committing changes to the current working branch and syncing with integration.
@@ -535,10 +535,10 @@ ALIASES
   $ fathym sync
 
 EXAMPLES
-  $ fathym git
+  $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.32/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.33/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -546,11 +546,11 @@ Used for authenticating the user with Git.
 
 ```
 USAGE
-  $ fathym git auth [-i] [-f]
+  $ fathym git auth [--ci] [-f]
 
 FLAGS
-  -f, --force        Force authentication process to present git rights, even if the user is already authenticated.
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  -f, --force  Force authentication process to present git rights, even if the user is already authenticated.
+  --ci         Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for authenticating the user with Git.
@@ -565,12 +565,12 @@ Used for cloning the source control for Git.
 
 ```
 USAGE
-  $ fathym git clone [ORGANIZATION] [REPOSITORY] [-i] [-d <value>] [-b <value>]
+  $ fathym git clone [ORGANIZATION] [REPOSITORY] [--ci] [-d <value>] [-b <value>]
 
 FLAGS
   -b, --branch=<value>  Specifies the branch or tag to clone
   -d, --depth=<value>   Specifies the depth of the clone
-  -i, --interactive     Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci                  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for cloning the source control for Git.
@@ -585,13 +585,13 @@ Used for creating a feature branch from 'integration' in git.
 
 ```
 USAGE
-  $ fathym git feature [NAME] [-i]
+  $ fathym git feature [NAME] [--ci]
 
 ARGUMENTS
   NAME  Name for the new feature branch
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a feature branch from 'integration' in git.
@@ -606,13 +606,13 @@ Used for creating a hotfix branch from 'main' in git.
 
 ```
 USAGE
-  $ fathym git hotfix [NAME] [-i]
+  $ fathym git hotfix [NAME] [--ci]
 
 ARGUMENTS
   NAME  Name for the new hotfix branch
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a hotfix branch from 'main' in git.
@@ -627,12 +627,12 @@ Used for importing a remote source control into a configured EaC Source control.
 
 ```
 USAGE
-  $ fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE] [-i] [-d <value>] [-b <value>]
+  $ fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE] [--ci] [-d <value>] [-b <value>]
 
 FLAGS
   -b, --branch=<value>  Specifies the branch or tag to clone
   -d, --depth=<value>   Specifies the depth of the clone
-  -i, --interactive     Run command in interactive mode, allowing prompts for missing required args and flags.
+  --ci                  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for importing a remote source control into a configured EaC Source control.
@@ -667,11 +667,11 @@ Used to install, or walk a user through installing an LCU.
 
 ```
 USAGE
-  $ fathym i [LCU] [-i] [-p <value>]
+  $ fathym i [LCU] [--ci] [-p <value>]
 
 FLAGS
-  -i, --interactive         Run command in interactive mode, allowing prompts for missing required args and flags.
   -p, --parameters=<value>  Specify values to use in the parameters list. ({ paramName: paramValue })
+  --ci                      Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to install, or walk a user through installing an LCU.
@@ -690,11 +690,11 @@ Used to install, or walk a user through installing an LCU.
 
 ```
 USAGE
-  $ fathym install [LCU] [-i] [-p <value>]
+  $ fathym install [LCU] [--ci] [-p <value>]
 
 FLAGS
-  -i, --interactive         Run command in interactive mode, allowing prompts for missing required args and flags.
   -p, --parameters=<value>  Specify values to use in the parameters list. ({ paramName: paramValue })
+  --ci                      Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to install, or walk a user through installing an LCU.
@@ -713,11 +713,11 @@ Used to install, or walk a user through installing an LCU.
 
 ```
 USAGE
-  $ fathym lcu [LCU] [-i] [-p <value>]
+  $ fathym lcu [LCU] [--ci] [-p <value>]
 
 FLAGS
-  -i, --interactive         Run command in interactive mode, allowing prompts for missing required args and flags.
   -p, --parameters=<value>  Specify values to use in the parameters list. ({ paramName: paramValue })
+  --ci                      Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to install, or walk a user through installing an LCU.
@@ -730,7 +730,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.32/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.33/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
@@ -968,11 +968,11 @@ Used for committing changes to the current working branch and syncing with integ
 
 ```
 USAGE
-  $ fathym sync [MESSAGE] [-i] [-r]
+  $ fathym sync [MESSAGE] [--ci] [-r]
 
 FLAGS
-  -i, --interactive  Run command in interactive mode, allowing prompts for missing required args and flags.
-  -r, --rebase       When specified does a rebase instead of a merge.
+  -r, --rebase  When specified does a rebase instead of a merge.
+  --ci          Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for committing changes to the current working branch and syncing with integration.
@@ -982,6 +982,6 @@ ALIASES
   $ fathym sync
 
 EXAMPLES
-  $ fathym sync
+  $ fathym sync "Commit messag here"
 ```
 <!-- commandsstop -->

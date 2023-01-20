@@ -23,8 +23,6 @@ interface InstallContext extends AccessTokenTaskContext {
 }
 
 export default class Install extends FathymCommand<InstallContext> {
-  static aliases = ['install', 'i']; // How to get all variations working 'lcu install', 'lcu i',
-
   static description =
     'Used to install, or walk a user through installing an LCU.';
 
