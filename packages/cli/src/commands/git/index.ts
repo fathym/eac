@@ -20,7 +20,9 @@ export default class Commit extends FathymCommand<any> {
 
   static description = `Used for committing changes to the current working branch and syncing with integration.`;
 
-  static examples = ['<%= config.bin %> <%= command.id %>'];
+  static examples = [
+    '<%= config.bin %> <%= command.id %> "Commit messag here"',
+  ];
 
   static flags = {
     rebase: Flags.boolean({
