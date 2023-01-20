@@ -1,13 +1,18 @@
 import { Flags } from '@oclif/core';
 import { ListrTask, PromptOptions } from 'listr2';
-import { readJson } from 'fs-extra';
+import { readFile, read, readJson } from 'fs-extra';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { runProc } from '../../common/task-helpers';
 import { LcuPackageConfig } from '../../common/LcuPackageConfig';
 import path from 'node:path';
+import { compile } from 'handlebars';
+import { AccessTokenTaskContext } from '../../common/auth-helpers';
+import { tsPath } from '@oclif/core/lib/config';
 
-interface InstallContext {
+interface InstallContext extends AccessTokenTaskContext {
+  EaCDraft: any;
+
   LCUParamAnswers: any;
 
   LCUPackageConfig: LcuPackageConfig;
@@ -47,7 +52,9 @@ export default class Install extends FathymCommand<InstallContext> {
     return [
       this.downloadLcu(lcu),
       this.unpackLcu(),
+      this.loadLcuConfig(),
       await this.confirmParameters(parameters),
+      this.prepareLcuEaCDraft(),
       // this.cleanupLcuFiles()
     ];
   }
@@ -58,7 +65,7 @@ export default class Install extends FathymCommand<InstallContext> {
       task: async (ctx) => {
         await runProc('npx', [
           'rimraf',
-          ctx.LCUPackageFiles.replace('/package', ''),
+          ctx.LCUPackageFiles.replace('\\package', ''),
         ]);
 
         await runProc('npx', ['rimraf', ctx.LCUPackageTarball]);
@@ -78,6 +85,7 @@ export default class Install extends FathymCommand<InstallContext> {
           ctx.LCUPackageFiles,
           parameterDefaults
         );
+        task.title = JSON.stringify(prompts);
 
         ctx.LCUParamAnswers = await task.prompt(prompts); // {
         //   type: 'input',
@@ -85,8 +93,9 @@ export default class Install extends FathymCommand<InstallContext> {
         //   name: 'HOST_IP_VARIABLE',
         //   initial: paramSet['HOST_IP_VARIABLE'] || undefined,
         // });
+        // console.log(JSON.stringify(ctx.LCUParamAnswers));
 
-        task.title = 'Thanks for inputting your parameters';
+        // task.title = 'Thanks for inputting your parameters';
       },
     };
   }
@@ -124,9 +133,20 @@ export default class Install extends FathymCommand<InstallContext> {
     return json as T;
   }
 
+  protected async loadFileAsString(
+    pckgFiles: string,
+    filename: string
+  ): Promise<string> {
+    const filePath = path.join(pckgFiles, filename);
+
+    const str = await readFile(filePath);
+
+    return String(str);
+  }
+
   protected loadLcuConfig(): ListrTask<InstallContext> {
     return {
-      title: `Cleaning up LCU setup files`,
+      title: `Loading LCU Config`,
       task: async (ctx) => {
         ctx.LCUPackageConfig = await this.loadFileAsJson<LcuPackageConfig>(
           ctx.LCUPackageFiles,
@@ -145,7 +165,7 @@ export default class Install extends FathymCommand<InstallContext> {
 
     const paramsCfg = await this.loadFileAsJson<any>(
       pckgFiles,
-      lcuCfg.EaC || './assets/parameters.json'
+      lcuCfg.Parameters || './assets/parameters.json'
     );
 
     const paramKeys = Object.keys(paramsCfg);
@@ -167,6 +187,29 @@ export default class Install extends FathymCommand<InstallContext> {
     return prompts;
   }
 
+  protected prepareLcuEaCDraft(): ListrTask<InstallContext> {
+    return {
+      title: `Preparing EaC for commit`,
+      task: async (ctx, task) => {
+        const eacDraftTemplate = await this.loadFileAsString(
+          ctx.LCUPackageFiles,
+          path.join('assets', 'eac.json')
+        );
+
+        const template = compile(eacDraftTemplate);
+
+        const eacDraftStr = template(ctx.LCUParamAnswers);
+
+        ctx.EaCDraft = JSON.parse(eacDraftStr);
+
+        // task.title = JSON.stringify(ctx.LCUParamAnswers);
+        // task.title = JSON.stringify(
+        //   ctx.EaCDraft.Applications.API[0].Application.LowCodeUnit
+        // );
+      },
+    };
+  }
+
   protected unpackLcu(): ListrTask<InstallContext> {
     return {
       title: `Unpacking LCU`,
@@ -185,9 +228,9 @@ export default class Install extends FathymCommand<InstallContext> {
           `-C ${ctx.LCUPackageFiles}`,
         ]);
 
-        // const lcuPac;
+        ctx.LCUPackageFiles = path.join(ctx.LCUPackageFiles, 'package');
 
-        task.title = `Unpackad LCU: ${ctx.LCUPackageTarball}`;
+        task.title = `Unpackad LCU: ${ctx.LCUPackageFiles}`;
       },
     };
   }

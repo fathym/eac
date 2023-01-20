@@ -5,5 +5,5 @@ export class LcuPackageConfig {
 
   public Package?: LcuPackageDetails;
 
-  public Parametres?: string;
+  public Parameters?: string;
 }

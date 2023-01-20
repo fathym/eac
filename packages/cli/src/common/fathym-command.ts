@@ -1,11 +1,13 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { Listr, ListrTask } from 'listr2';
-import { refreshAccessTokenTask } from './auth-helpers';
+import { AccessTokenTaskContext, refreshAccessTokenTask } from './auth-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
 import { DisplayLookup } from './DisplayLookup';
 
-export abstract class FathymCommand<TContext> extends Command {
+export abstract class FathymCommand<
+  TContext extends AccessTokenTaskContext
+> extends Command {
   static globalFlags = {
     interactive: Flags.boolean({
       char: 'i',

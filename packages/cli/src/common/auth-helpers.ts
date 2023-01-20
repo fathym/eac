@@ -92,17 +92,21 @@ export async function loadAccessToken(
   return oauthCodeClient.createToken(config.AccessToken);
 }
 
-export async function refreshAccessTokenTask<TContext>(
-  configDir: string,
-  refreshWindow = 300
-): Promise<ListrTask<TContext>> {
-  const accessToken = await loadAccessToken(configDir);
+export interface AccessTokenTaskContext {
+  AccessToken: oauth2.AccessToken;
+}
 
+export async function refreshAccessTokenTask<
+  TContext extends AccessTokenTaskContext
+>(configDir: string, refreshWindow = 300): Promise<ListrTask<TContext>> {
   return {
     title: `Refreshing access token`,
-    enabled: () => accessToken.expired(refreshWindow),
-    task: async () => {
-      await refreshAccessToken(configDir, accessToken);
+    task: async (ctx) => {
+      ctx.AccessToken = await loadAccessToken(configDir);
+
+      if (ctx.AccessToken.expired(refreshWindow)) {
+        ctx.AccessToken = await refreshAccessToken(configDir, ctx.AccessToken);
+      }
     },
   };
 }
@@ -110,7 +114,7 @@ export async function refreshAccessTokenTask<TContext>(
 export async function refreshAccessToken(
   configDir: string,
   accessToken: oauth2.AccessToken
-): Promise<void> {
+): Promise<oauth2.AccessToken> {
   accessToken = await accessToken.refresh({ scope: scope });
 
   await withUserAuthConfig(configDir, async (cfg) => {
@@ -118,6 +122,8 @@ export async function refreshAccessToken(
 
     return cfg;
   });
+
+  return accessToken;
 }
 
 export async function withUserAuthConfig(
