@@ -40,14 +40,6 @@ to manage your enterprie setup.`,
   protected async loadTasks(): Promise<ListrTask<GetContext>[]> {
     const { args } = await this.parse(Get);
 
-    return [
-      ensureActiveEnterprise(this.config.configDir),
-      {
-        title: `Getting the user's active enterprise`,
-        task: async (ctx, task) => {
-          task.title = `Active enterprise is set to ${ctx.ActiveEnterpriseLookup}`;
-        },
-      },
-    ];
+    return [ensureActiveEnterprise(this.config.configDir)];
   }
 }
