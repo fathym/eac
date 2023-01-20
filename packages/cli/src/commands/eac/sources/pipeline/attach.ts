@@ -1,12 +1,10 @@
 import {} from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import {
-  ClosureInstruction,
-  FathymCommand,
-} from '../../../../common/fathym-command';
+import { FathymCommand } from '../../../../common/fathym-command';
+import { ClosureInstruction } from '../../../../common/ClosureInstruction';
 
-export default class Attach extends FathymCommand {
+export default class Attach extends FathymCommand<any> {
   static description = `Used for attaching a build pipeline to a source control.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];

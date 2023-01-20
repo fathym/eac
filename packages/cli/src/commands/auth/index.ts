@@ -1,15 +1,16 @@
 import {} from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr2';
 import open from 'open';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
   getAccessToken,
   getAuthorizationCode,
   getAuthorizationUrl,
 } from '../../common/auth-helpers';
 
-export default class Auth extends FathymCommand {
+export default class Auth extends FathymCommand<any> {
   static description =
     'Used to start the authentication process with Fathym, so your CLI can work with the EaC and other features.';
 
@@ -39,7 +40,7 @@ with GitHub and be ready to go.`,
     ];
   }
 
-  protected async loadTasks(): Promise<Listr.ListrTask<any>[]> {
+  protected async loadTasks(): Promise<ListrTask<any>[]> {
     return [
       {
         title: 'Get authorization URL',

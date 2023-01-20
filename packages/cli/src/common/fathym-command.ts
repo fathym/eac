@@ -1,22 +1,11 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
-import Listr from 'listr';
+import { Listr, ListrTask } from 'listr2';
 import { refreshAccessTokenTask } from './auth-helpers';
-// import { indent } from '@semanticjs/common';
+import { ClosureInstruction } from './ClosureInstruction';
+import { DisplayLookup } from './DisplayLookup';
 
-export class ClosureInstruction {
-  public Description?: string;
-
-  public Instruction!: string;
-}
-
-export class DisplayLookup {
-  public Lookup!: string;
-
-  public Name!: string;
-}
-
-export abstract class FathymCommand extends Command {
+export abstract class FathymCommand<TContext> extends Command {
   static globalFlags = {
     interactive: Flags.boolean({
       char: 'i',
@@ -44,33 +33,35 @@ export abstract class FathymCommand extends Command {
     let tasks = await this.loadTasks();
 
     if (CurCmd.forceRefresh) {
-      tasks = [await refreshAccessTokenTask(this.config.configDir), ...tasks];
+      tasks = [
+        await refreshAccessTokenTask<TContext>(this.config.configDir),
+        ...tasks,
+      ];
     }
 
-    const listr = new Listr(tasks);
+    const listr = new Listr<TContext>(tasks);
 
-    listr
-      .run()
-      .then(async () => {
-        const lookups = await this.loadLookups();
+    try {
+      await listr.run();
 
-        const instructions = await this.loadInstructions();
+      const lookups = await this.loadLookups();
 
-        const result = await this.loadResult();
+      const instructions = await this.loadInstructions();
 
-        if (lookups) {
-          this.lookups(lookups.name, lookups.lookups);
-        }
+      const result = await this.loadResult();
 
-        if (result) {
-          this.result(result);
-        }
+      if (lookups) {
+        this.lookups(lookups.name, lookups.lookups);
+      }
 
-        this.closure(`${CurCmd.title} Executed`, instructions);
-      })
-      .catch((error) => {
-        this.debug(error);
-      });
+      if (result) {
+        this.result(result);
+      }
+
+      this.closure(`${CurCmd.title} Executed`, instructions);
+    } catch (error: any) {
+      this.error(error);
+    }
   }
   //#endregion
 
@@ -135,7 +126,7 @@ export abstract class FathymCommand extends Command {
     return undefined;
   }
 
-  protected abstract loadTasks(): Promise<Listr.ListrTask<any>[]>;
+  protected abstract loadTasks(): Promise<ListrTask<TContext>[]>;
 
   protected lookups(name: string, lookups: DisplayLookup[]): void {
     this.log();

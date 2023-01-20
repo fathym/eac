@@ -1,9 +1,10 @@
 import {} from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 
-export default class Out extends FathymCommand {
+export default class Out extends FathymCommand<any> {
   static description =
     'Used to sign out, so your CLI will NOT work with the EaC and other features.';
 

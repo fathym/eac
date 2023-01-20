@@ -1,30 +1,30 @@
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {
   getCurrentBranch,
   hasCommittedChanges,
   remoteExists,
 } from './git-helpers';
-import { execa } from './task-helpers';
-// import inquirer from 'inquirer';
+import { runProc } from './task-helpers';
+// import enquirer from 'enquirer';
 
-export function addChanges(): ListrTask {
+export function addChanges<T>(): ListrTask<T> {
   return {
     title: 'Add changes',
     skip: () => hasCommittedChanges(),
     task: async () => {
-      await execa('git', ['add', '-A']);
+      await runProc('git', ['add', '-A']);
     },
   };
 }
 
-export function confirmGitRepo(): ListrTask {
+export function confirmGitRepo<T>(): ListrTask<T> {
   return {
     title: 'Check valid Git repository',
     task: async () => {
       try {
-        await execa('git', ['rev-parse', '--is-inside-git-dir']);
-        // await execa('git', ['rev-parse', '--git-dir']);
-        // await execa('git', ['rev-parse', '--is-inside-work-tree']);
+        await runProc('git', ['rev-parse', '--is-inside-git-dir']);
+        // await runProc('git', ['rev-parse', '--git-dir']);
+        // await runProc('git', ['rev-parse', '--is-inside-work-tree']);
       } catch {
         throw new Error('Not a Git repository');
       }
@@ -37,9 +37,9 @@ export function commitChanges(commitMessage: string): ListrTask {
     title: 'Committing uncommitted changes',
     skip: () => hasCommittedChanges(),
     task: async () => {
-      await execa('git', ['add', '-A']);
+      await runProc('git', ['add', '-A']);
 
-      await execa('git', ['commit', '-a', '-m', `"${commitMessage}"`]);
+      await runProc('git', ['commit', '-a', '-m', `"${commitMessage}"`]);
     },
   };
 }
@@ -49,7 +49,7 @@ export function ensureOrganization(organization: string): ListrTask {
     title: `Ensuring organization`,
     task: async (ctx, task) => {
       if (!organization) {
-        const user = (await execa('git', ['config', '--get user.name']))
+        const user = (await runProc('git', ['config', '--get user.name']))
           .toString()
           .trim();
 
@@ -61,59 +61,59 @@ export function ensureOrganization(organization: string): ListrTask {
   };
 }
 
-export function fetchChange(): ListrTask {
+export function fetchChange<T>(): ListrTask<T> {
   return {
     title: 'Fetch changes',
     task: async () => {
-      await execa('git', ['fetch', '--all']);
+      await runProc('git', ['fetch', '--all']);
     },
   };
 }
 
-export function fetchPrune(): ListrTask {
+export function fetchPrune<T>(): ListrTask<T> {
   return {
     title: 'Fetch prune',
     task: async () => {
-      await execa('git', ['fetch', '--prune']);
+      await runProc('git', ['fetch', '--prune']);
     },
   };
 }
 
-export function mergeIntegration(): ListrTask {
+export function mergeIntegration<T>(): ListrTask<T> {
   return {
     title: 'Merge changes from integration',
     task: async () => {
-      await execa('git', ['merge', 'origin/integration']);
+      await runProc('git', ['merge', 'origin/integration']);
     },
   };
 }
 
-export function pullLatestIntegration(): ListrTask {
+export function pullLatestIntegration<T>(): ListrTask<T> {
   return {
     title: 'Pull latest integration changes',
     task: async () => {
-      await execa('git', ['checkout', 'integration']);
+      await runProc('git', ['checkout', 'integration']);
 
-      await execa('git', ['pull', 'origin', 'integration']);
+      await runProc('git', ['pull', 'origin', 'integration']);
     },
   };
 }
 
-export function pushOrigin(): ListrTask {
+export function pushOrigin<T>(): ListrTask<T> {
   return {
     title: 'Push to origin',
     task: async () => {
-      const currentBranch = await execa('git', [
+      const currentBranch = await runProc('git', [
         'rev-parse',
         '--abbrev-ref HEAD',
       ]);
 
-      await execa('git', ['push', 'origin', currentBranch]);
+      await runProc('git', ['push', 'origin', currentBranch]);
     },
   };
 }
 
-export function pull(): ListrTask {
+export function pull<T>(): ListrTask<T> {
   return {
     title: 'Pull',
     task: async () => {
@@ -122,19 +122,19 @@ export function pull(): ListrTask {
       const exists = await remoteExists(currentBranch);
 
       if (!exists) {
-        await execa(`git push`, ['--set-upstream origin', `feature/${name}`]);
+        await runProc(`git push`, ['--set-upstream origin', `feature/${name}`]);
       }
 
-      await execa('git', ['pull']);
+      await runProc('git', ['pull']);
     },
   };
 }
 
-export function rebaseIntegration(): ListrTask {
+export function rebaseIntegration<T>(): ListrTask<T> {
   return {
     title: 'Rebase changes from integration',
     task: async () => {
-      await execa('git', ['rebase', 'origin/integration']);
+      await runProc('git', ['rebase', 'origin/integration']);
     },
   };
 }

@@ -1,17 +1,18 @@
 import {} from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
   commitChanges,
   confirmGitRepo,
   fetchPrune,
   pushOrigin,
 } from '../../common/git-tasks';
-import { execa } from '../../common/task-helpers';
+import { runProc } from '../../common/task-helpers';
 import { ensureMessage } from '../../common/git-helpers';
 
-export default class Hotfix extends FathymCommand {
+export default class Hotfix extends FathymCommand<any> {
   static description = `Used for creating a hotfix branch from 'main' in git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -45,13 +46,16 @@ export default class Hotfix extends FathymCommand {
       {
         title: 'Create new hotfix branch',
         task: async () => {
-          await execa(`git checkout`, [`-b hotfix/${name}`, 'main']);
+          await runProc(`git checkout`, [`-b hotfix/${name}`, 'main']);
         },
       },
       {
         title: 'Setting upstream for hotfix branch',
         task: async () => {
-          await execa(`git push`, ['--set-upstream origin', `hotfix/${name}`]);
+          await runProc(`git push`, [
+            '--set-upstream origin',
+            `hotfix/${name}`,
+          ]);
         },
       },
       pushOrigin(),

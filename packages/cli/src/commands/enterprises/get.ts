@@ -1,9 +1,10 @@
 import {} from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 
-export default class Get extends FathymCommand {
+export default class Get extends FathymCommand<any> {
   static description = `Get's the current user's active enterprise for the CLI. Determines
   which enterprise commands are executed against.`;
 

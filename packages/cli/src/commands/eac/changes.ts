@@ -1,9 +1,10 @@
 import {} from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import { EnterpriseAsCode } from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 
-export default class Changes extends FathymCommand {
+export default class Changes extends FathymCommand<any> {
   static description = `Used to retrieve the current changes to EaC that are queued for commit.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];

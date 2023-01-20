@@ -1,7 +1,8 @@
 import { Flags } from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
   commitChanges,
   confirmGitRepo,
@@ -14,7 +15,7 @@ import {
 } from '../../common/git-tasks';
 import { ensureMessage } from '../../common/git-helpers';
 
-export default class Commit extends FathymCommand {
+export default class Commit extends FathymCommand<any> {
   static aliases = ['commit', 'sync'];
 
   static description = `Used for committing changes to the current working branch and syncing with integration.`;
@@ -36,7 +37,7 @@ export default class Commit extends FathymCommand {
     return [];
   }
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<any>[]> {
     const { args, flags } = await this.parse(Commit);
 
     const { rebase } = flags;

@@ -1,9 +1,9 @@
-import { execa } from './task-helpers';
-import inquirer from 'inquirer';
+import { runProc } from './task-helpers';
+import { prompt } from 'enquirer';
 
 export async function ensureMessage(message: string): Promise<string> {
   if (!message && (await hasNotCommittedChanges())) {
-    const { commitMessage } = await inquirer.prompt({
+    const { commitMessage } = await prompt<any>({
       type: 'input',
       name: 'commitMessage',
       message: 'Enter commit message:',
@@ -16,25 +16,28 @@ export async function ensureMessage(message: string): Promise<string> {
 }
 
 export async function getCurrentBranch(): Promise<string> {
-  const currentBranch = await execa('git', ['rev-parse', '--abbrev-ref HEAD']);
+  const currentBranch = await runProc('git', [
+    'rev-parse',
+    '--abbrev-ref HEAD',
+  ]);
 
   return currentBranch;
 }
 
 export async function hasCommittedChanges(): Promise<boolean> {
-  const stdout = await execa('git', ['status', '--porcelain']);
+  const stdout = await runProc('git', ['status', '--porcelain']);
 
   return stdout === '';
 }
 
 export async function hasNotCommittedChanges(): Promise<boolean> {
-  const stdout = await execa('git', ['status', '--porcelain']);
+  const stdout = await runProc('git', ['status', '--porcelain']);
 
   return stdout !== '';
 }
 
 export async function remoteExists(branch: string): Promise<boolean> {
-  const exists = await execa('git', ['ls-remote', '--heads origin', branch]);
+  const exists = await runProc('git', ['ls-remote', '--heads origin', branch]);
 
   return Boolean(exists);
 }

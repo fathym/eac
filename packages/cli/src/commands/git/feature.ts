@@ -1,17 +1,18 @@
 import {} from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
   commitChanges,
   confirmGitRepo,
   fetchPrune,
   pushOrigin,
 } from '../../common/git-tasks';
-import { execa } from '../../common/task-helpers';
+import { runProc } from '../../common/task-helpers';
 import { ensureMessage } from '../../common/git-helpers';
 
-export default class Feature extends FathymCommand {
+export default class Feature extends FathymCommand<any> {
   static description = `Used for creating a feature branch from 'integration' in git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -45,13 +46,16 @@ export default class Feature extends FathymCommand {
       {
         title: 'Create new feature branch',
         task: async () => {
-          await execa(`git checkout`, [`-b feature/${name}`, 'integration']);
+          await runProc(`git checkout`, [`-b feature/${name}`, 'integration']);
         },
       },
       {
         title: 'Setting upstream for feature branch',
         task: async () => {
-          await execa(`git push`, ['--set-upstream origin', `feature/${name}`]);
+          await runProc(`git push`, [
+            '--set-upstream origin',
+            `feature/${name}`,
+          ]);
         },
       },
       pushOrigin(),

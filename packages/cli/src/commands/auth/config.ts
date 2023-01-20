@@ -1,10 +1,11 @@
 import {} from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { withUserAuthConfig } from '../../common/auth-helpers';
 
-export default class Auth extends FathymCommand {
+export default class Auth extends FathymCommand<any> {
   static description = 'Used to retrieve the current auth config for the user.';
 
   static examples = ['<%= config.bin %> <%= command.id %>'];

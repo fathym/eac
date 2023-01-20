@@ -1,9 +1,9 @@
 import {} from '@oclif/core';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { ClosureInstruction } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { confirmGitRepo, ensureOrganization } from '../../common/git-tasks';
-import { execa } from '../../common/task-helpers';
+import { runProc } from '../../common/task-helpers';
 import path from 'node:path';
 import Clone from './clone';
 
@@ -41,7 +41,7 @@ export default class Import extends Clone {
         task: async (ctx, task) => {
           const destination = path.join(process.cwd(), repository);
 
-          await execa(`git`, [
+          await runProc(`git`, [
             'clone',
             remote,
             destination,
@@ -54,11 +54,11 @@ export default class Import extends Clone {
 
           task.title = `Pushing import to remote ${organization}/${repository}`;
 
-          await execa('cd', [repository]);
+          await runProc('cd', [repository]);
 
-          await execa(`git`, ['push', '--mirror', gitPath]);
+          await runProc(`git`, ['push', '--mirror', gitPath]);
 
-          await execa('cd', ['..']);
+          await runProc('cd', ['..']);
 
           task.title = `Remote ${remote} imported to ${organization}/${repository}`;
         },

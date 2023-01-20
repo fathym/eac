@@ -1,12 +1,12 @@
 import { Hook, toConfiguredId, toStandardizedId } from '@oclif/core';
-import inquirer from 'inquirer';
+import enquirer from 'enquirer';
 
 const hook: Hook.CommandIncomplete = async function ({
   config,
   matches,
   argv,
 }) {
-  const { command } = await inquirer.prompt<{ command: string }>([
+  const { command } = await enquirer.prompt<{ command: string }>([
     {
       name: 'command',
       type: 'list',

@@ -1,14 +1,12 @@
 import { color } from '@oclif/color';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import { EaCEnterpriseDetails } from '@semanticjs/common';
-import {
-  ClosureInstruction,
-  DisplayLookup,
-  FathymCommand,
-} from '../../common/fathym-command';
+import { FathymCommand } from '../../common/fathym-command';
+import { DisplayLookup } from '../../common/DisplayLookup';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import loadAxios from '../../common/axios';
 
-export default class List extends FathymCommand {
+export default class List extends FathymCommand<any> {
   static description = 'Used to list the current users available enterprises.';
 
   static examples = ['<%= config.bin %> <%= command.id %>'];

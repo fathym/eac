@@ -1,7 +1,7 @@
 import express from 'express';
 import oauth2 from 'simple-oauth2';
 // import keytar from 'keytar';
-import { ListrTask } from 'listr';
+import { ListrTask } from 'listr2';
 import { withConfig } from './config-helpers';
 
 const tenant = 'fathymcloudprd';
@@ -26,24 +26,6 @@ export class UserAuthConfig {
   public AccessToken!: oauth2.AccessToken;
 }
 
-export async function withUserAuthConfig(
-  configDir: string,
-  action?: (config: UserAuthConfig) => Promise<UserAuthConfig>
-): Promise<UserAuthConfig> {
-  return withConfig<UserAuthConfig>('user-auth.config.json', configDir, action);
-}
-
-export async function getAuthorizationUrl(state?: any): Promise<any> {
-  const authorizationUri = oauthCodeClient.authorizeURL({
-    redirect_uri: redirectUri,
-    scope: scope,
-    client_id: clientId,
-    state: state,
-  });
-
-  return authorizationUri;
-}
-
 export async function getAccessToken(
   configDir: string,
   authCode: string
@@ -61,42 +43,6 @@ export async function getAccessToken(
 
     return cfg;
   });
-}
-
-export async function refreshAccessTokenTask(
-  configDir: string,
-  refreshWindow = 300
-): Promise<ListrTask> {
-  const accessToken = await loadAccessToken(configDir);
-
-  return {
-    title: `Refreshing access token`,
-    enabled: () => accessToken.expired(refreshWindow),
-    task: async () => {
-      await refreshAccessToken(configDir, accessToken);
-    },
-  };
-}
-
-export async function refreshAccessToken(
-  configDir: string,
-  accessToken: oauth2.AccessToken
-): Promise<void> {
-  accessToken = await accessToken.refresh({ scope: scope });
-
-  await withUserAuthConfig(configDir, async (cfg) => {
-    cfg.AccessToken = accessToken;
-
-    return cfg;
-  });
-}
-
-export async function loadAccessToken(
-  configDir: string
-): Promise<oauth2.AccessToken> {
-  const config = await withUserAuthConfig(configDir);
-
-  return oauthCodeClient.createToken(config.AccessToken);
 }
 
 export async function getAuthorizationCode(): Promise<string> {
@@ -125,4 +71,58 @@ export async function getAuthorizationCode(): Promise<string> {
 
     const server = app.listen(8119);
   });
+}
+
+export async function getAuthorizationUrl(state?: any): Promise<any> {
+  const authorizationUri = oauthCodeClient.authorizeURL({
+    redirect_uri: redirectUri,
+    scope: scope,
+    client_id: clientId,
+    state: state,
+  });
+
+  return authorizationUri;
+}
+
+export async function loadAccessToken(
+  configDir: string
+): Promise<oauth2.AccessToken> {
+  const config = await withUserAuthConfig(configDir);
+
+  return oauthCodeClient.createToken(config.AccessToken);
+}
+
+export async function refreshAccessTokenTask<TContext>(
+  configDir: string,
+  refreshWindow = 300
+): Promise<ListrTask<TContext>> {
+  const accessToken = await loadAccessToken(configDir);
+
+  return {
+    title: `Refreshing access token`,
+    enabled: () => accessToken.expired(refreshWindow),
+    task: async () => {
+      await refreshAccessToken(configDir, accessToken);
+    },
+  };
+}
+
+export async function refreshAccessToken(
+  configDir: string,
+  accessToken: oauth2.AccessToken
+): Promise<void> {
+  accessToken = await accessToken.refresh({ scope: scope });
+
+  await withUserAuthConfig(configDir, async (cfg) => {
+    cfg.AccessToken = accessToken;
+
+    return cfg;
+  });
+}
+
+export async function withUserAuthConfig(
+  configDir: string,
+  action?: (config: UserAuthConfig) => Promise<UserAuthConfig>
+): Promise<UserAuthConfig> {
+  return withConfig<UserAuthConfig>('user-auth.config.json', configDir, action);
 }
