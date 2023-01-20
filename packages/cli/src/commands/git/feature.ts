@@ -30,11 +30,13 @@ export default class Feature extends FathymCommand<any> {
   static title = 'Create Feature Branch';
 
   protected async loadTasks(): Promise<ListrTask[]> {
-    const { args } = await this.parse(Feature);
+    const { args, flags } = await this.parse(Feature);
 
     const { name } = args;
 
-    const message = await ensureMessage('');
+    const { ci } = flags;
+
+    const message = await ensureMessage('', ci);
 
     return [
       confirmGitRepo(),

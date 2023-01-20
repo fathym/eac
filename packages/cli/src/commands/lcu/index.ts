@@ -47,21 +47,21 @@ export default class Install extends FathymCommand<InstallContext> {
 
     const { lcu } = args;
 
-    const { parameters } = flags;
+    const { ci, parameters } = flags;
 
     return [
       this.downloadLcu(lcu),
       this.unpackLcu(),
       this.loadLcuConfig(),
-      await this.confirmParameters(parameters),
+      await this.confirmParameters(ci, parameters),
       this.prepareLcuEaCDraft(),
-      // this.cleanupLcuFiles()
+      this.cleanupLcuFiles(),
     ];
   }
 
   protected cleanupLcuFiles(): ListrTask<InstallContext> {
     return {
-      title: `Cleaning up LCU setup files`,
+      title: `Cleaning up LCU install files`,
       task: async (ctx) => {
         await runProc('npx', [
           'rimraf',
@@ -74,28 +74,32 @@ export default class Install extends FathymCommand<InstallContext> {
   }
 
   protected async confirmParameters(
+    ci: boolean,
     parameterDefaults?: string
   ): Promise<ListrTask<InstallContext>> {
     return {
       title: 'Collecting Parameters',
       skip: () => false,
       task: async (ctx, task) => {
-        const prompts = await this.loadParametersPrompts(
-          ctx.LCUPackageConfig,
-          ctx.LCUPackageFiles,
-          parameterDefaults
-        );
-        task.title = JSON.stringify(prompts);
+        ctx.LCUParamAnswers = JSON.parse(parameterDefaults || '{}');
 
-        ctx.LCUParamAnswers = await task.prompt(prompts); // {
-        //   type: 'input',
-        //   message: 'Enter Alfresco host:',
-        //   name: 'HOST_IP_VARIABLE',
-        //   initial: paramSet['HOST_IP_VARIABLE'] || undefined,
-        // });
-        // console.log(JSON.stringify(ctx.LCUParamAnswers));
+        if (!ci) {
+          const promptCfg = await this.loadParametersPrompts(
+            ctx.LCUPackageConfig,
+            ctx.LCUPackageFiles,
+            ctx.LCUParamAnswers
+          );
 
-        // task.title = 'Thanks for inputting your parameters';
+          ctx.LCUParamAnswers = await task.prompt(promptCfg.Prompts);
+
+          if (ctx.LCUParamAnswers && typeof ctx.LCUParamAnswers === 'string') {
+            ctx.LCUParamAnswers = {
+              [promptCfg.ParameterKeys[0]]: ctx.LCUParamAnswers,
+            };
+          }
+        }
+
+        task.title = 'Thanks for inputting your parameters';
       },
     };
   }
@@ -117,7 +121,7 @@ export default class Install extends FathymCommand<InstallContext> {
           ''
         );
 
-        task.title = `Downloaded LCU: ${ctx.LCUPackageTarball}`;
+        task.title = `Downloaded LCU: ${lcu}`;
       },
     };
   }
@@ -159,10 +163,8 @@ export default class Install extends FathymCommand<InstallContext> {
   protected async loadParametersPrompts(
     lcuCfg: LcuPackageConfig,
     pckgFiles: string,
-    parameterDefaults?: string
-  ): Promise<PromptOptions<true>[]> {
-    const paramSet = JSON.parse(parameterDefaults || '{}');
-
+    paramSet: any
+  ): Promise<{ Prompts: PromptOptions<true>[]; ParameterKeys: string[] }> {
     const paramsCfg = await this.loadFileAsJson<any>(
       pckgFiles,
       lcuCfg.Parameters || './assets/parameters.json'
@@ -177,6 +179,10 @@ export default class Install extends FathymCommand<InstallContext> {
 
       prompt.name = key;
 
+      prompt.validate = (value) => {
+        return Boolean(value);
+      };
+
       if (paramSet[key]) {
         prompt.initial = paramSet[key];
       }
@@ -184,7 +190,7 @@ export default class Install extends FathymCommand<InstallContext> {
       prompts.push(prompt);
     });
 
-    return prompts;
+    return { Prompts: prompts, ParameterKeys: paramKeys };
   }
 
   protected prepareLcuEaCDraft(): ListrTask<InstallContext> {
@@ -202,10 +208,7 @@ export default class Install extends FathymCommand<InstallContext> {
 
         ctx.EaCDraft = JSON.parse(eacDraftStr);
 
-        // task.title = JSON.stringify(ctx.LCUParamAnswers);
-        // task.title = JSON.stringify(
-        //   ctx.EaCDraft.Applications.API[0].Application.LowCodeUnit
-        // );
+        task.title = 'EaC draft prepared for commit';
       },
     };
   }

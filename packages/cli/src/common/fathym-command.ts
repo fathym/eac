@@ -9,10 +9,9 @@ export abstract class FathymCommand<
   TContext extends AccessTokenTaskContext
 > extends Command {
   static globalFlags = {
-    interactive: Flags.boolean({
-      char: 'i',
+    ci: Flags.boolean({
       description:
-        'Run command in interactive mode, allowing prompts for missing required args and flags.',
+        'Run command in yield mode for automation, to prevent prompts.',
     }),
   };
 

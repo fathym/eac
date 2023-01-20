@@ -1,15 +1,18 @@
 import { runProc } from './task-helpers';
 import { prompt } from 'enquirer';
 
-export async function ensureMessage(message: string): Promise<string> {
-  if (!message && (await hasNotCommittedChanges())) {
+export async function ensureMessage(
+  message: string,
+  ci: boolean
+): Promise<string> {
+  if (!ci && !message && (await hasNotCommittedChanges())) {
     const { commitMessage } = await prompt<any>({
       type: 'input',
       name: 'commitMessage',
       message: 'Enter commit message:',
     });
 
-    message = commitMessage || (await ensureMessage(message));
+    message = commitMessage || (await ensureMessage(message, ci));
   }
 
   return message;

@@ -5,7 +5,6 @@ import {
   remoteExists,
 } from './git-helpers';
 import { runProc } from './task-helpers';
-// import enquirer from 'enquirer';
 
 export function addChanges<T>(): ListrTask<T> {
   return {

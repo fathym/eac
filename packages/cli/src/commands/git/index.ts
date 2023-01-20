@@ -38,11 +38,11 @@ export default class Commit extends FathymCommand<any> {
   protected async loadTasks(): Promise<ListrTask<any>[]> {
     const { args, flags } = await this.parse(Commit);
 
-    const { rebase } = flags;
+    const { ci, rebase } = flags;
 
     let { message } = args;
 
-    message = await ensureMessage(message);
+    message = await ensureMessage(message, ci);
 
     return [
       confirmGitRepo(),

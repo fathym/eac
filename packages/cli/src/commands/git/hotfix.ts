@@ -30,11 +30,11 @@ export default class Hotfix extends FathymCommand<any> {
   static title = 'Create Hotfix Branch';
 
   protected async loadTasks(): Promise<ListrTask[]> {
-    const { args } = await this.parse(Hotfix);
+    const { args, flags } = await this.parse(Hotfix);
 
-    const { name } = args;
+    const { ci, name } = args;
 
-    const message = await ensureMessage('');
+    const message = await ensureMessage('', ci);
 
     return [
       confirmGitRepo(),
