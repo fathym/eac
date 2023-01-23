@@ -15,17 +15,6 @@ export default class Processor extends FathymCommand<any> {
 
   static title = 'Manage Processor Settings';
 
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac applications security --help',
-        Description: `You can manage more about your application.`,
-      },
-    ];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(Processor);
 

@@ -15,17 +15,6 @@ export default class Create extends FathymCommand<any> {
 
   static title = 'Create Build Pipeline';
 
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac pipelines --help',
-        Description: `You can now manage more about your build pipeline.`,
-      },
-    ];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(Create);
 

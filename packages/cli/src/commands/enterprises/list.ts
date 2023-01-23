@@ -7,10 +7,11 @@ import { ClosureInstruction } from '../../common/ClosureInstruction';
 import loadAxios from '../../common/axios';
 import {
   ensureActiveEnterprise,
+  FathymTaskContext,
   loadApiRootUrl,
 } from '../../common/core-helpers';
 
-export default class List extends FathymCommand<any> {
+export default class List extends FathymCommand<FathymTaskContext> {
   static description = 'Used to list the current users available enterprises.';
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -21,11 +22,7 @@ export default class List extends FathymCommand<any> {
 
   static title = 'List User Enterprises';
 
-  protected entLookups: DisplayLookup[] = [];
-
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym enterprises set {ent-lookup}',
@@ -37,42 +34,36 @@ value in '()' above.`,
     ];
   }
 
-  protected async loadLookups(
-    context: any
-  ): Promise<{ name: string; lookups: DisplayLookup[] } | undefined> {
-    return {
-      name: 'ent-lookup',
-      lookups: this.entLookups,
-    };
-  }
-
   protected async listEnterprises(
     configDir: string
   ): Promise<(EaCEnterpriseDetails & { Lookup: string })[]> {
     const axios = await loadAxios(configDir);
 
-    const apiUrl = await loadApiRootUrl(configDir, `user/enterprises`);
-
-    const response = await axios.get(apiUrl);
-
-    //  TODO: Handle bad stati
+    const response = await axios.get(`user/enterprises`);
 
     return response.data?.Model || [];
   }
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     return [
       {
         title: `Loading user enterprises`,
         task: async (ctx, task) => {
           const ents = await this.listEnterprises(this.config.configDir);
 
-          this.entLookups = ents.map((ent) => {
+          const entLookups = ents.map((ent) => {
             return {
               Lookup: ent.Lookup,
               Name: ent.Name,
             } as DisplayLookup;
           });
+
+          ctx.Fathym.Lookups = {
+            name: 'ent-lookup',
+            lookups: entLookups,
+          };
+
+          ctx.Fathym.Instructions = await this.loadInstructions();
 
           task.title = 'User enterprises loaded';
         },

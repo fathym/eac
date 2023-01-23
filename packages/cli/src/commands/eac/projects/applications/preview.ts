@@ -15,17 +15,6 @@ export default class Preview extends FathymCommand<any> {
 
   static title = 'Project Application Preview';
 
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac projects --help',
-        Description: `You can now manage more about your project.`,
-      },
-    ];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(Preview);
 

@@ -6,6 +6,8 @@ import { confirmGitRepo, ensureOrganization } from '../../common/git-tasks';
 import { runProc } from '../../common/task-helpers';
 import path from 'node:path';
 import Clone from './clone';
+import { GitHubTaskContext, loadGitUsername } from '../../common/git-helpers';
+import { AccessTokenTaskContext } from '../../common/core-helpers';
 
 export default class Import extends Clone {
   static description = `Used for importing a remote source control into a configured EaC Source control.`;
@@ -23,7 +25,8 @@ export default class Import extends Clone {
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args, flags } = await this.parse(Import);
 
-    const { organization, repository, remote } = args;
+    let { organization } = args;
+    const { repository, remote } = args;
 
     const depth = flags.depth ? `--depth ${flags.depth}` : '';
 
@@ -31,11 +34,12 @@ export default class Import extends Clone {
 
     return [
       confirmGitRepo(),
-      ensureOrganization(organization),
       {
         title: `Importing remote repository ${remote}`,
         task: async (ctx, task) => {
           const destination = path.join(process.cwd(), repository);
+
+          organization = organization || (await loadGitUsername());
 
           await runProc(`git`, [
             'clone',

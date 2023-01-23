@@ -15,17 +15,6 @@ export default class Commit extends FathymCommand<any> {
 
   static title = 'EaC Commit';
 
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac projects applications preview --help',
-        Description: `Load previews for any of your deployed applications.`,
-      },
-    ];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args } = await this.parse(Commit);
 

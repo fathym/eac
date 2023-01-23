@@ -4,15 +4,12 @@ import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
-  AccessTokenTaskContext,
   ActiveEnterpriseTaskContext,
   ensureActiveEnterprise,
-  loadActieEnterpriseLookup,
+  FathymTaskContext,
 } from '../../common/core-helpers';
 
-interface GetContext
-  extends AccessTokenTaskContext,
-    ActiveEnterpriseTaskContext {}
+interface GetContext extends FathymTaskContext, ActiveEnterpriseTaskContext {}
 export default class Get extends FathymCommand<GetContext> {
   static description = `Get's the current user's active enterprise for the CLI. Determines
   which enterprise commands are executed against.`;
@@ -24,18 +21,6 @@ export default class Get extends FathymCommand<GetContext> {
   static args = [];
 
   static title = 'Get Active Enterprise';
-
-  protected async loadInstructions(
-    context: GetContext
-  ): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac --help',
-        Description: `You can now access the EaC via CLI,
-to manage your enterprie setup.`,
-      },
-    ];
-  }
 
   protected async loadTasks(): Promise<ListrTask<GetContext>[]> {
     const { args } = await this.parse(Get);

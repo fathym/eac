@@ -1,12 +1,16 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { Listr, ListrTask } from 'listr2';
-import { AccessTokenTaskContext, refreshAccessTokenTask } from './core-helpers';
+import {
+  AccessTokenTaskContext,
+  FathymTaskContext,
+  refreshAccessTokenTask,
+} from './core-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
 import { DisplayLookup } from './DisplayLookup';
 
 export abstract class FathymCommand<
-  TContext extends AccessTokenTaskContext
+  TContext extends FathymTaskContext
 > extends Command {
   static globalFlags = {
     ci: Flags.boolean({
@@ -43,23 +47,21 @@ export abstract class FathymCommand<
     const listr = new Listr<TContext>(tasks);
 
     try {
-      const context = await listr.run();
+      let ctx: TContext = {
+        Fathym: {},
+      } as TContext;
 
-      const lookups = await this.loadLookups(context);
+      ctx = await listr.run(ctx);
 
-      const instructions = await this.loadInstructions(context);
-
-      const result = await this.loadResult(context);
-
-      if (lookups) {
-        this.lookups(lookups.name, lookups.lookups);
+      if (ctx?.Fathym?.Lookups) {
+        this.lookups(ctx?.Fathym?.Lookups.name, ctx?.Fathym?.Lookups.lookups);
       }
 
-      if (result) {
-        this.result(result);
+      if (ctx?.Fathym?.Result) {
+        this.result(ctx?.Fathym?.Result);
       }
 
-      this.closure(`${CurCmd.title} Executed`, instructions);
+      this.closure(`${CurCmd.title} Executed`, ctx?.Fathym?.Instructions);
     } catch (error: any) {
       this.error(error);
     }
@@ -71,8 +73,6 @@ export abstract class FathymCommand<
     this.log();
 
     this.log(color.blue(title));
-
-    // this.log();
 
     instructions?.forEach((instruction) => {
       let instruct = color.green(instruction.Instruction);
@@ -111,22 +111,6 @@ export abstract class FathymCommand<
     const indentedStr = indentedLines.join('\n');
 
     return indentedStr;
-  }
-
-  protected async loadInstructions(
-    context: TContext
-  ): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
-  protected async loadLookups(
-    context: TContext
-  ): Promise<{ name: string; lookups: DisplayLookup[] } | undefined> {
-    return undefined;
-  }
-
-  protected async loadResult(context: TContext): Promise<string | undefined> {
-    return undefined;
   }
 
   protected abstract loadTasks(): Promise<ListrTask<TContext>[]>;

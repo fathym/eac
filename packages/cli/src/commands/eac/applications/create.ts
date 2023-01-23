@@ -15,21 +15,6 @@ export default class Create extends FathymCommand<any> {
 
   static title = 'Create Application';
 
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac applications lcu --help',
-        Description: `You can now manage more about your application.`,
-      },
-      {
-        Instruction: 'fathym eac applications processor --help',
-        Description: `You can now manage more about your application.`,
-      },
-    ];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(Create);
 

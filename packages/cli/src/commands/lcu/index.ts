@@ -1,29 +1,33 @@
 import { Flags } from '@oclif/core';
+import path from 'node:path';
 import { ListrTask, PromptOptions } from 'listr2';
 import { readFile, read, readJson } from 'fs-extra';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { runProc } from '../../common/task-helpers';
 import { LcuPackageConfig } from '../../common/LcuPackageConfig';
-import path from 'node:path';
-import { compile } from 'handlebars';
 import {
-  AccessTokenTaskContext,
-  loadApiRootUrl,
+  ActiveEnterpriseTaskContext,
+  ensureActiveEnterprise,
+  FathymTaskContext,
 } from '../../common/core-helpers';
-import { tsPath } from '@oclif/core/lib/config';
 import loadAxios from '../../common/axios';
+import { GitHubTaskContext } from '../../common/git-helpers';
+import { InstallLCURequest } from '../../common/InstallLCURequest';
 
-interface InstallContext extends AccessTokenTaskContext {
+export interface InstallContext
+  extends FathymTaskContext,
+    ActiveEnterpriseTaskContext,
+    GitHubTaskContext {
   EaCDraft: any;
-
-  LCUParamAnswers: any;
 
   LCUPackageConfig: LcuPackageConfig;
 
   LCUPackageFiles: string;
 
   LCUPackageTarball: string;
+
+  LCUParamAnswers: { [key: string]: string };
 }
 
 export default class Install extends FathymCommand<InstallContext> {
@@ -52,11 +56,13 @@ export default class Install extends FathymCommand<InstallContext> {
     const { ci, parameters } = flags;
 
     return [
+      ensureActiveEnterprise(this.config.configDir),
       this.downloadLcu(lcu),
       this.unpackLcu(),
       this.loadLcuConfig(),
       await this.confirmParameters(ci, parameters),
       // this.prepareLcuEaCDraft(),
+      this.runInstallLcu(lcu),
       this.cleanupLcuFiles(),
     ];
   }
@@ -128,17 +134,17 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
-  protected async installLcu(configDir: string): Promise<void> {
+  protected async installLcu(
+    configDir: string,
+    entLookup: string,
+    installReq: InstallLCURequest
+  ): Promise<void> {
     const axios = await loadAxios(configDir);
 
-    const apiUrl = await loadApiRootUrl(
-      configDir,
-      `{entLookup}/cli/lcu/install/{project}`
+    const response = await axios.post(
+      `${entLookup}/cli/lcu/install`,
+      installReq
     );
-
-    const response = await axios.post(apiUrl, {});
-
-    //  TODO: Handle bad stati
 
     return response.data?.Model || [];
   }
@@ -229,6 +235,25 @@ export default class Install extends FathymCommand<InstallContext> {
   //     },
   //   };
   // }
+
+  protected runInstallLcu(lcu: string): ListrTask<InstallContext> {
+    return {
+      title: `Installing LCU`,
+      task: async (ctx) => {
+        await this.installLcu(
+          this.config.configDir,
+          ctx.ActiveEnterpriseLookup,
+          {
+            LCUPackage: lcu,
+            Organization: ctx.GitHubOrganization,
+            Parameters: ctx.LCUParamAnswers,
+            ProjectCreate: true,
+            ProjectValue: 'My New Test Project',
+          }
+        );
+      },
+    };
+  }
 
   protected unpackLcu(): ListrTask<InstallContext> {
     return {

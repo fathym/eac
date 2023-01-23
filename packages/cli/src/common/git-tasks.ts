@@ -1,7 +1,12 @@
-import { ListrTask } from 'listr2';
+import { ListrTask, PromptOptions } from 'listr2';
+import loadAxios from './axios';
 import {
   getCurrentBranch,
+  GitHubTaskContext,
   hasCommittedChanges,
+  hasGitHubConnection,
+  listGitHubOrganizations,
+  loadGitUsername,
   remoteExists,
 } from './git-helpers';
 import { runProc } from './task-helpers';
@@ -43,19 +48,36 @@ export function commitChanges(commitMessage: string): ListrTask {
   };
 }
 
-export function ensureOrganization(organization: string): ListrTask {
+export function ensureOrganization(
+  configDir: string,
+  organization: string
+): ListrTask<GitHubTaskContext> {
   return {
-    title: `Ensuring organization`,
+    title: `Ensuring organization set`,
     task: async (ctx, task) => {
       if (!organization) {
-        const user = (await runProc('git', ['config', '--get user.name']))
-          .toString()
-          .trim();
+        const orgs = await listGitHubOrganizations(configDir);
 
-        ctx.organization = user;
+        if (orgs) {
+          ctx.GitHubOrganization = (
+            await task.prompt({
+              type: 'List',
+              name: 'organization',
+              message: 'Choose GitHub organization:',
+              choices: orgs,
+              validate: (v) => v,
+            } as PromptOptions<true>)
+          ).trim();
+        }
+
+        const user = await loadGitUsername();
+
+        organization = user;
       }
 
-      task.title = `Set organization to ${ctx.organization}`;
+      ctx.GitHubOrganization = organization;
+
+      task.title = `GitHub organization set to ${ctx.GitHubOrganization}`;
     },
   };
 }
@@ -74,6 +96,24 @@ export function fetchPrune<T>(): ListrTask<T> {
     title: 'Fetch prune',
     task: async () => {
       await runProc('git', ['fetch', '--prune']);
+    },
+  };
+}
+
+export function hasGitHubConnectionTask(
+  configDir: string
+): ListrTask<GitHubTaskContext> {
+  return {
+    title: 'Checking GitHub connection',
+    task: async (ctx) => {
+      ctx.GitHubConnection = await hasGitHubConnection(configDir);
+
+      if (!ctx.GitHubConnection) {
+        throw new Error(
+          `You must authenticate with GitHub to continue.
+  Use the 'fathym git auth' command.`
+        );
+      }
     },
   };
 }

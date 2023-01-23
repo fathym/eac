@@ -15,17 +15,6 @@ export default class LCU extends FathymCommand<any> {
 
   static title = 'Manage LCU Settings';
 
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac applications security --help',
-        Description: `You can manage more about your application.`,
-      },
-    ];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(LCU);
 

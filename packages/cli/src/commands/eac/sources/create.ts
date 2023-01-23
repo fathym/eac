@@ -15,17 +15,6 @@ export default class Create extends FathymCommand<any> {
 
   static title = 'Create Source Control';
 
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac sources --help',
-        Description: `You can now manage more about your source control.`,
-      },
-    ];
-  }
-
   protected async loadTasks(): Promise<ListrTask[]> {
     // const { args } = await this.parse(Create);
 

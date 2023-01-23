@@ -3,12 +3,32 @@ import oauth2 from 'simple-oauth2';
 // import keytar from 'keytar';
 import { ListrTask } from 'listr2';
 import { withConfig } from './config-helpers';
+import { ClosureInstruction } from './ClosureInstruction';
+import { DisplayLookup } from './DisplayLookup';
 
 const tenant = 'fathymcloudprd';
 const clientId = '800193b8-028a-44dd-ba05-73e82ee8066a';
 const policy = 'b2c_1_sign_up_sign_in';
 const redirectUri = 'http://localhost:8119/oauth';
 const scope = `openid offline_access ${clientId}`;
+
+export interface FathymTaskContext extends AccessTokenTaskContext {
+  Fathym: {
+    Instructions: ClosureInstruction[];
+
+    Lookups: { name: string; lookups: DisplayLookup[] } | undefined;
+
+    Result: string;
+  };
+}
+
+export interface AccessTokenTaskContext {
+  AccessToken: oauth2.AccessToken;
+}
+
+export interface ActiveEnterpriseTaskContext {
+  ActiveEnterpriseLookup: string;
+}
 
 export class SystemConfig {
   public APIRoot!: string;
@@ -18,14 +38,6 @@ export class UserAuthConfig {
   public AccessToken!: oauth2.AccessToken;
 
   public ActiveEnterpriseLookup!: string;
-}
-
-export interface AccessTokenTaskContext {
-  AccessToken: oauth2.AccessToken;
-}
-
-export interface ActiveEnterpriseTaskContext {
-  ActiveEnterpriseLookup: string;
 }
 
 const oauthCodeClient = new oauth2.AuthorizationCode({
@@ -133,13 +145,10 @@ export async function loadActieEnterpriseLookup(
   return ActiveEnterpriseLookup;
 }
 
-export async function loadApiRootUrl(
-  configDir: string,
-  url: string
-): Promise<string> {
+export async function loadApiRootUrl(configDir: string): Promise<string> {
   const config = await withSystemConfig(configDir);
 
-  return `${config.APIRoot}/${url}`;
+  return config.APIRoot;
 }
 
 export async function refreshAccessTokenTask<

@@ -40,36 +40,7 @@ export async function listEnterprises(
 ): Promise<{ [lookup: string]: EaCEnterpriseDetails }> {
   const axios = await loadAxios(configDir);
 
-  const response = await axios.get(
-    // 'http://localhost:8119/api/user/enterprises'
-    'http://localhost:7077/api/user/enterprises'
-  );
-
-  return response.data;
-}
-
-export async function getActiveEnterprise(
-  configDir: string
-): Promise<{ [lookup: string]: EaCEnterpriseDetails }> {
-  const axios = await loadAxios(configDir);
-
-  const response = await axios.get('http://localhost:8119/api/user/enterprise');
-
-  return response.data;
-}
-
-export async function setActiveEnterprise(
-  configDir: string,
-  entLookup: string
-): Promise<{ [lookup: string]: EaCEnterpriseDetails }> {
-  const axios = await loadAxios(configDir);
-
-  const response = await axios.post(
-    'http://localhost:8119/api/user/enterprise',
-    {
-      EnterpriseLookup: entLookup,
-    }
-  );
+  const response = await axios.get('user/enterprises');
 
   return response.data;
 }

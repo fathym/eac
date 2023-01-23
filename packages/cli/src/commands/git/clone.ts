@@ -6,6 +6,8 @@ import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { confirmGitRepo, ensureOrganization } from '../../common/git-tasks';
 import { runProc } from '../../common/task-helpers';
 import path from 'node:path';
+import { GitHubTaskContext } from '../../common/git-helpers';
+import { AccessTokenTaskContext } from '../../common/core-helpers';
 
 export default class Clone extends FathymCommand<any> {
   static description = `Used for cloning the source control for Git.`;
@@ -41,7 +43,6 @@ export default class Clone extends FathymCommand<any> {
 
     return [
       confirmGitRepo(),
-      ensureOrganization(organization),
       {
         title: `Cloning repository ${organization}/${repository}`,
         task: async (ctx, task) => {

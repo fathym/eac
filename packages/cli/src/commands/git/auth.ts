@@ -1,5 +1,6 @@
 import { Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
+import open from 'open';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
@@ -26,8 +27,12 @@ export default class Auth extends FathymCommand<any> {
 
     return [
       {
-        title: 'Opened browser for authentication',
-        task: () => 'Opened',
+        title: 'Open GitHub in browser for authentication',
+        task: async () => {
+          open(
+            'https://www.fathym.com/.oauth/GitHubOAuth?oauth-force-edit=true'
+          );
+        },
       },
       {
         title: `${flags.force ? 'Forcing' : 'Waiting for'} user to auth git`,

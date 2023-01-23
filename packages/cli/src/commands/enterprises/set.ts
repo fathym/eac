@@ -17,9 +17,7 @@ export default class Set extends FathymCommand<any> {
 
   static title = 'Set Active Enterprise';
 
-  protected async loadInstructions(
-    context: any
-  ): Promise<ClosureInstruction[]> {
+  protected async loadInstructions(): Promise<ClosureInstruction[]> {
     return [
       {
         Instruction: 'fathym eac --help',
@@ -43,6 +41,8 @@ to manage your enterprie setup.`,
 
             return cfg;
           });
+
+          ctx.Fathym.Instructions = await this.loadInstructions();
         },
       },
     ];
