@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.35 win32-x64 node-v18.12.1
+@fathym/cli/0.0.36 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -58,6 +58,7 @@ USAGE
 * [`fathym git feature NAME`](#fathym-git-feature-name)
 * [`fathym git hotfix NAME`](#fathym-git-hotfix-name)
 * [`fathym git import [ORGANIZATION] REPOSITORY REMOTE`](#fathym-git-import-organization-repository-remote)
+* [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
 * [`fathym help [COMMAND]`](#fathym-help-command)
 * [`fathym lcu LCU`](#fathym-lcu-lcu)
 * [`fathym plugins`](#fathym-plugins)
@@ -88,7 +89,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.35/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.36/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -507,7 +508,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.35/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.36/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -610,6 +611,25 @@ EXAMPLES
   $ fathym git import import organization repository "https://github.com/fathym-it/smart-building-demo
 ```
 
+## `fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`
+
+Used for retrieving information about repositories including organizations, their repos and related branch information.
+
+```
+USAGE
+  $ fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH] [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for retrieving information about repositories including organizations, their repos and related branch
+  information.
+
+EXAMPLES
+  $ fathym git repos {organization} {repository} {branc}
+```
+
 ## `fathym help [COMMAND]`
 
 Display help for fathym.
@@ -649,7 +669,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.35/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.36/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
