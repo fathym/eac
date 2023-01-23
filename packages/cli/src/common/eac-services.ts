@@ -23,10 +23,7 @@ export function commitDraftTask<TData>(
     task: async (ctx, task) => {
       const axios = await loadAxios(configDir);
 
-      const response = await axios.post(
-        'http://localhost:8119/api/eac/commit',
-        data
-      );
+      const response = await axios.post('eac/commit', data);
 
       const draftId = response.data;
 

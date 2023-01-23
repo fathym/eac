@@ -10,6 +10,7 @@
     "new-cap": "off",
     "node/no-extraneous-import": "off",
     "object-curly-spacing": ["error", "always"],
+    "operator-linebreak": "off",
     "quotes": "off",
     "semi": "off",
     "spaced-comment": [

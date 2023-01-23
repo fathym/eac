@@ -23,7 +23,7 @@ export interface FathymTaskContext extends AccessTokenTaskContext {
 }
 
 export interface AccessTokenTaskContext {
-  AccessToken: oauth2.AccessToken;
+  AccessToken?: oauth2.AccessToken;
 }
 
 export interface ActiveEnterpriseTaskContext {
@@ -35,7 +35,7 @@ export class SystemConfig {
 }
 
 export class UserAuthConfig {
-  public AccessToken!: oauth2.AccessToken;
+  public AccessToken?: oauth2.AccessToken;
 
   public ActiveEnterpriseLookup!: string;
 }
@@ -131,10 +131,12 @@ export async function getAuthorizationUrl(state?: any): Promise<any> {
 
 export async function loadAccessToken(
   configDir: string
-): Promise<oauth2.AccessToken> {
+): Promise<oauth2.AccessToken | undefined> {
   const config = await withUserAuthConfig(configDir);
 
-  return oauthCodeClient.createToken(config.AccessToken);
+  return config.AccessToken
+    ? oauthCodeClient.createToken(config.AccessToken)
+    : undefined;
 }
 
 export async function loadActieEnterpriseLookup(
@@ -191,7 +193,7 @@ export async function withSystemConfig(
 ): Promise<SystemConfig> {
   return withConfig<SystemConfig>('lcu.system.json', configDir, async (cfg) => {
     if (!cfg.APIRoot) {
-      cfg.APIRoot = `http://127.0.0.1:7119/api`;
+      cfg.APIRoot = `https://fcp-cli-stateflow.azurewebsites.net/api`;
     }
 
     if (action) {

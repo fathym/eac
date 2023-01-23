@@ -3,6 +3,7 @@ import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
+import { withUserAuthConfig } from '../../common/core-helpers';
 
 export default class Out extends FathymCommand<any> {
   static description =
@@ -24,14 +25,14 @@ export default class Out extends FathymCommand<any> {
       },
       {
         title: `Waiting for sign out`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = 'User Signed Out';
+        task: async (ctx, task) => {
+          await withUserAuthConfig(this.config.configDir, async (userAuth) => {
+            delete userAuth.AccessToken;
 
-              resolve(true);
-            }, 3000);
+            return userAuth;
           });
+
+          task.title = `Sign out completed successfully`;
         },
       },
     ];
