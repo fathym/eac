@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.38 win32-x64 node-v18.12.1
+@fathym/cli/0.0.39 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -90,7 +90,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.38/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.39/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -527,7 +527,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.38/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.39/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -675,11 +675,12 @@ Used to install, or walk a user through installing an LCU.
 
 ```
 USAGE
-  $ fathym lcu [LCU] [--ci] [-p <value>]
+  $ fathym lcu [LCU] [--ci] [-o <value>] [-p <value>]
 
 FLAGS
-  -p, --parameters=<value>  Specify values to use in the parameters list. ({ paramName: paramValue })
-  --ci                      Run command in yield mode for automation, to prevent prompts.
+  -o, --organization=<value>  The organization to deploy LCU code repositories to.
+  -p, --parameters=<value>    Specify values to use in the parameters list. ({ paramName: paramValue })
+  --ci                        Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used to install, or walk a user through installing an LCU.
@@ -688,7 +689,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.38/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.39/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
