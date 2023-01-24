@@ -50,32 +50,35 @@ export function commitChanges(commitMessage: string): ListrTask {
 
 export function ensureOrganization(
   configDir: string,
-  organization: string
+  organization?: string
 ): ListrTask<GitHubTaskContext> {
   return {
     title: `Ensuring organization set`,
     task: async (ctx, task) => {
       if (!organization) {
-        const orgs = await listGitHubOrganizations(configDir);
+        let orgs = await listGitHubOrganizations(configDir);
 
-        if (orgs) {
-          ctx.GitHubOrganization = (
+        orgs = orgs || [];
+
+        if (orgs.length > 0) {
+          organization = (
             await task.prompt({
-              type: 'List',
+              // type: 'Select',
+              type: 'Input',
               name: 'organization',
               message: 'Choose GitHub organization:',
-              choices: orgs,
-              validate: (v) => v,
+              // choices: orgs.map((org) => org.Name),
+              validate: (v: any) => Boolean(v),
             } as PromptOptions<true>)
           ).trim();
+        } else {
+          const user = await loadGitUsername();
+
+          organization = user;
         }
-
-        const user = await loadGitUsername();
-
-        organization = user;
       }
 
-      ctx.GitHubOrganization = organization;
+      ctx.GitHubOrganization = organization || '';
 
       task.title = `GitHub organization set to ${ctx.GitHubOrganization}`;
     },

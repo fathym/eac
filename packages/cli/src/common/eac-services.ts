@@ -1,9 +1,8 @@
-// import express from 'express';
-// import axios from 'axios';
 import { EaCEnterpriseDetails, EnterpriseAsCode } from '@semanticjs/common';
 import { ListrTask } from 'listr2';
 import loadAxios from './axios';
 import { withConfig } from './config-helpers';
+import { InstallLCURequest } from './InstallLCURequest';
 
 export class EaCDraft extends EnterpriseAsCode {}
 

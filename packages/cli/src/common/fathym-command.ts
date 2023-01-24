@@ -7,6 +7,8 @@ import {
   refreshAccessTokenTask,
 } from './core-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
+import path from 'node:path';
+import { readFile, readJson } from 'fs-extra';
 
 export abstract class FathymCommand<
   TContext extends FathymTaskContext

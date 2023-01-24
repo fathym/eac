@@ -7,5 +7,5 @@ export interface InstallLCURequest {
 
   ProjectCreate: boolean;
 
-  ProjectValue: string;
+  Project: string;
 }

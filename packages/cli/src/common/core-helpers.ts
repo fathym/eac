@@ -4,6 +4,8 @@ import oauth2 from 'simple-oauth2';
 import { ListrTask } from 'listr2';
 import { withConfig } from './config-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
+import path from 'node:path';
+import { readFile, readJson } from 'fs-extra';
 
 const tenant = 'fathymcloudprd';
 const clientId = '800193b8-028a-44dd-ba05-73e82ee8066a';
@@ -60,7 +62,7 @@ export function ensureActiveEnterprise<
       ctx.ActiveEnterpriseLookup = await loadActieEnterpriseLookup(configDir);
 
       if (ctx.ActiveEnterpriseLookup) {
-        task.title = `Active enterprise set to ${ctx.ActiveEnterpriseLookup}`;
+        task.title = `Active enterprise is currently set to ${ctx.ActiveEnterpriseLookup}`;
       } else {
         throw new Error(
           `Active enterprise must be set with 'fathym enterprises set' command.`
@@ -150,6 +152,28 @@ export async function loadApiRootUrl(configDir: string): Promise<string> {
   const config = await withSystemConfig(configDir);
 
   return config.APIRoot;
+}
+
+export async function loadFileAsJson<T>(
+  directory: string,
+  filename: string
+): Promise<T> {
+  const filePath = path.join(directory, filename);
+
+  const json = await readJson(filePath);
+
+  return json as T;
+}
+
+export async function loadFileAsString(
+  directory: string,
+  filename: string
+): Promise<string> {
+  const filePath = path.join(directory, filename);
+
+  const str = await readFile(filePath);
+
+  return String(str);
 }
 
 export async function refreshAccessTokenTask<

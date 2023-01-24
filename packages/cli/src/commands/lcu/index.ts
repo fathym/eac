@@ -1,7 +1,5 @@
 import { Flags } from '@oclif/core';
-import path from 'node:path';
 import { ListrTask, PromptOptions } from 'listr2';
-import { readFile, read, readJson } from 'fs-extra';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { runProc } from '../../common/task-helpers';
@@ -10,9 +8,12 @@ import {
   ActiveEnterpriseTaskContext,
   ensureActiveEnterprise,
   FathymTaskContext,
+  loadFileAsJson,
 } from '../../common/core-helpers';
 import loadAxios from '../../common/axios';
 import { GitHubTaskContext } from '../../common/git-helpers';
+import { ensureOrganization } from '../../common/git-tasks';
+import path from 'node:path';
 import { InstallLCURequest } from '../../common/InstallLCURequest';
 
 export interface InstallContext
@@ -37,6 +38,10 @@ export default class Install extends FathymCommand<InstallContext> {
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {
+    organization: Flags.string({
+      char: 'o',
+      description: 'The organization to deploy LCU code repositories to.',
+    }),
     parameters: Flags.string({
       char: 'p',
       description:
@@ -53,7 +58,7 @@ export default class Install extends FathymCommand<InstallContext> {
 
     const { lcu } = args;
 
-    const { ci, parameters } = flags;
+    const { ci, parameters, organization } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
@@ -61,7 +66,8 @@ export default class Install extends FathymCommand<InstallContext> {
       this.unpackLcu(),
       this.loadLcuConfig(),
       await this.confirmParameters(ci, parameters),
-      // this.prepareLcuEaCDraft(),
+      ensureOrganization(this.config.configDir, organization),
+      // // this.prepareLcuEaCDraft(),
       this.runInstallLcu(lcu),
       this.cleanupLcuFiles(),
     ];
@@ -86,7 +92,7 @@ export default class Install extends FathymCommand<InstallContext> {
     parameterDefaults?: string
   ): Promise<ListrTask<InstallContext>> {
     return {
-      title: 'Collecting Parameters',
+      title: 'Collecting LCU Parameters',
       skip: () => false,
       task: async (ctx, task) => {
         ctx.LCUParamAnswers = JSON.parse(parameterDefaults || '{}');
@@ -107,7 +113,7 @@ export default class Install extends FathymCommand<InstallContext> {
           }
         }
 
-        task.title = 'Thanks for inputting your parameters';
+        task.title = 'Thanks for inputing your parameters';
       },
     };
   }
@@ -149,33 +155,11 @@ export default class Install extends FathymCommand<InstallContext> {
     return response.data?.Model || [];
   }
 
-  protected async loadFileAsJson<T>(
-    pckgFiles: string,
-    filename: string
-  ): Promise<T> {
-    const filePath = path.join(pckgFiles, filename);
-
-    const json = await readJson(filePath);
-
-    return json as T;
-  }
-
-  protected async loadFileAsString(
-    pckgFiles: string,
-    filename: string
-  ): Promise<string> {
-    const filePath = path.join(pckgFiles, filename);
-
-    const str = await readFile(filePath);
-
-    return String(str);
-  }
-
   protected loadLcuConfig(): ListrTask<InstallContext> {
     return {
       title: `Loading LCU Config`,
       task: async (ctx) => {
-        ctx.LCUPackageConfig = await this.loadFileAsJson<LcuPackageConfig>(
+        ctx.LCUPackageConfig = await loadFileAsJson<LcuPackageConfig>(
           ctx.LCUPackageFiles,
           'lcu.json'
         );
@@ -188,7 +172,7 @@ export default class Install extends FathymCommand<InstallContext> {
     pckgFiles: string,
     paramSet: any
   ): Promise<{ Prompts: PromptOptions<true>[]; ParameterKeys: string[] }> {
-    const paramsCfg = await this.loadFileAsJson<any>(
+    const paramsCfg = await loadFileAsJson<any>(
       pckgFiles,
       lcuCfg.Parameters || './assets/parameters.json'
     );
@@ -239,7 +223,7 @@ export default class Install extends FathymCommand<InstallContext> {
   protected runInstallLcu(lcu: string): ListrTask<InstallContext> {
     return {
       title: `Installing LCU`,
-      task: async (ctx) => {
+      task: async (ctx, task) => {
         await this.installLcu(
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
@@ -248,7 +232,7 @@ export default class Install extends FathymCommand<InstallContext> {
             Organization: ctx.GitHubOrganization,
             Parameters: ctx.LCUParamAnswers,
             ProjectCreate: true,
-            ProjectValue: 'My New Test Project',
+            Project: 'My New Test Project',
           }
         );
       },
