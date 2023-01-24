@@ -9,8 +9,9 @@ import {
   listGitHubRepositories,
 } from '../../common/git-helpers';
 import { hasGitHubConnectionTask } from '../../common/git-tasks';
+import { FathymTaskContext } from '../../common/core-helpers';
 
-export default class Auth extends FathymCommand<any> {
+export default class Auth extends FathymCommand<FathymTaskContext> {
   static description = `Used for retrieving information about repositories including organizations, their repos and related branch information.`;
 
   static examples = [
@@ -27,38 +28,52 @@ export default class Auth extends FathymCommand<any> {
 
   static title = 'Git Authentication';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args, flags } = await this.parse(Auth);
 
     const { organization, repository, branch } = args;
 
+    this.log(organization);
+    this.log(repository);
+    this.log(branch);
+
     return [
-      hasGitHubConnectionTask(this.config.configDir),
+      hasGitHubConnectionTask(this.config.configDir) as any,
       {
         title: 'Listing organizations',
-        enabled: !organization,
+        enabled: organization === undefined,
         task: async (ctx, task) => {
           const orgs = await listGitHubOrganizations(this.config.configDir);
 
+          ctx.Fathym.Lookups = {
+            name: 'Organization',
+            lookups: [],
+          };
+
           orgs.forEach((org) => {
-            task.output = JSON.stringify(org);
+            ctx.Fathym.Lookups?.lookups.push(org.Name);
           });
 
-          task.title = 'Current user organizations:';
+          task.title = 'Loaded user organizations';
         },
         options: { persistentOutput: true },
       },
       {
         title: `Listing repositories for ${organization}`,
-        enabled: organization && !repository,
+        enabled: !!organization && repository === undefined,
         task: async (ctx, task) => {
           const repos = await listGitHubRepositories(
             this.config.configDir,
             organization
           );
 
+          ctx.Fathym.Lookups = {
+            name: 'Repository',
+            lookups: [],
+          };
+
           repos.forEach((repo) => {
-            task.output = JSON.stringify(repo);
+            ctx.Fathym.Lookups?.lookups.push(repo.Name);
           });
 
           task.title = `Current user repositories for ${organization}:`;
@@ -67,16 +82,21 @@ export default class Auth extends FathymCommand<any> {
       },
       {
         title: `Listing branches for ${organization}/${repository}`,
-        enabled: organization && repository && !branch,
+        enabled: !!organization && !!repository && branch === undefined,
         task: async (ctx, task) => {
-          const repos = await listGitHubBranches(
+          const branches = await listGitHubBranches(
             this.config.configDir,
             organization,
             repository
           );
 
-          repos.forEach((repo) => {
-            task.output = JSON.stringify(repo);
+          ctx.Fathym.Lookups = {
+            name: 'Branch',
+            lookups: [],
+          };
+
+          branches.forEach((branch) => {
+            ctx.Fathym.Lookups?.lookups.push(branch.Name);
           });
 
           task.title = `Current user branches for ${organization}/${repository}:`;

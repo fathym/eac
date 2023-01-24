@@ -61,7 +61,7 @@ export async function hasGitHubConnection(configDir: string): Promise<boolean> {
 
   const response = await axios.get(`github/connection/valid`);
 
-  return response.data?.Model?.State?.Code === 0 || false;
+  return response.data?.Status?.Code === 0 || false;
 }
 
 export async function listGitHubBranches(

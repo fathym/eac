@@ -4,7 +4,6 @@ import oauth2 from 'simple-oauth2';
 import { ListrTask } from 'listr2';
 import { withConfig } from './config-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
-import { DisplayLookup } from './DisplayLookup';
 
 const tenant = 'fathymcloudprd';
 const clientId = '800193b8-028a-44dd-ba05-73e82ee8066a';
@@ -16,7 +15,7 @@ export interface FathymTaskContext extends AccessTokenTaskContext {
   Fathym: {
     Instructions: ClosureInstruction[];
 
-    Lookups: { name: string; lookups: DisplayLookup[] } | undefined;
+    Lookups: { name: string; lookups: string[] } | undefined;
 
     Result: string;
   };
@@ -185,6 +184,21 @@ export async function refreshAccessToken(
   });
 
   return accessToken;
+}
+
+export async function setApiRoot(
+  configDir: string,
+  env: 'prod' | 'local'
+): Promise<void> {
+  await withSystemConfig(configDir, async (cfg) => {
+    if (env === 'prod') {
+      cfg.APIRoot = `https://fcp-cli-stateflow.azurewebsites.net/api`;
+    } else if (env === 'local') {
+      cfg.APIRoot = `http://127.0.0.1:7119/api`;
+    }
+
+    return cfg;
+  });
 }
 
 export async function withSystemConfig(

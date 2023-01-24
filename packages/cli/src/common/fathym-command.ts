@@ -7,7 +7,6 @@ import {
   refreshAccessTokenTask,
 } from './core-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
-import { DisplayLookup } from './DisplayLookup';
 
 export abstract class FathymCommand<
   TContext extends FathymTaskContext
@@ -115,15 +114,13 @@ export abstract class FathymCommand<
 
   protected abstract loadTasks(): Promise<ListrTask<TContext>[]>;
 
-  protected lookups(name: string, lookups: DisplayLookup[]): void {
+  protected lookups(name: string, displays: string[]): void {
     this.log();
 
-    this.log(
-      this.indent(color.underline(`{Name} ({${color.blueBright(name)}})`))
-    );
+    this.log(this.indent(color.underline(`${name}`)));
 
-    lookups.forEach((ent) => {
-      this.log(this.indent(`${ent.Name} (${color.blueBright(ent.Lookup)})`));
+    displays.forEach((display) => {
+      this.log(this.indent(display));
     });
   }
 

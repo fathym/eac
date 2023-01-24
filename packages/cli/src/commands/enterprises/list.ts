@@ -2,7 +2,6 @@ import { color } from '@oclif/color';
 import { ListrTask } from 'listr2';
 import { EaCEnterpriseDetails } from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
-import { DisplayLookup } from '../../common/DisplayLookup';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import loadAxios from '../../common/axios';
 import {
@@ -52,14 +51,11 @@ value in '()' above.`,
           const ents = await this.listEnterprises(this.config.configDir);
 
           const entLookups = ents.map((ent) => {
-            return {
-              Lookup: ent.Lookup,
-              Name: ent.Name,
-            } as DisplayLookup;
+            return `${ent.Name} (${color.blueBright(ent.Lookup)})`;
           });
 
           ctx.Fathym.Lookups = {
-            name: 'ent-lookup',
+            name: `Name (${color.blueBright('ent-lookup')})`,
             lookups: entLookups,
           };
 
