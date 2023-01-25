@@ -33,10 +33,6 @@ export default class Auth extends FathymCommand<FathymTaskContext> {
 
     const { organization, repository, branch } = args;
 
-    this.log(organization);
-    this.log(repository);
-    this.log(branch);
-
     return [
       hasGitHubConnectionTask(this.config.configDir) as any,
       {

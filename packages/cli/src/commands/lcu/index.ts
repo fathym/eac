@@ -65,7 +65,7 @@ export default class Install extends FathymCommand<InstallContext> {
       this.downloadLcu(lcu),
       this.unpackLcu(),
       this.loadLcuConfig(),
-      await this.confirmParameters(ci, parameters),
+      this.confirmParameters(ci, parameters),
       ensureOrganization(this.config.configDir, organization),
       // // this.prepareLcuEaCDraft(),
       this.runInstallLcu(lcu),
@@ -87,10 +87,10 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
-  protected async confirmParameters(
+  protected confirmParameters(
     ci: boolean,
     parameterDefaults?: string
-  ): Promise<ListrTask<InstallContext>> {
+  ): ListrTask<InstallContext> {
     return {
       title: 'Collecting LCU Parameters',
       skip: () => false,

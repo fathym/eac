@@ -6,6 +6,8 @@ import { withConfig } from './config-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
 import path from 'node:path';
 import { readFile, readJson } from 'fs-extra';
+import loadAxios from './axios';
+// import { EnterpriseAsCode } from '@semanticjs/common';
 
 const tenant = 'fathymcloudprd';
 const clientId = '800193b8-028a-44dd-ba05-73e82ee8066a';
@@ -25,6 +27,10 @@ export interface FathymTaskContext extends AccessTokenTaskContext {
 
 export interface AccessTokenTaskContext {
   AccessToken?: oauth2.AccessToken;
+}
+
+export interface EaCTaskContext {
+  EaC: any; // EaC: EnterpriseAsCode;
 }
 
 export interface ActiveEnterpriseTaskContext {
@@ -152,6 +158,28 @@ export async function loadApiRootUrl(configDir: string): Promise<string> {
   const config = await withSystemConfig(configDir);
 
   return config.APIRoot;
+}
+
+export async function loadEaC(
+  configDir: string,
+  entLookup: string
+): Promise<any[]> {
+  const axios = await loadAxios(configDir);
+
+  const response = await axios.get(`${entLookup}/eac`);
+
+  return response.data?.Model || [];
+}
+
+export function loadEaCTask<
+  TContext extends EaCTaskContext & ActiveEnterpriseTaskContext
+>(configDir: string): ListrTask<TContext> {
+  return {
+    title: `Load EaC for active enterprise`,
+    task: async (ctx, task) => {
+      ctx.EaC = await loadEaC(configDir, ctx.ActiveEnterpriseLookup);
+    },
+  };
 }
 
 export async function loadFileAsJson<T>(

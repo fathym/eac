@@ -63,11 +63,11 @@ export function ensureOrganization(
         if (orgs.length > 0) {
           organization = (
             await task.prompt({
-              // type: 'Select',
-              type: 'Input',
+              type: 'Select',
+              // type: 'Input',
               name: 'organization',
               message: 'Choose GitHub organization:',
-              // choices: orgs.map((org) => org.Name),
+              choices: orgs.map((org) => org.Name),
               validate: (v: any) => Boolean(v),
             } as PromptOptions<true>)
           ).trim();
