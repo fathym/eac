@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.39 win32-x64 node-v18.12.1
+@fathym/cli/0.0.40 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -46,6 +46,7 @@ USAGE
 * [`fathym eac projects applications add`](#fathym-eac-projects-applications-add)
 * [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
 * [`fathym eac projects create`](#fathym-eac-projects-create)
+* [`fathym eac projects list`](#fathym-eac-projects-list)
 * [`fathym eac projects modifiers add`](#fathym-eac-projects-modifiers-add)
 * [`fathym eac projects set APPLOOKUP`](#fathym-eac-projects-set-applookup)
 * [`fathym eac sources create`](#fathym-eac-sources-create)
@@ -90,7 +91,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.39/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.40/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -380,6 +381,24 @@ EXAMPLES
   $ fathym eac projects create
 ```
 
+## `fathym eac projects list`
+
+Used for creating a new project.
+
+```
+USAGE
+  $ fathym eac projects list [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for creating a new project.
+
+EXAMPLES
+  $ fathym eac projects list
+```
+
 ## `fathym eac projects modifiers add`
 
 Used for adding a DFS modifier to a project.
@@ -527,7 +546,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.39/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.40/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -675,12 +694,13 @@ Used to install, or walk a user through installing an LCU.
 
 ```
 USAGE
-  $ fathym lcu [LCU] [--ci] [-o <value>] [-p <value>]
+  $ fathym lcu [LCU] [--ci] [-o <value>] [--parameters <value>] [-p <value>]
 
 FLAGS
   -o, --organization=<value>  The organization to deploy LCU code repositories to.
-  -p, --parameters=<value>    Specify values to use in the parameters list. ({ paramName: paramValue })
+  -p, --project=<value>       The project to deploy the LCU into.
   --ci                        Run command in yield mode for automation, to prevent prompts.
+  --parameters=<value>        Specify values to use in the parameters list: ({ paramName: paramValue })
 
 DESCRIPTION
   Used to install, or walk a user through installing an LCU.
@@ -689,7 +709,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.39/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.40/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
