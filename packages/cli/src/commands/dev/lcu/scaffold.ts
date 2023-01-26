@@ -64,7 +64,7 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
         task: async (ctx, task) => {
           task.title = `Initializing LCU package ${name}`;
 
-          await runProc('npx', ['create-lcu-package', name, directory]);
+          await runProc('npx', ['@fathym/create-lcu-package', name, directory]);
         },
       },
     ];
