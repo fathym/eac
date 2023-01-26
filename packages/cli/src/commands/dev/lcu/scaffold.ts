@@ -24,7 +24,6 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
     directory: Flags.string({
       char: 'd',
       description: 'The directory to initialize and scaffold.',
-      required: true,
     }),
   };
 
