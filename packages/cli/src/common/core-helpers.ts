@@ -1,7 +1,8 @@
+import { color } from '@oclif/color';
 import express from 'express';
 import oauth2 from 'simple-oauth2';
 // import keytar from 'keytar';
-import { ListrTask } from 'listr2';
+import { ListrTask, PromptOptions } from 'listr2';
 import { withConfig } from './config-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
 import path from 'node:path';
@@ -31,6 +32,10 @@ export interface AccessTokenTaskContext {
 
 export interface EaCTaskContext {
   EaC: any; // EaC: EnterpriseAsCode;
+}
+
+export interface ProjectTaskContext {
+  ProjectLookup: string;
 }
 
 export interface ActiveEnterpriseTaskContext {
@@ -74,6 +79,47 @@ export function ensureActiveEnterprise<
           `Active enterprise must be set with 'fathym enterprises set' command.`
         );
       }
+    },
+  };
+}
+
+export function ensureProject(
+  project?: string
+): ListrTask<ProjectTaskContext & EaCTaskContext> {
+  return {
+    title: `Ensuring project set`,
+    task: async (ctx, task) => {
+      if (!project) {
+        const projects = Object.keys(ctx.EaC?.Projects || {}) || [];
+
+        projects.push('');
+
+        project = (
+          await task.prompt({
+            type: 'Select',
+            // type: 'Input',
+            name: 'project',
+            message: 'Choose EaC Project:',
+            choices: projects.map((proj) => {
+              return {
+                message: `${
+                  ctx.EaC.Projects[proj]?.Project?.Name || '-Create new-'
+                }`, //  (${color.blueBright(proj)})
+                name: proj,
+              };
+            }),
+          } as PromptOptions<true>)
+        ).trim();
+      }
+
+      project = project === '-Create new-' ? '' : project;
+
+      ctx.ProjectLookup = project || '';
+
+      task.title = `Selected project is ${
+        ctx.EaC.Projects[ctx.ProjectLookup]?.Project?.Name ||
+        'Creating New Project'
+      }`; //  (${ctx.ProjectLookup})
     },
   };
 }

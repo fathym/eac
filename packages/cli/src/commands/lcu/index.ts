@@ -7,8 +7,11 @@ import { LcuPackageConfig } from '../../common/LcuPackageConfig';
 import {
   ActiveEnterpriseTaskContext,
   ensureActiveEnterprise,
+  ensureProject,
   FathymTaskContext,
+  loadEaCTask,
   loadFileAsJson,
+  ProjectTaskContext,
 } from '../../common/core-helpers';
 import loadAxios from '../../common/axios';
 import { GitHubTaskContext } from '../../common/git-helpers';
@@ -19,7 +22,8 @@ import { InstallLCURequest } from '../../common/InstallLCURequest';
 export interface InstallContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
-    GitHubTaskContext {
+    GitHubTaskContext,
+    ProjectTaskContext {
   EaCDraft: any;
 
   LCUPackageConfig: LcuPackageConfig;
@@ -43,9 +47,12 @@ export default class Install extends FathymCommand<InstallContext> {
       description: 'The organization to deploy LCU code repositories to.',
     }),
     parameters: Flags.string({
-      char: 'p',
       description:
-        'Specify values to use in the parameters list. ({ paramName: paramValue })',
+        'Specify values to use in the parameters list: ({ paramName: paramValue })',
+    }),
+    project: Flags.string({
+      char: 'p',
+      description: 'The project to deploy the LCU into.',
     }),
   };
 
@@ -58,15 +65,17 @@ export default class Install extends FathymCommand<InstallContext> {
 
     const { lcu } = args;
 
-    const { ci, parameters, organization } = flags;
+    const { ci, parameters, organization, project } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
+      loadEaCTask(this.config.configDir),
       this.downloadLcu(lcu),
       this.unpackLcu(),
       this.loadLcuConfig(),
       this.confirmParameters(ci, parameters),
       ensureOrganization(this.config.configDir, organization),
+      ensureProject(project),
       // // this.prepareLcuEaCDraft(),
       this.runInstallLcu(lcu),
       this.cleanupLcuFiles(),
@@ -231,8 +240,8 @@ export default class Install extends FathymCommand<InstallContext> {
             LCUPackage: lcu,
             Organization: ctx.GitHubOrganization,
             Parameters: ctx.LCUParamAnswers,
-            ProjectCreate: true,
-            Project: 'My New Test Project',
+            ProjectCreate: !ctx.ProjectLookup,
+            Project: ctx.ProjectLookup,
           }
         );
       },
