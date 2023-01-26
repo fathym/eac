@@ -20,22 +20,52 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
     '<%= config.bin %> <%= command.id %> dev lcu scaffold --help',
   ];
 
-  static flags = {};
+  static flags = {
+    directory: Flags.string({
+      char: 'd',
+      description: 'The directory to initialize and scaffold.',
+      required: true,
+    }),
+  };
 
-  static args = [{ name: 'name', required: true }];
+  static args = [{ name: 'name', required: false }];
 
   static title = 'Seed LCU';
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
-    const { args } = await this.parse(Scaffold);
+    const { args, flags } = await this.parse(Scaffold);
 
-    const { name } = args;
+    let { name } = args;
+
+    let { directory } = flags;
+
+    directory = directory || './';
 
     return [
       {
-        title: `Initializing LCU with npm`,
-        task: async (ctx) => {
-          await runProc('npm', ['init', '-y', '@fathym/lcu-package']);
+        title: `Ensuring package name`,
+        task: async (ctx, task) => {
+          if (!name) {
+            const remoteUrl = await runProc('git', [
+              'remote',
+              'get-url',
+              'origin',
+            ]);
+
+            const match = remoteUrl.match(
+              /http.*:\/\/.*\/(?<org>.*)\/(?<repo>.*)\.git/
+            );
+
+            name = `@${match![1]}/${match![2]}`;
+          }
+        },
+      },
+      {
+        title: `Initializing LCU package`,
+        task: async (ctx, task) => {
+          task.title = `Initializing LCU package ${name}`;
+
+          await runProc('npx', ['create-lcu-package', name, directory]);
         },
       },
     ];
