@@ -86,12 +86,14 @@ export default class Install extends FathymCommand<InstallContext> {
     return {
       title: `Cleaning up LCU install files`,
       task: async (ctx) => {
-        await runProc('npx', [
-          'rimraf',
-          ctx.LCUPackageFiles.replace('\\package', ''),
-        ]);
+        // await runProc('npx', [
+        //   'rimraf',
+        //   ctx.LCUPackageFiles.replace('\\package', ''),
+        // ]);
 
-        await runProc('npx', ['rimraf', ctx.LCUPackageTarball]);
+        // await runProc('npx', ['rimraf', ctx.LCUPackageTarball]);
+
+        await runProc('npx', ['rimraf', './lcus']);
       },
     };
   }
