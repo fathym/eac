@@ -13,10 +13,12 @@ import {
   setApiRoot,
 } from '../../../common/core-helpers';
 
-export default class DevLCUSeed extends FathymCommand<FathymTaskContext> {
+export default class Scaffold extends FathymCommand<FathymTaskContext> {
   static description = 'Used to scaffold a new LCU.';
 
-  static examples = ['<%= config.bin %> <%= command.id %> dev lcu seed --help'];
+  static examples = [
+    '<%= config.bin %> <%= command.id %> dev lcu scaffold --help',
+  ];
 
   static flags = {};
 
@@ -25,7 +27,7 @@ export default class DevLCUSeed extends FathymCommand<FathymTaskContext> {
   static title = 'Seed LCU';
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
-    const { args } = await this.parse(DevLCUSeed);
+    const { args } = await this.parse(Scaffold);
 
     const { name } = args;
 
@@ -33,7 +35,7 @@ export default class DevLCUSeed extends FathymCommand<FathymTaskContext> {
       {
         title: `Initializing LCU with npm`,
         task: async (ctx) => {
-          await runProc('npm', ['init', '-y']);
+          await runProc('npm', ['init', '-y', '@fathym/lcu-package']);
         },
       },
     ];
