@@ -36,7 +36,7 @@ export function confirmGitRepo<T>(): ListrTask<T> {
   };
 }
 
-export function commitChanges(commitMessage: string): ListrTask {
+export function commitGitChanges(commitMessage: string): ListrTask {
   return {
     title: 'Committing uncommitted changes',
     skip: () => hasCommittedChanges(),

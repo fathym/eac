@@ -158,10 +158,7 @@ export default class Install extends FathymCommand<InstallContext> {
   ): Promise<void> {
     const axios = await loadAxios(configDir);
 
-    const response = await axios.post(
-      `${entLookup}/cli/lcu/install`,
-      installReq
-    );
+    const response = await axios.post(`${entLookup}/lcu/install`, installReq);
 
     return response.data?.Model || [];
   }

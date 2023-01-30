@@ -9,6 +9,7 @@ import {
   FathymTaskContext,
   loadApiRootUrl,
 } from '../../common/core-helpers';
+import { listEnterprises } from '../../common/eac-services';
 
 export default class List extends FathymCommand<FathymTaskContext> {
   static description = 'Used to list the current users available enterprises.';
@@ -33,22 +34,12 @@ value in '()' above.`,
     ];
   }
 
-  protected async listEnterprises(
-    configDir: string
-  ): Promise<(EaCEnterpriseDetails & { Lookup: string })[]> {
-    const axios = await loadAxios(configDir);
-
-    const response = await axios.get(`user/enterprises`);
-
-    return response.data?.Model || [];
-  }
-
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     return [
       {
         title: `Loading user enterprises`,
         task: async (ctx, task) => {
-          const ents = await this.listEnterprises(this.config.configDir);
+          const ents = await listEnterprises(this.config.configDir);
 
           const entLookups = ents.map((ent) => {
             return `${ent.Name} (${color.blueBright(ent.Lookup)})`;

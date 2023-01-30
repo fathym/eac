@@ -27,7 +27,8 @@
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-not-found": "^2.3.13",
     "@oclif/plugin-plugins": "^2.1.9",
-    "@semanticjs/common": "^0.64.0",
+    "@oclif/plugin-warn-if-update-available": "^2.0.24",
+    "@semanticjs/common": "^0.65.0",
     "axios": "^1.2.2",
     "enquirer": "^2.3.6",
     "express": "^4.18.2",
@@ -69,7 +70,8 @@
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-not-found",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-plugins",
+      "@oclif/plugin-warn-if-update-available"
     ],
     "flexibleTaxonomy": true,
     "hooks": {
@@ -83,13 +85,18 @@
       "enterprises": {
         "description": "Commands used for interacting with the users available enterprises."
       }
+    },
+    "warn-if-update-available": {
+      "timeoutInDays": 1,
+      "message": "<%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>."
     }
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
     "deploy": "npm run fathym git && npm version patch && npm run deploy:all && npm run deploy:refresh",
     "deploy:all": "npm publish --access public",
-    "deploy:refresh": "node -e \"setTimeout(()=>{},500)\" && npm run deploy:commit && npm i @fathym/cli@latest -g",
+    "deploy:refresh": "node -e \"setTimeout(()=>{},500)\" && npm run deploy:commit",
+    "deploy:_refresh": "node -e \"setTimeout(()=>{},500)\" && npm run deploy:commit && npm i @fathym/cli@latest -g",
     "deploy:commit": "fathym git \"Deploy complete, syncing versions and readme updates\"",
     "fathym": "npm run build && \"./bin/run.cmd\"",
     "lint": "eslint . --ext .ts --config .eslintrc",

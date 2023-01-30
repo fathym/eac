@@ -1,0 +1,39 @@
+import { Flags } from '@oclif/core';
+import { color } from '@oclif/color';
+import { ListrTask, PromptOptions } from 'listr2';
+import {} from '@semanticjs/common';
+import { FathymTaskContext } from '../../common/core-helpers';
+import { FathymCommand } from '../../common/fathym-command';
+import { downloadFile } from '../../common/eac-services';
+
+export default class Download extends FathymCommand<FathymTaskContext> {
+  static description = `Used for downloading a file.`;
+
+  static examples = ['<%= config.bin %> <%= command.id %> {url} {outputFile}'];
+
+  static flags = {};
+
+  static args = [
+    { name: 'url', required: true },
+    { name: 'outputFile', required: true },
+  ];
+
+  static title = 'Download File';
+
+  protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
+    const { args } = await this.parse(Download);
+
+    const { outputFile, url } = args;
+
+    return [
+      {
+        title: `Download file`,
+        task: async (ctx, task) => {
+          task.output = `Downloading ${url} to ${outputFile}`;
+
+          await downloadFile(url, outputFile);
+        },
+      },
+    ];
+  }
+}

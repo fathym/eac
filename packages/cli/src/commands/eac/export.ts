@@ -4,6 +4,7 @@ import { EnterpriseAsCode } from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { FathymTaskContext } from '../../common/core-helpers';
+import { withEaCDraft } from '../../common/eac-services';
 
 export default class Export extends FathymCommand<FathymTaskContext> {
   static description = `Used for exporting the EaC.`;
@@ -20,16 +21,12 @@ export default class Export extends FathymCommand<FathymTaskContext> {
     return [
       {
         title: `Exporting EaC`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `EaC exported`;
+        task: async (ctx, task) => {
+          task.title = `EaC exported`;
 
-              ctx.Fathym.Result = JSON.stringify({} as EnterpriseAsCode);
+          const eacDraft = await withEaCDraft(this.config.configDir);
 
-              resolve(true);
-            }, 3000);
-          });
+          ctx.Fathym.Result = JSON.stringify(eacDraft, undefined, 2);
         },
       },
     ];

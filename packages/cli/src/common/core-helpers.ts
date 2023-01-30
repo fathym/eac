@@ -8,6 +8,7 @@ import { ClosureInstruction } from './ClosureInstruction';
 import path from 'node:path';
 import { readFile, readJson } from 'fs-extra';
 import loadAxios from './axios';
+import { EnterpriseAsCode } from '@semanticjs/common';
 // import { EnterpriseAsCode } from '@semanticjs/common';
 
 const tenant = 'fathymcloudprd';
@@ -31,7 +32,7 @@ export interface AccessTokenTaskContext {
 }
 
 export interface EaCTaskContext {
-  EaC: any; // EaC: EnterpriseAsCode;
+  EaC: EnterpriseAsCode;
 }
 
 export interface ProjectTaskContext {
@@ -64,9 +65,15 @@ const oauthCodeClient = new oauth2.AuthorizationCode({
   },
 });
 
+export function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 export function ensureActiveEnterprise<
   TContext extends ActiveEnterpriseTaskContext
->(configDir: string, refreshWindow = 300): ListrTask<TContext> {
+>(configDir: string): ListrTask<TContext> {
   return {
     title: `Ensuring active enterprise`,
     task: async (ctx, task) => {
@@ -103,7 +110,7 @@ export function ensureProject(
             choices: projects.map((proj) => {
               return {
                 message: `${
-                  ctx.EaC.Projects[proj]?.Project?.Name || '-Create new-'
+                  ctx.EaC?.Projects![proj]?.Project?.Name || '-Create new-'
                 }`, //  (${color.blueBright(proj)})
                 name: proj,
               };
@@ -117,7 +124,7 @@ export function ensureProject(
       ctx.ProjectLookup = project || '';
 
       task.title = `Selected project is ${
-        ctx.EaC.Projects[ctx.ProjectLookup]?.Project?.Name ||
+        ctx.EaC.Projects![ctx.ProjectLookup]?.Project?.Name ||
         'Creating New Project'
       }`; //  (${ctx.ProjectLookup})
     },
@@ -209,7 +216,7 @@ export async function loadApiRootUrl(configDir: string): Promise<string> {
 export async function loadEaC(
   configDir: string,
   entLookup: string
-): Promise<any[]> {
+): Promise<EnterpriseAsCode> {
   const axios = await loadAxios(configDir);
 
   const response = await axios.get(`${entLookup}/eac`);

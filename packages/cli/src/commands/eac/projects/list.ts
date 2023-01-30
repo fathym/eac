@@ -11,13 +11,13 @@ import {
   loadEaCTask,
 } from '../../../common/core-helpers';
 
-interface CreateContext
+interface ListContext
   extends FathymTaskContext,
     EaCTaskContext,
     ActiveEnterpriseTaskContext {}
 
-export default class Create extends FathymCommand<CreateContext> {
-  static description = `Used for creating a new project.`;
+export default class List extends FathymCommand<ListContext> {
+  static description = `Used for listing available projects.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -27,8 +27,8 @@ export default class Create extends FathymCommand<CreateContext> {
 
   static title = 'List Projects';
 
-  protected async loadTasks(): Promise<ListrTask<CreateContext>[]> {
-    // const { args } = await this.parse(Create);
+  protected async loadTasks(): Promise<ListrTask<ListContext>[]> {
+    // const { args } = await this.parse(List);
 
     return [
       ensureActiveEnterprise(this.config.configDir) as ListrTask,
@@ -42,7 +42,7 @@ export default class Create extends FathymCommand<CreateContext> {
             name: `Project (${color.blueBright('{projLookup}')})`,
             lookups: projects.map(
               (proj) =>
-                `${ctx.EaC.Projects[proj].Project.Name} (${color.blueBright(
+                `${ctx.EaC.Projects![proj].Project!.Name} (${color.blueBright(
                   proj
                 )})`
             ),

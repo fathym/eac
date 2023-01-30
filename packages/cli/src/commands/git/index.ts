@@ -4,7 +4,7 @@ import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
-  commitChanges,
+  commitGitChanges,
   confirmGitRepo,
   fetchChange,
   fetchPrune,
@@ -44,7 +44,7 @@ export default class Commit extends FathymCommand<any> {
 
     return [
       confirmGitRepo(),
-      commitChanges(message),
+      commitGitChanges(message),
       fetchChange(),
       rebase ? rebaseIntegration() : mergeIntegration(),
       pull(),

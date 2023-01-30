@@ -4,7 +4,7 @@ import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
-  commitChanges,
+  commitGitChanges,
   confirmGitRepo,
   fetchPrune,
   pushOrigin,
@@ -38,7 +38,7 @@ export default class Hotfix extends FathymCommand<any> {
 
     return [
       confirmGitRepo(),
-      commitChanges(message),
+      commitGitChanges(message),
       {
         title: 'Create new hotfix branch',
         task: async () => {
