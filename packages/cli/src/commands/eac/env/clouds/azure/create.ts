@@ -53,173 +53,176 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      {
-        title: `Checking Azure CLI is installed`,
-        enabled: generate,
-        task: async (ctx, task) => {
-          try {
-            await runProc('az', []);
+      this.azureCliInstall(generate),
+      this.setAzureSub(),
+      this.createCloudConnection(),
+    ];
+  }
 
-            ctx.AzureCLIInstalled = true;
-          } catch {
-            task.title = 'Installing Azure CLI';
+  protected azureCliInstall(
+    generate: boolean
+  ): ListrTask<AzureCreateTaskContext> {
+    return {
+      title: `Checking Azure CLI is installed`,
+      enabled: generate,
+      task: async (ctx, task) => {
+        try {
+          await runProc('az', []);
 
-            task.output = 'Downloading the Azure CLI installer';
+          ctx.AzureCLIInstalled = true;
+        } catch {
+          task.title = 'Installing Azure CLI';
 
-            await downloadFile(
-              'https://aka.ms/installazurecliwindows',
-              'azure-cli.msi'
-            );
+          task.output = 'Downloading the Azure CLI installer';
 
-            task.output =
-              'Laucnhing the Azure CLI installer.  Completing in the background.';
+          await downloadFile(
+            'https://aka.ms/installazurecliwindows',
+            'azure-cli.msi'
+          );
 
-            await runProc('msiexec', ['/q', '/i', 'azure-cli.msi']);
+          task.output =
+            'Laucnhing the Azure CLI installer.  Completing in the background.';
 
-            await delay(2000);
+          await runProc('msiexec', ['/q', '/i', 'azure-cli.msi']);
 
-            task.title = 'Azure CLI was successfully installed';
+          await delay(2000);
 
-            ctx.AzureCLIInstalled = true;
-          }
-        },
+          task.title = 'Azure CLI was successfully installed';
+
+          ctx.AzureCLIInstalled = true;
+        }
       },
-      {
-        title: `Setting Azure Subscription`,
-        enabled: (ctx) => ctx.AzureCLIInstalled,
-        task: (ctx, task) => {
-          return task.newListr((parent) => [
-            {
-              title: 'Ensure login with Azure CLI',
-              task: async (ctx, task) => {
-                try {
-                  await runProc('az', ['account', 'show']);
+    };
+  }
 
-                  task.title = 'Azure CLI already authenticated';
-                } catch {
-                  task.output = color.yellow(
-                    'Opening a login form in your browser, complete sign in there, then return.'
-                  );
+  protected createCloudConnection(): ListrTask<AzureCreateTaskContext, any> {
+    return {
+      title: 'Creat cloud subscription connection',
+      enabled: (ctx) => ctx.AzureCLIInstalled,
+      task: async (ctx, task) => {
+        const svcPrincStr = await runProc('az', [
+          'ad',
+          'sp',
+          'create-for-rbac',
+          // `--name "${ctx.SubscriptionID}"`,
+          '--role Contributor',
+          `--scopes /subscriptions/${ctx.SubscriptionID}`,
+          // `--tenant ${ctx.TenantID}`,
+        ]);
 
-                  await runProc('az', ['login']);
-                }
-              },
-            },
-            {
-              title: 'Select Azure Subscription',
-              task: async (ctx, task) => {
-                const subsList: {
-                  id: string;
-                  name: string;
-                  tenantId: string;
-                }[] = JSON.parse(
-                  (await runProc('az', ['account', 'list'])) || '[]'
-                );
+        const svcPrinc = JSON.parse(svcPrincStr);
 
-                ctx.SubscriptionID = (
-                  await task.prompt({
-                    type: 'Select',
-                    // type: 'Input',
-                    name: 'subId',
-                    message: 'Choose Azure subscription:',
-                    choices: subsList.map((account) => {
-                      return {
-                        message: `${account.name} (${color.blueBright(
-                          account.id
-                        )})`,
-                        name: account.id,
-                      };
-                    }),
-                    validate: (v: any) => Boolean(v),
-                  } as PromptOptions<true>)
-                ).trim();
+        const azCloud: EaCCloudDetails = {
+          Name: ctx.SubscriptionName,
+          Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
+          ApplicationID: svcPrinc.appId,
+          AuthKey: svcPrinc.password,
+          SubscriptionID: ctx.SubscriptionID,
+          TenantID: svcPrinc.tenant,
+          Type: 'Azure',
+        };
 
-                const sub = subsList.find((al) => al.id === ctx.SubscriptionID);
+        await withEaCDraft(
+          this.config.configDir,
+          ctx.ActiveEnterpriseLookup,
+          async (draft) => {
+            if (!draft.EaC!.Environments) {
+              draft.EaC!.Environments = {};
+            }
 
-                ctx.TenantID = sub?.tenantId || '';
-
-                ctx.SubscriptionName = sub?.name || ctx.SubscriptionID;
-
-                task.title = `Azure subscription selected: ${ctx.SubscriptionName}`;
-
-                await runProc('az', [
-                  'account',
-                  'set',
-                  `--subscription ${ctx.SubscriptionID}`,
-                ]);
-
-                parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
-              },
-            },
-          ]);
-        },
-      },
-      {
-        title: 'Create new subscription service principal',
-        enabled: (ctx) => ctx.AzureCLIInstalled,
-        task: async (ctx, task) => {
-          // const svcPrincName = (
-          //   await task.prompt({
-          //     type: 'Input',
-          //     name: 'svcPrincName',
-          //     message: `Choose name for service principal:`,
-          //     validate: (v: any) => Boolean(v),
-          //   } as PromptOptions<true>)
-          // ).trim();
-
-          const svcPrincStr = await runProc('az', [
-            'ad',
-            'sp',
-            'create-for-rbac',
-            // `--name "${ctx.SubscriptionID}"`,
-            '--role Contributor',
-            `--scopes /subscriptions/${ctx.SubscriptionID}`,
-            // `--tenant ${ctx.TenantID}`,
-          ]);
-
-          const svcPrinc = JSON.parse(svcPrincStr);
-
-          const azCloud: EaCCloudDetails = {
-            Name: ctx.SubscriptionName,
-            Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
-            ApplicationID: svcPrinc.appId,
-            AuthKey: svcPrinc.password,
-            SubscriptionID: ctx.SubscriptionID,
-            TenantID: svcPrinc.tenant,
-            Type: 'Azure',
-          };
-
-          await withEaCDraft(
-            this.config.configDir,
-            ctx.ActiveEnterpriseLookup,
-            async (draft) => {
-              if (!draft.EaC!.Environments) {
-                draft.EaC!.Environments = {};
-              }
-
-              if (
-                !draft.EaC!.Environments![
-                  ctx.EaC.Enterprise!.PrimaryEnvironment!
-                ]
-              ) {
-                draft.EaC!.Environments![
-                  ctx.EaC.Enterprise!.PrimaryEnvironment!
-                ] = {};
-              }
-
+            if (
+              !draft.EaC!.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
+            ) {
               draft.EaC!.Environments![
                 ctx.EaC.Enterprise!.PrimaryEnvironment!
-              ].Clouds = {
-                [randomUUID()]: {
-                  Cloud: azCloud,
-                },
-              };
-
-              return draft;
+              ] = {};
             }
-          );
-        },
+
+            draft.EaC!.Environments![
+              ctx.EaC.Enterprise!.PrimaryEnvironment!
+            ].Clouds = {
+              [randomUUID()]: {
+                Cloud: azCloud,
+              },
+            };
+
+            return draft;
+          }
+        );
       },
-    ];
+    };
+  }
+
+  protected setAzureSub(): ListrTask<AzureCreateTaskContext, any> {
+    return {
+      title: `Setting Azure Subscription`,
+      enabled: (ctx) => ctx.AzureCLIInstalled,
+      task: (ctx, task) => {
+        return task.newListr((parent) => [
+          {
+            title: 'Ensure login with Azure CLI',
+            task: async (ctx, task) => {
+              try {
+                await runProc('az', ['account', 'show']);
+
+                task.title = 'Azure CLI already authenticated';
+              } catch {
+                task.output = color.yellow(
+                  'Opening a login form in your browser, complete sign in there, then return.'
+                );
+
+                await runProc('az', ['login']);
+              }
+            },
+          },
+          {
+            title: 'Select Azure Subscription',
+            task: async (ctx, task) => {
+              const subsList: {
+                id: string;
+                name: string;
+                tenantId: string;
+              }[] = JSON.parse(
+                (await runProc('az', ['account', 'list'])) || '[]'
+              );
+
+              ctx.SubscriptionID = (
+                await task.prompt({
+                  type: 'Select',
+                  // type: 'Input',
+                  name: 'subId',
+                  message: 'Choose Azure subscription:',
+                  choices: subsList.map((account) => {
+                    return {
+                      message: `${account.name} (${color.blueBright(
+                        account.id
+                      )})`,
+                      name: account.id,
+                    };
+                  }),
+                  validate: (v: any) => Boolean(v),
+                } as PromptOptions<true>)
+              ).trim();
+
+              const sub = subsList.find((al) => al.id === ctx.SubscriptionID);
+
+              ctx.TenantID = sub?.tenantId || '';
+
+              ctx.SubscriptionName = sub?.name || ctx.SubscriptionID;
+
+              task.title = `Azure subscription selected: ${ctx.SubscriptionName}`;
+
+              await runProc('az', [
+                'account',
+                'set',
+                `--subscription ${ctx.SubscriptionID}`,
+              ]);
+
+              parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
+            },
+          },
+        ]);
+      },
+    };
   }
 }

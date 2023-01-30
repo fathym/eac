@@ -35,7 +35,7 @@ export default class Feature extends FathymCommand<any> {
       {
         title: 'Ensure integration branch',
         task: async () => {
-          await runProc(`git checkout`, [`-b integration`, 'main']);
+          await runProc(`git checkout`, [`-b integration`]);
         },
       },
       {
