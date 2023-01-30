@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.50 win32-x64 node-v18.12.1
+@fathym/cli/0.0.51 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -32,6 +32,8 @@ USAGE
 * [`fathym auth`](#fathym-auth)
 * [`fathym auth config`](#fathym-auth-config)
 * [`fathym auth out`](#fathym-auth-out)
+* [`fathym dev azure cli-install`](#fathym-dev-azure-cli-install)
+* [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
 * [`fathym dev set-api-root ENV`](#fathym-dev-set-api-root-env)
 * [`fathym eac applications create`](#fathym-eac-applications-create)
@@ -39,28 +41,32 @@ USAGE
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
 * [`fathym eac applications processor`](#fathym-eac-applications-processor)
 * [`fathym eac applications set APPLOOKUP`](#fathym-eac-applications-set-applookup)
-* [`fathym eac changes`](#fathym-eac-changes)
-* [`fathym eac commit MESSAGE`](#fathym-eac-commit-message)
+* [`fathym eac clear`](#fathym-eac-clear)
+* [`fathym eac commit NAME [DESCRIPTION]`](#fathym-eac-commit-name-description)
+* [`fathym eac draft`](#fathym-eac-draft)
+* [`fathym eac env clouds azure create`](#fathym-eac-env-clouds-azure-create)
+* [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
+* [`fathym eac env pipelines create`](#fathym-eac-env-pipelines-create)
+* [`fathym eac env sources create`](#fathym-eac-env-sources-create)
+* [`fathym eac env sources pipeline attach`](#fathym-eac-env-sources-pipeline-attach)
 * [`fathym eac export`](#fathym-eac-export)
 * [`fathym eac modifiers create`](#fathym-eac-modifiers-create)
-* [`fathym eac pipelines create`](#fathym-eac-pipelines-create)
 * [`fathym eac projects applications add`](#fathym-eac-projects-applications-add)
 * [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
 * [`fathym eac projects create`](#fathym-eac-projects-create)
 * [`fathym eac projects list`](#fathym-eac-projects-list)
 * [`fathym eac projects modifiers add`](#fathym-eac-projects-modifiers-add)
 * [`fathym eac projects set APPLOOKUP`](#fathym-eac-projects-set-applookup)
-* [`fathym eac sources create`](#fathym-eac-sources-create)
-* [`fathym eac sources pipeline attach`](#fathym-eac-sources-pipeline-attach)
 * [`fathym enterprises get`](#fathym-enterprises-get)
 * [`fathym enterprises list`](#fathym-enterprises-list)
-* [`fathym enterprises set ENTLOOKUP`](#fathym-enterprises-set-entlookup)
+* [`fathym enterprises set [ENTLOOKUP]`](#fathym-enterprises-set-entlookup)
 * [`fathym git [MESSAGE]`](#fathym-git-message)
 * [`fathym git auth`](#fathym-git-auth)
 * [`fathym git clone [ORGANIZATION] REPOSITORY`](#fathym-git-clone-organization-repository)
 * [`fathym git feature NAME`](#fathym-git-feature-name)
 * [`fathym git hotfix NAME`](#fathym-git-hotfix-name)
 * [`fathym git import [ORGANIZATION] REPOSITORY REMOTE`](#fathym-git-import-organization-repository-remote)
+* [`fathym git init`](#fathym-git-init)
 * [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
 * [`fathym help [COMMAND]`](#fathym-help-command)
 * [`fathym lcu LCU`](#fathym-lcu-lcu)
@@ -92,7 +98,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.50/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.51/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -128,6 +134,42 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym auth out
+```
+
+## `fathym dev azure cli-install`
+
+Used for opening the link the the Azure CLI installer.
+
+```
+USAGE
+  $ fathym dev azure cli-install [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for opening the link the the Azure CLI installer.
+
+EXAMPLES
+  $ fathym dev azure cli-install
+```
+
+## `fathym dev download URL OUTPUTFILE`
+
+Used for downloading a file.
+
+```
+USAGE
+  $ fathym dev download [URL] [OUTPUTFILE] [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for downloading a file.
+
+EXAMPLES
+  $ fathym dev download {url} {outputFile}
 ```
 
 ## `fathym dev lcu scaffold [NAME]`
@@ -257,31 +299,31 @@ EXAMPLES
   $ fathym eac applications set
 ```
 
-## `fathym eac changes`
+## `fathym eac clear`
 
-Used to retrieve the current changes to EaC that are queued for commit.
+Used to clear the current draft to EaC that is queued for commit.
 
 ```
 USAGE
-  $ fathym eac changes [--ci]
+  $ fathym eac clear [--ci]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
-  Used to retrieve the current changes to EaC that are queued for commit.
+  Used to clear the current draft to EaC that is queued for commit.
 
 EXAMPLES
-  $ fathym eac changes
+  $ fathym eac clear
 ```
 
-## `fathym eac commit MESSAGE`
+## `fathym eac commit NAME [DESCRIPTION]`
 
 Used for commiting changes to the EaC.
 
 ```
 USAGE
-  $ fathym eac commit [MESSAGE] [--ci]
+  $ fathym eac commit [NAME] [DESCRIPTION] [--ci]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
@@ -291,6 +333,115 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac commit
+```
+
+## `fathym eac draft`
+
+Used to retrieve the current draft to EaC that is queued for commit.
+
+```
+USAGE
+  $ fathym eac draft [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used to retrieve the current draft to EaC that is queued for commit.
+
+EXAMPLES
+  $ fathym eac draft
+```
+
+## `fathym eac env clouds azure create`
+
+Used for creating a new project.
+
+```
+USAGE
+  $ fathym eac env clouds azure create [--ci] [-g]
+
+FLAGS
+  -g, --generate  Determines if the CLI should help generate the service principal.
+  --ci            Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for creating a new project.
+
+EXAMPLES
+  $ fathym eac env clouds azure create
+```
+
+## `fathym eac env clouds list`
+
+Used for listing available clouds.
+
+```
+USAGE
+  $ fathym eac env clouds list [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for listing available clouds.
+
+EXAMPLES
+  $ fathym eac env clouds list
+```
+
+## `fathym eac env pipelines create`
+
+Used for creating a new build pipeline.
+
+```
+USAGE
+  $ fathym eac env pipelines create [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for creating a new build pipeline.
+
+EXAMPLES
+  $ fathym eac env pipelines create
+```
+
+## `fathym eac env sources create`
+
+Used for creating a new source control.
+
+```
+USAGE
+  $ fathym eac env sources create [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for creating a new source control.
+
+EXAMPLES
+  $ fathym eac env sources create
+```
+
+## `fathym eac env sources pipeline attach`
+
+Used for attaching a build pipeline to a source control.
+
+```
+USAGE
+  $ fathym eac env sources pipeline attach [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for attaching a build pipeline to a source control.
+
+EXAMPLES
+  $ fathym eac env sources pipeline attach
 ```
 
 ## `fathym eac export`
@@ -327,24 +478,6 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac modifiers create
-```
-
-## `fathym eac pipelines create`
-
-Used for creating a new build pipeline.
-
-```
-USAGE
-  $ fathym eac pipelines create [--ci]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-DESCRIPTION
-  Used for creating a new build pipeline.
-
-EXAMPLES
-  $ fathym eac pipelines create
 ```
 
 ## `fathym eac projects applications add`
@@ -403,7 +536,7 @@ EXAMPLES
 
 ## `fathym eac projects list`
 
-Used for creating a new project.
+Used for listing available projects.
 
 ```
 USAGE
@@ -413,7 +546,7 @@ FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
-  Used for creating a new project.
+  Used for listing available projects.
 
 EXAMPLES
   $ fathym eac projects list
@@ -455,42 +588,6 @@ EXAMPLES
   $ fathym eac projects set
 ```
 
-## `fathym eac sources create`
-
-Used for creating a new source control.
-
-```
-USAGE
-  $ fathym eac sources create [--ci]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-DESCRIPTION
-  Used for creating a new source control.
-
-EXAMPLES
-  $ fathym eac sources create
-```
-
-## `fathym eac sources pipeline attach`
-
-Used for attaching a build pipeline to a source control.
-
-```
-USAGE
-  $ fathym eac sources pipeline attach [--ci]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-DESCRIPTION
-  Used for attaching a build pipeline to a source control.
-
-EXAMPLES
-  $ fathym eac sources pipeline attach
-```
-
 ## `fathym enterprises get`
 
 Get's the current user's active enterprise for the CLI. Determines
@@ -528,7 +625,7 @@ EXAMPLES
   $ fathym enterprises list
 ```
 
-## `fathym enterprises set ENTLOOKUP`
+## `fathym enterprises set [ENTLOOKUP]`
 
 Set's the current user's active enterprise for the CLI. Determines
 
@@ -566,7 +663,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.50/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.51/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -669,6 +766,24 @@ EXAMPLES
   $ fathym git import import organization repository "https://github.com/fathym-it/smart-building-demo
 ```
 
+## `fathym git init`
+
+Used for configuring a repository with best practices.
+
+```
+USAGE
+  $ fathym git init [--ci]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+DESCRIPTION
+  Used for configuring a repository with best practices.
+
+EXAMPLES
+  $ fathym git init
+```
+
 ## `fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`
 
 Used for retrieving information about repositories including organizations, their repos and related branch information.
@@ -729,7 +844,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.50/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.51/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
