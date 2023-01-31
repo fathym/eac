@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.60 win32-x64 node-v18.12.1
+@fathym/cli/0.0.61 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -44,9 +44,6 @@ USAGE
 * [`fathym eac clear`](#fathym-eac-clear)
 * [`fathym eac commit NAME [DESCRIPTION]`](#fathym-eac-commit-name-description)
 * [`fathym eac draft`](#fathym-eac-draft)
-* [`fathym eac enterprises get`](#fathym-eac-enterprises-get)
-* [`fathym eac enterprises list`](#fathym-eac-enterprises-list)
-* [`fathym eac enterprises set [ENTLOOKUP]`](#fathym-eac-enterprises-set-entlookup)
 * [`fathym eac env clouds azure upsert`](#fathym-eac-env-clouds-azure-upsert)
 * [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
 * [`fathym eac env pipelines create`](#fathym-eac-env-pipelines-create)
@@ -60,6 +57,9 @@ USAGE
 * [`fathym eac projects list`](#fathym-eac-projects-list)
 * [`fathym eac projects modifiers add`](#fathym-eac-projects-modifiers-add)
 * [`fathym eac projects set APPLOOKUP`](#fathym-eac-projects-set-applookup)
+* [`fathym enterprises get`](#fathym-enterprises-get)
+* [`fathym enterprises list`](#fathym-enterprises-list)
+* [`fathym enterprises set [ENTLOOKUP]`](#fathym-enterprises-set-entlookup)
 * [`fathym git [MESSAGE]`](#fathym-git-message)
 * [`fathym git auth`](#fathym-git-auth)
 * [`fathym git clone [ORGANIZATION] REPOSITORY`](#fathym-git-clone-organization-repository)
@@ -102,7 +102,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.60/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.61/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -399,71 +399,6 @@ EXAMPLES
   $ fathym eac draft
 ```
 
-## `fathym eac enterprises get`
-
-Get's the current user's active enterprise for the CLI. Determines
-
-```
-USAGE
-  $ fathym eac enterprises get [--ci] [--json]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Get's the current user's active enterprise for the CLI. Determines
-  which enterprise commands are executed against.
-
-EXAMPLES
-  $ fathym eac enterprises get
-```
-
-## `fathym eac enterprises list`
-
-Used to list the current users available enterprises.
-
-```
-USAGE
-  $ fathym eac enterprises list [--ci] [--json]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Used to list the current users available enterprises.
-
-EXAMPLES
-  $ fathym eac enterprises list
-```
-
-## `fathym eac enterprises set [ENTLOOKUP]`
-
-Set's the current user's active enterprise for the CLI. Determines
-
-```
-USAGE
-  $ fathym eac enterprises set [ENTLOOKUP] [--ci] [--json]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Set's the current user's active enterprise for the CLI. Determines
-  which enterprise commands are executed against.
-
-EXAMPLES
-  $ fathym eac enterprises set
-```
-
 ## `fathym eac env clouds azure upsert`
 
 Used for creating a new project.
@@ -740,6 +675,71 @@ EXAMPLES
   $ fathym eac projects set
 ```
 
+## `fathym enterprises get`
+
+Get's the current user's active enterprise for the CLI. Determines
+
+```
+USAGE
+  $ fathym enterprises get [--ci] [--json]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Get's the current user's active enterprise for the CLI. Determines
+  which enterprise commands are executed against.
+
+EXAMPLES
+  $ fathym enterprises get
+```
+
+## `fathym enterprises list`
+
+Used to list the current users available enterprises.
+
+```
+USAGE
+  $ fathym enterprises list [--ci] [--json]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to list the current users available enterprises.
+
+EXAMPLES
+  $ fathym enterprises list
+```
+
+## `fathym enterprises set [ENTLOOKUP]`
+
+Set's the current user's active enterprise for the CLI. Determines
+
+```
+USAGE
+  $ fathym enterprises set [ENTLOOKUP] [--ci] [--json]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Set's the current user's active enterprise for the CLI. Determines
+  which enterprise commands are executed against.
+
+EXAMPLES
+  $ fathym enterprises set
+```
+
 ## `fathym git [MESSAGE]`
 
 Used for committing changes to the current working branch and syncing with integration.
@@ -762,7 +762,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.60/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.61/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -967,7 +967,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.60/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.61/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
@@ -1220,5 +1220,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.60/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.61/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
