@@ -28,9 +28,7 @@ export default class Set extends FathymCommand<FathymTaskContext> {
 
     return [
       {
-        title: `Setting the user's active enterprise to '${
-          entLookup || 'selection'
-        }'`,
+        title: `Setting the user's active enterprise`,
         task: async (ctx, task) => {
           if (!entLookup) {
             const ents = await listEnterprises(this.config.configDir);
@@ -50,6 +48,8 @@ export default class Set extends FathymCommand<FathymTaskContext> {
               } as PromptOptions<true>)
             ).trim();
           }
+
+          task.title = `Setting the user's active enterprise to '${entLookup}'`;
 
           const eacDraft = await withEaCDraft(this.config.configDir);
 
