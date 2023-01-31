@@ -63,21 +63,22 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
   protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
     const { args, flags } = await this.parse(Upsert);
 
-    const { cloudLookup, generate } = flags;
+    let { cloudLookup, generate } = flags;
+
+    cloudLookup = cloudLookup || randomUUID();
 
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      this.azureCliInstall(generate),
+      this.azureCliInstall(),
       this.setAzureSub(),
-      this.createCloudConnection(cloudLookup),
+      this.createCloudConnection(generate, cloudLookup),
     ];
   }
 
-  protected azureCliInstall(generate: boolean): ListrTask<UpsertTaskContext> {
+  protected azureCliInstall(): ListrTask<UpsertTaskContext> {
     return {
       title: `Checking Azure CLI is installed`,
-      enabled: generate,
       task: async (ctx, task) => {
         try {
           await runProc('az', []);
@@ -111,33 +112,52 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
   }
 
   protected createCloudConnection(
-    cloudLookup?: string
+    generate: boolean,
+    cloudLookup: string
   ): ListrTask<UpsertTaskContext> {
     return {
-      title: 'Creat cloud subscription connection',
+      title: 'Create cloud subscription connection',
       enabled: (ctx) => ctx.AzureCLIInstalled,
       task: async (ctx, task) => {
-        const svcPrincStr = await runProc('az', [
-          'ad',
-          'sp',
-          'create-for-rbac',
-          // `--name "${ctx.SubscriptionID}"`,
-          '--role Contributor',
-          `--scopes /subscriptions/${ctx.SubscriptionID}`,
-          // `--tenant ${ctx.TenantID}`,
-        ]);
+        const env =
+          ctx.EaC.Environments![ctx.EaC.Enterprise?.PrimaryEnvironment!];
 
-        const svcPrinc = JSON.parse(svcPrincStr);
+        const currentCloud =
+          env.Clouds && env.Clouds[cloudLookup]
+            ? env.Clouds[cloudLookup!].Cloud!
+            : {};
 
-        const azCloud: EaCCloudDetails = {
+        let azCloud: EaCCloudDetails = {
           Name: ctx.SubscriptionName,
           Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
-          ApplicationID: svcPrinc.appId,
-          AuthKey: svcPrinc.password,
-          SubscriptionID: ctx.SubscriptionID,
-          TenantID: svcPrinc.tenant,
           Type: 'Azure',
+          SubscriptionID: currentCloud.SubscriptionID,
+          TenantID: currentCloud.TenantID,
+          ApplicationID: currentCloud.ApplicationID,
+          AuthKey: currentCloud.AuthKey,
         };
+
+        if (generate) {
+          const svcPrincStr = await runProc('az', [
+            'ad',
+            'sp',
+            'create-for-rbac',
+            // `--name "${ctx.SubscriptionID}"`,
+            '--role Contributor',
+            `--scopes /subscriptions/${ctx.SubscriptionID}`,
+            // `--tenant ${ctx.TenantID}`,
+          ]);
+
+          const svcPrinc = JSON.parse(svcPrincStr);
+
+          azCloud = {
+            ...azCloud,
+            ApplicationID: svcPrinc.appId,
+            AuthKey: svcPrinc.password,
+            SubscriptionID: ctx.SubscriptionID,
+            TenantID: svcPrinc.tenant,
+          };
+        }
 
         await withEaCDraft(
           this.config.configDir,
@@ -155,12 +175,10 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
               ] = {};
             }
 
-            const cloudId = cloudLookup || randomUUID();
-
             draft.EaC!.Environments![
               ctx.EaC.Enterprise!.PrimaryEnvironment!
             ].Clouds = {
-              [cloudId]: {
+              [cloudLookup]: {
                 Cloud: azCloud,
               },
             };
@@ -220,6 +238,7 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
                       name: account.id,
                     };
                   }),
+                  validate: (v) => Boolean(v),
                 } as PromptOptions<true>)
               ).trim();
 

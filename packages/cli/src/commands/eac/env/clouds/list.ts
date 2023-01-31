@@ -47,6 +47,8 @@ export default class List extends FathymCommand<ListContext> {
                 `${env.Clouds![cloud].Cloud!.Name} (${color.blueBright(cloud)})`
             ),
           };
+
+          ctx.Fathym.Result = JSON.stringify(env?.Clouds || {}, null, 2);
         },
       },
     ];
