@@ -1,13 +1,13 @@
 import {} from '@oclif/core';
 import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
   ensureActiveEnterprise,
   FathymTaskContext,
-} from '../../../common/core-helpers';
+} from '../../common/core-helpers';
 
 interface GetContext extends FathymTaskContext, ActiveEnterpriseTaskContext {}
 export default class Get extends FathymCommand<GetContext> {

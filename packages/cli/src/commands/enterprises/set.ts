@@ -1,13 +1,13 @@
 import { color } from '@oclif/color';
 import { ListrTask, PromptOptions } from 'listr2';
 import {} from '@semanticjs/common';
-import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
   FathymTaskContext,
   withUserAuthConfig,
-} from '../../../common/core-helpers';
-import { listEnterprises, withEaCDraft } from '../../../common/eac-services';
+} from '../../common/core-helpers';
+import { listEnterprises, withEaCDraft } from '../../common/eac-services';
 
 export default class Set extends FathymCommand<FathymTaskContext> {
   static description = `Set's the current user's active enterprise for the CLI. Determines

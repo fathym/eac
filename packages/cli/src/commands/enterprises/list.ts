@@ -1,15 +1,15 @@
 import { color } from '@oclif/color';
 import { ListrTask } from 'listr2';
 import { EaCEnterpriseDetails } from '@semanticjs/common';
-import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
-import loadAxios from '../../../common/axios';
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
+import loadAxios from '../../common/axios';
 import {
   ensureActiveEnterprise,
   FathymTaskContext,
   loadApiRootUrl,
-} from '../../../common/core-helpers';
-import { listEnterprises } from '../../../common/eac-services';
+} from '../../common/core-helpers';
+import { listEnterprises } from '../../common/eac-services';
 
 export default class List extends FathymCommand<FathymTaskContext> {
   static description = 'Used to list the current users available enterprises.';
