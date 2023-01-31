@@ -14,6 +14,15 @@ import {
 import { runProc } from '../../../../../common/task-helpers';
 import { downloadFile, withEaCDraft } from '../../../../../common/eac-services';
 import { EaCCloudDetails } from '@semanticjs/common';
+import loadAxios from '../../../../../common/axios';
+
+interface AzureSubscription {
+  id: string;
+
+  name: string;
+
+  tenantId: string;
+}
 
 interface AzureCreateTaskContext
   extends FathymTaskContext,
@@ -83,9 +92,11 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
           task.output =
             'Laucnhing the Azure CLI installer.  Completing in the background.';
 
+          // TODO: Cross platform support for msiexec
+
           await runProc('msiexec', ['/q', '/i', 'azure-cli.msi']);
 
-          await delay(2000);
+          await runProc('refreshenv', []);
 
           task.title = 'Azure CLI was successfully installed';
 
@@ -178,18 +189,19 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
           {
             title: 'Select Azure Subscription',
             task: async (ctx, task) => {
-              const subsList: {
-                id: string;
-                name: string;
-                tenantId: string;
-              }[] = JSON.parse(
+              const subsList: AzureSubscription[] = JSON.parse(
                 (await runProc('az', ['account', 'list'])) || '[]'
               );
+
+              subsList.unshift({
+                id: '',
+                name: '-- Create New Subscription --',
+                tenantId: '',
+              });
 
               ctx.SubscriptionID = (
                 await task.prompt({
                   type: 'Select',
-                  // type: 'Input',
                   name: 'subId',
                   message: 'Choose Azure subscription:',
                   choices: subsList.map((account) => {
@@ -200,17 +212,50 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
                       name: account.id,
                     };
                   }),
-                  validate: (v: any) => Boolean(v),
                 } as PromptOptions<true>)
               ).trim();
 
-              const sub = subsList.find((al) => al.id === ctx.SubscriptionID);
+              if (ctx.SubscriptionID) {
+                const sub = subsList.find((al) => al.id === ctx.SubscriptionID);
 
-              ctx.TenantID = sub?.tenantId || '';
+                ctx.TenantID = sub?.tenantId || '';
 
-              ctx.SubscriptionName = sub?.name || ctx.SubscriptionID;
+                ctx.SubscriptionName = sub?.name || ctx.SubscriptionID;
 
-              task.title = `Azure subscription selected: ${ctx.SubscriptionName}`;
+                task.title = `Azure subscription selected: ${ctx.SubscriptionName}`;
+              } else {
+                task.title = `Creating azure subscription`;
+
+                ctx.SubscriptionName = (
+                  await task.prompt({
+                    type: 'Select',
+                    name: 'subId',
+                    message: 'Azure subscription name:',
+                    choices: subsList.map((account) => {
+                      return {
+                        message: `${account.name} (${color.blueBright(
+                          account.id
+                        )})`,
+                        name: account.id,
+                      };
+                    }),
+                  } as PromptOptions<true>)
+                ).trim();
+
+                task.title = `Creating azure subscription: ${ctx.SubscriptionName}`;
+
+                const sub = await this.createAzureSubscription(
+                  this.config.configDir,
+                  ctx.ActiveEnterpriseLookup,
+                  ctx.SubscriptionName
+                );
+
+                ctx.SubscriptionID = sub.id;
+
+                ctx.SubscriptionName = sub.name;
+
+                ctx.TenantID = sub.tenantId;
+              }
 
               await runProc('az', [
                 'account',
@@ -224,5 +269,19 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
         ]);
       },
     };
+  }
+
+  protected async createAzureSubscription(
+    configDir: string,
+    entLookup: string,
+    subName: string
+  ): Promise<AzureSubscription> {
+    const axios = await loadAxios(configDir);
+
+    const response = await axios.post(`${entLookup}/subscriptions`, {
+      Name: subName,
+    });
+
+    return response.data.Model as AzureSubscription;
   }
 }
