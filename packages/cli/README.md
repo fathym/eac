@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.58 win32-x64 node-v18.12.1
+@fathym/cli/0.0.59 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -87,10 +87,13 @@ Used to start the authentication process with Fathym, so your CLI can work with 
 
 ```
 USAGE
-  $ fathym auth [--ci]
+  $ fathym auth [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to start the authentication process with Fathym, so your CLI can work with the EaC and other features.
@@ -99,7 +102,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.58/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.59/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -107,10 +110,13 @@ Used to retrieve the current auth config for the user.
 
 ```
 USAGE
-  $ fathym auth config [--ci]
+  $ fathym auth config [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to retrieve the current auth config for the user.
@@ -125,10 +131,13 @@ Used to sign out, so your CLI will NOT work with the EaC and other features.
 
 ```
 USAGE
-  $ fathym auth out [--ci]
+  $ fathym auth out [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to sign out, so your CLI will NOT work with the EaC and other features.
@@ -143,10 +152,13 @@ Used for opening the link the the Azure CLI installer.
 
 ```
 USAGE
-  $ fathym dev azure cli-install [--ci]
+  $ fathym dev azure cli-install [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for opening the link the the Azure CLI installer.
@@ -161,10 +173,13 @@ Used for downloading a file.
 
 ```
 USAGE
-  $ fathym dev download [URL] [OUTPUTFILE] [--ci]
+  $ fathym dev download [URL] [OUTPUTFILE] [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for downloading a file.
@@ -179,11 +194,14 @@ Used to scaffold a new LCU.
 
 ```
 USAGE
-  $ fathym dev lcu scaffold [NAME] [--ci] [-d <value>]
+  $ fathym dev lcu scaffold [NAME] [--ci] [--json] [-d <value>]
 
 FLAGS
   -d, --directory=<value>  The directory to initialize and scaffold.
   --ci                     Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to scaffold a new LCU.
@@ -198,10 +216,13 @@ Used to set the api root.
 
 ```
 USAGE
-  $ fathym dev set-api-root [ENV] [--ci]
+  $ fathym dev set-api-root [ENV] [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to set the api root.
@@ -216,10 +237,13 @@ Used for creating a new application.
 
 ```
 USAGE
-  $ fathym eac applications create [--ci]
+  $ fathym eac applications create [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a new application.
@@ -234,10 +258,13 @@ Used for creating a managing application LCU settings.
 
 ```
 USAGE
-  $ fathym eac applications lcu [--ci]
+  $ fathym eac applications lcu [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a managing application LCU settings.
@@ -252,10 +279,13 @@ Used for adding a DFS modifier to a application.
 
 ```
 USAGE
-  $ fathym eac applications modifiers add [--ci]
+  $ fathym eac applications modifiers add [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for adding a DFS modifier to a application.
@@ -270,10 +300,13 @@ Used for creating a managing application Processor settings.
 
 ```
 USAGE
-  $ fathym eac applications processor [--ci]
+  $ fathym eac applications processor [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a managing application Processor settings.
@@ -288,10 +321,13 @@ Used for setting an active application lookup for use in other commands.
 
 ```
 USAGE
-  $ fathym eac applications set [APPLOOKUP] [--ci]
+  $ fathym eac applications set [APPLOOKUP] [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for setting an active application lookup for use in other commands.
@@ -306,10 +342,13 @@ Used to clear the current draft to EaC that is queued for commit.
 
 ```
 USAGE
-  $ fathym eac clear [--ci]
+  $ fathym eac clear [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to clear the current draft to EaC that is queued for commit.
@@ -324,10 +363,13 @@ Used for commiting changes to the EaC.
 
 ```
 USAGE
-  $ fathym eac commit [NAME] [DESCRIPTION] [--ci]
+  $ fathym eac commit [NAME] [DESCRIPTION] [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for commiting changes to the EaC.
@@ -342,10 +384,13 @@ Used to retrieve the current draft to EaC that is queued for commit.
 
 ```
 USAGE
-  $ fathym eac draft [--ci]
+  $ fathym eac draft [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to retrieve the current draft to EaC that is queued for commit.
@@ -360,12 +405,15 @@ Used for creating a new project.
 
 ```
 USAGE
-  $ fathym eac env clouds azure upsert [--ci] [-g] [-c <value>]
+  $ fathym eac env clouds azure upsert [--ci] [--json] [-g] [-c <value>]
 
 FLAGS
   -c, --cloudLookup=<value>  The cloud lookup to use for upsert or declared lookup on create.
   -g, --[no-]generate        Determines if the CLI should help generate the cloud connection.
   --ci                       Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a new project.
@@ -380,10 +428,13 @@ Used for listing available clouds.
 
 ```
 USAGE
-  $ fathym eac env clouds list [--ci]
+  $ fathym eac env clouds list [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for listing available clouds.
@@ -398,10 +449,13 @@ Used for creating a new build pipeline.
 
 ```
 USAGE
-  $ fathym eac env pipelines create [--ci]
+  $ fathym eac env pipelines create [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a new build pipeline.
@@ -416,10 +470,13 @@ Used for creating a new source control.
 
 ```
 USAGE
-  $ fathym eac env sources create [--ci]
+  $ fathym eac env sources create [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a new source control.
@@ -434,10 +491,13 @@ Used for attaching a build pipeline to a source control.
 
 ```
 USAGE
-  $ fathym eac env sources pipeline attach [--ci]
+  $ fathym eac env sources pipeline attach [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for attaching a build pipeline to a source control.
@@ -452,10 +512,13 @@ Used for exporting the EaC.
 
 ```
 USAGE
-  $ fathym eac export [--ci]
+  $ fathym eac export [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for exporting the EaC.
@@ -470,10 +533,13 @@ Used for creating a new DFS modifier.
 
 ```
 USAGE
-  $ fathym eac modifiers create [--ci]
+  $ fathym eac modifiers create [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a new DFS modifier.
@@ -488,10 +554,13 @@ Used for adding an application to a project.
 
 ```
 USAGE
-  $ fathym eac projects applications add [--ci]
+  $ fathym eac projects applications add [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for adding an application to a project.
@@ -506,10 +575,13 @@ Used for getting a preview link to a project application.
 
 ```
 USAGE
-  $ fathym eac projects applications preview [--ci]
+  $ fathym eac projects applications preview [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for getting a preview link to a project application.
@@ -524,10 +596,13 @@ Used for creating a new project.
 
 ```
 USAGE
-  $ fathym eac projects create [--ci]
+  $ fathym eac projects create [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a new project.
@@ -542,10 +617,13 @@ Used for listing available projects.
 
 ```
 USAGE
-  $ fathym eac projects list [--ci]
+  $ fathym eac projects list [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for listing available projects.
@@ -560,10 +638,13 @@ Used for adding a DFS modifier to a project.
 
 ```
 USAGE
-  $ fathym eac projects modifiers add [--ci]
+  $ fathym eac projects modifiers add [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for adding a DFS modifier to a project.
@@ -578,10 +659,13 @@ Used for setting an active project lookup for use in other commands.
 
 ```
 USAGE
-  $ fathym eac projects set [APPLOOKUP] [--ci]
+  $ fathym eac projects set [APPLOOKUP] [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for setting an active project lookup for use in other commands.
@@ -596,10 +680,13 @@ Get's the current user's active enterprise for the CLI. Determines
 
 ```
 USAGE
-  $ fathym enterprises get [--ci]
+  $ fathym enterprises get [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Get's the current user's active enterprise for the CLI. Determines
@@ -615,10 +702,13 @@ Used to list the current users available enterprises.
 
 ```
 USAGE
-  $ fathym enterprises list [--ci]
+  $ fathym enterprises list [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to list the current users available enterprises.
@@ -633,10 +723,13 @@ Set's the current user's active enterprise for the CLI. Determines
 
 ```
 USAGE
-  $ fathym enterprises set [ENTLOOKUP] [--ci]
+  $ fathym enterprises set [ENTLOOKUP] [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Set's the current user's active enterprise for the CLI. Determines
@@ -652,11 +745,14 @@ Used for committing changes to the current working branch and syncing with integ
 
 ```
 USAGE
-  $ fathym git [MESSAGE] [--ci] [-r]
+  $ fathym git [MESSAGE] [--ci] [--json] [-r]
 
 FLAGS
   -r, --rebase  When specified does a rebase instead of a merge.
   --ci          Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for committing changes to the current working branch and syncing with integration.
@@ -665,7 +761,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.58/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.59/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -673,11 +769,14 @@ Used for authenticating the user with Git.
 
 ```
 USAGE
-  $ fathym git auth [--ci] [-f]
+  $ fathym git auth [--ci] [--json] [-f]
 
 FLAGS
   -f, --force  Force authentication process to present git rights, even if the user is already authenticated.
   --ci         Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for authenticating the user with Git.
@@ -692,12 +791,15 @@ Used for cloning the source control for Git.
 
 ```
 USAGE
-  $ fathym git clone [ORGANIZATION] [REPOSITORY] [--ci] [-d <value>] [-b <value>]
+  $ fathym git clone [ORGANIZATION] [REPOSITORY] [--ci] [--json] [-d <value>] [-b <value>]
 
 FLAGS
   -b, --branch=<value>  Specifies the branch or tag to clone
   -d, --depth=<value>   Specifies the depth of the clone
   --ci                  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for cloning the source control for Git.
@@ -712,13 +814,16 @@ Used for creating a feature branch from 'integration' in git.
 
 ```
 USAGE
-  $ fathym git feature [NAME] [--ci]
+  $ fathym git feature [NAME] [--ci] [--json]
 
 ARGUMENTS
   NAME  Name for the new feature branch
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a feature branch from 'integration' in git.
@@ -733,13 +838,16 @@ Used for creating a hotfix branch from 'main' in git.
 
 ```
 USAGE
-  $ fathym git hotfix [NAME] [--ci]
+  $ fathym git hotfix [NAME] [--ci] [--json]
 
 ARGUMENTS
   NAME  Name for the new hotfix branch
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for creating a hotfix branch from 'main' in git.
@@ -754,12 +862,15 @@ Used for importing a remote source control into a configured EaC Source control.
 
 ```
 USAGE
-  $ fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE] [--ci] [-d <value>] [-b <value>]
+  $ fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE] [--ci] [--json] [-d <value>] [-b <value>]
 
 FLAGS
   -b, --branch=<value>  Specifies the branch or tag to clone
   -d, --depth=<value>   Specifies the depth of the clone
   --ci                  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for importing a remote source control into a configured EaC Source control.
@@ -774,10 +885,13 @@ Used for configuring a repository with best practices.
 
 ```
 USAGE
-  $ fathym git init [--ci]
+  $ fathym git init [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for configuring a repository with best practices.
@@ -792,10 +906,13 @@ Used for retrieving information about repositories including organizations, thei
 
 ```
 USAGE
-  $ fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH] [--ci]
+  $ fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH] [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used for retrieving information about repositories including organizations, their repos and related branch
@@ -831,13 +948,16 @@ Used to install, or walk a user through installing an LCU.
 
 ```
 USAGE
-  $ fathym lcu [LCU] [--ci] [-o <value>] [--parameters <value>] [-p <value>]
+  $ fathym lcu [LCU] [--ci] [--json] [-o <value>] [--parameters <value>] [-p <value>]
 
 FLAGS
   -o, --organization=<value>  The organization to deploy LCU code repositories to.
   -p, --project=<value>       The project to deploy the LCU into.
   --ci                        Run command in yield mode for automation, to prevent prompts.
   --parameters=<value>        Specify values to use in the parameters list: ({ paramName: paramValue })
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to install, or walk a user through installing an LCU.
@@ -846,7 +966,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.58/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.59/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
@@ -1084,10 +1204,13 @@ Used to upgrade the Fathym CLI in global scope.
 
 ```
 USAGE
-  $ fathym upgrade [--ci]
+  $ fathym upgrade [--ci] [--json]
 
 FLAGS
   --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Used to upgrade the Fathym CLI in global scope.
@@ -1096,5 +1219,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.58/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.59/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
