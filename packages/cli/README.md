@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.55 win32-x64 node-v18.12.1
+@fathym/cli/0.0.56 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -44,7 +44,7 @@ USAGE
 * [`fathym eac clear`](#fathym-eac-clear)
 * [`fathym eac commit NAME [DESCRIPTION]`](#fathym-eac-commit-name-description)
 * [`fathym eac draft`](#fathym-eac-draft)
-* [`fathym eac env clouds azure create`](#fathym-eac-env-clouds-azure-create)
+* [`fathym eac env clouds azure upsert`](#fathym-eac-env-clouds-azure-upsert)
 * [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
 * [`fathym eac env pipelines create`](#fathym-eac-env-pipelines-create)
 * [`fathym eac env sources create`](#fathym-eac-env-sources-create)
@@ -98,7 +98,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.55/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.56/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -353,23 +353,24 @@ EXAMPLES
   $ fathym eac draft
 ```
 
-## `fathym eac env clouds azure create`
+## `fathym eac env clouds azure upsert`
 
 Used for creating a new project.
 
 ```
 USAGE
-  $ fathym eac env clouds azure create [--ci] [-g]
+  $ fathym eac env clouds azure upsert [--ci] [-g] [-c <value>]
 
 FLAGS
-  -g, --generate  Determines if the CLI should help generate the service principal.
-  --ci            Run command in yield mode for automation, to prevent prompts.
+  -c, --cloudLookup=<value>  The cloud lookup to use for upsert or declared lookup on create.
+  -g, --[no-]generate        Determines if the CLI should help generate the cloud connection.
+  --ci                       Run command in yield mode for automation, to prevent prompts.
 
 DESCRIPTION
   Used for creating a new project.
 
 EXAMPLES
-  $ fathym eac env clouds azure create
+  $ fathym eac env clouds azure upsert
 ```
 
 ## `fathym eac env clouds list`
@@ -663,7 +664,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.55/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.56/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -844,7 +845,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.55/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.56/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
