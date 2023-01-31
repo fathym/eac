@@ -63,9 +63,11 @@ export default class Install extends FathymCommand<InstallContext> {
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args, flags } = await this.parse(Install);
 
-    const { lcu } = args;
+    let { lcu } = args;
 
     const { ci, parameters, organization, project } = flags;
+
+    lcu = lcu.replace(/\\/g, '/');
 
     return [
       ensureActiveEnterprise(this.config.configDir),
