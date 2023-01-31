@@ -20,18 +20,22 @@ export abstract class FathymCommand<
     }),
   };
 
+  static enableJsonFlag = true;
+
   static title: string;
 
   static forceRefresh = true;
 
   static authPort = 8119;
 
-  public async run(): Promise<void> {
-    await this.runCommandCycle();
+  public async run(): Promise<any> {
+    const result = await this.runCommandCycle();
+
+    return result;
   }
 
   //#region Command Cycle
-  protected async runCommandCycle(): Promise<void> {
+  protected async runCommandCycle(): Promise<any> {
     const CurCmd = <typeof FathymCommand>this.constructor;
 
     this.title(`Executing ${CurCmd.title}`);

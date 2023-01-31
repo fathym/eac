@@ -124,7 +124,7 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
 
         const currentCloud =
           env.Clouds && env.Clouds[cloudLookup]
-            ? env.Clouds[cloudLookup!].Cloud!
+            ? env.Clouds[cloudLookup!].Cloud || {}
             : {};
 
         let azCloud: EaCCloudDetails = {
