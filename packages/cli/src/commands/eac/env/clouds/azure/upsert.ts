@@ -24,7 +24,7 @@ interface AzureSubscription {
   tenantId: string;
 }
 
-interface AzureCreateTaskContext
+interface UpsertTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
     EaCTaskContext {
@@ -37,7 +37,7 @@ interface AzureCreateTaskContext
   TenantID: string;
 }
 
-export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
+export default class Upsert extends FathymCommand<UpsertTaskContext> {
   static description = `Used for creating a new project.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -45,8 +45,14 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
   static flags = {
     generate: Flags.boolean({
       char: 'g',
+      allowNo: true,
       description:
-        'Determines if the CLI should help generate the service principal.',
+        'Determines if the CLI should help generate the cloud connection.',
+    }),
+    cloudLookup: Flags.string({
+      char: 'c',
+      description:
+        'The cloud lookup to use for upsert or declared lookup on create.',
     }),
   };
 
@@ -54,23 +60,21 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
 
   static title = 'Create Azure Cloud';
 
-  protected async loadTasks(): Promise<ListrTask<AzureCreateTaskContext>[]> {
-    const { args, flags } = await this.parse(AzureCreate);
+  protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
+    const { args, flags } = await this.parse(Upsert);
 
-    const { generate } = flags;
+    const { cloudLookup, generate } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
       this.azureCliInstall(generate),
       this.setAzureSub(),
-      this.createCloudConnection(),
+      this.createCloudConnection(cloudLookup),
     ];
   }
 
-  protected azureCliInstall(
-    generate: boolean
-  ): ListrTask<AzureCreateTaskContext> {
+  protected azureCliInstall(generate: boolean): ListrTask<UpsertTaskContext> {
     return {
       title: `Checking Azure CLI is installed`,
       enabled: generate,
@@ -106,7 +110,9 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
     };
   }
 
-  protected createCloudConnection(): ListrTask<AzureCreateTaskContext, any> {
+  protected createCloudConnection(
+    cloudLookup?: string
+  ): ListrTask<UpsertTaskContext> {
     return {
       title: 'Creat cloud subscription connection',
       enabled: (ctx) => ctx.AzureCLIInstalled,
@@ -149,10 +155,12 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
               ] = {};
             }
 
+            const cloudId = cloudLookup || randomUUID();
+
             draft.EaC!.Environments![
               ctx.EaC.Enterprise!.PrimaryEnvironment!
             ].Clouds = {
-              [randomUUID()]: {
+              [cloudId]: {
                 Cloud: azCloud,
               },
             };
@@ -164,7 +172,7 @@ export default class AzureCreate extends FathymCommand<AzureCreateTaskContext> {
     };
   }
 
-  protected setAzureSub(): ListrTask<AzureCreateTaskContext, any> {
+  protected setAzureSub(): ListrTask<UpsertTaskContext> {
     return {
       title: `Setting Azure Subscription`,
       enabled: (ctx) => ctx.AzureCLIInstalled,
