@@ -6,9 +6,7 @@
   "bin": {
     "fathym": "./bin/run",
     "fym": "./bin/run",
-    "ftm": "./bin/run",
-    "thinky": "./bin/run",
-    "tky": "./bin/run"
+    "ftm": "./bin/run"
   },
   "homepage": "https://github.com/fathym/eac",
   "license": "MIT",
@@ -88,14 +86,14 @@
     },
     "warn-if-update-available": {
       "timeoutInDays": 1,
-      "message": "<%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>."
+      "message": "<%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>.  Run `fathym upgrade`."
     }
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
-    "deploy": "npm run fathym git && npm version patch && npm run deploy:all && npm run deploy:refresh",
+    "deploy": "fathym git && npm version patch && npm run deploy:all && npm run deploy:refresh",
     "deploy:all": "npm publish --access public",
-    "deploy:refresh": "node -e \"setTimeout(()=>{},500)\" && npm run deploy:commit && npm i @fathym/cli@latest -g",
+    "deploy:refresh": "node -e \"setTimeout(()=>{},500)\" && npm run deploy:commit && fathym upgrade",
     "deploy:commit": "fathym git \"Deploy complete, syncing versions and readme updates\"",
     "fathym": "npm run build && \"./bin/run.cmd\"",
     "lint": "eslint . --ext .ts --config .eslintrc",
