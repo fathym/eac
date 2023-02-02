@@ -6,6 +6,7 @@ import { runProc } from '../../common/task-helpers';
 import { LcuPackageConfig } from '../../common/LcuPackageConfig';
 import {
   ActiveEnterpriseTaskContext,
+  EaCTaskContext,
   ensureActiveEnterprise,
   ensureProject,
   FathymTaskContext,
@@ -19,9 +20,13 @@ import { ensureOrganization } from '../../common/git-tasks';
 import path from 'node:path';
 import { InstallLCURequest } from '../../common/InstallLCURequest';
 
+import { EnterpriseAsCode } from '@semanticjs/common';
+import { EaCSelectPromptOptions } from '../../common/prompts/EaCSelectPromptOptions';
+
 export interface InstallContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
+    EaCTaskContext,
     GitHubTaskContext,
     ProjectTaskContext {
   EaCDraft: any;
@@ -114,16 +119,26 @@ export default class Install extends FathymCommand<InstallContext> {
           const promptCfg = await this.loadParametersPrompts(
             ctx.LCUPackageConfig,
             ctx.LCUPackageFiles,
-            ctx.LCUParamAnswers
+            ctx.LCUParamAnswers,
+            ctx.EaC
           );
 
-          ctx.LCUParamAnswers = await task.prompt(promptCfg.Prompts);
+          promptCfg.Prompts.forEach(async (prompt) => {
+            if (!prompt) {
+              const answer = await task.prompt(prompt);
 
-          if (ctx.LCUParamAnswers && typeof ctx.LCUParamAnswers === 'string') {
-            ctx.LCUParamAnswers = {
-              [promptCfg.ParameterKeys[0]]: ctx.LCUParamAnswers,
-            };
-          }
+              ctx.LCUParamAnswers =
+                answer && typeof answer === 'string'
+                  ? {
+                      ...ctx.LCUParamAnswers,
+                      [promptCfg.ParameterKeys[0]]: ctx.LCUParamAnswers,
+                    }
+                  : {
+                      ...ctx.LCUParamAnswers,
+                      ...answer,
+                    };
+            }
+          });
         }
 
         task.title = 'Thanks for inputing your parameters';
@@ -180,7 +195,8 @@ export default class Install extends FathymCommand<InstallContext> {
   protected async loadParametersPrompts(
     lcuCfg: LcuPackageConfig,
     pckgFiles: string,
-    paramSet: any
+    paramSet: any,
+    eac: EnterpriseAsCode
   ): Promise<{ Prompts: PromptOptions<true>[]; ParameterKeys: string[] }> {
     const paramsCfg = await loadFileAsJson<any>(
       pckgFiles,
@@ -197,12 +213,14 @@ export default class Install extends FathymCommand<InstallContext> {
       prompt.name = key;
 
       prompt.validate = (value) => {
-        return Boolean(value);
+        return (prompt as any).optional || Boolean(value);
       };
 
       if (paramSet[key]) {
         prompt.initial = paramSet[key];
       }
+
+      (prompt as any).eac = eac;
 
       prompts.push(prompt);
     });

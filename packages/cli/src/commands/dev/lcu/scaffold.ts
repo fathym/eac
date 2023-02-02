@@ -29,7 +29,7 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
 
   static args = [{ name: 'name', required: false }];
 
-  static title = 'Seed LCU';
+  static title = 'Saffold LCU';
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args, flags } = await this.parse(Scaffold);

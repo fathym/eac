@@ -1,11 +1,24 @@
 import { EaCEnterpriseDetails, EnterpriseAsCode } from '@semanticjs/common';
 import axios from 'axios';
 import { createWriteStream } from 'fs-extra';
-import { ListrTask } from 'listr2';
+import { ListrTask, PromptOptions } from 'listr2';
 import loadAxios from './axios';
 import { withConfig } from './config-helpers';
-import { ActiveEnterpriseTaskContext, FathymTaskContext } from './core-helpers';
-import { InstallLCURequest } from './InstallLCURequest';
+import {
+  ActiveEnterpriseTaskContext,
+  EaCTaskContext,
+  FathymTaskContext,
+} from './core-helpers';
+import './prompts/eac-env-clouds-prompts';
+import './prompts/eac-env-cloud-resource-groups-prompts';
+
+export interface CloudTaskContext {
+  CloudLookup: string;
+}
+
+export interface CloudResourceGroupTaskContext {
+  CloudResourceGroupLookup: string;
+}
 
 export interface EaCDraft {
   EaC: EnterpriseAsCode;
@@ -46,6 +59,61 @@ export async function withEaCDraft(
 
     return newDraft;
   });
+}
+
+export function ensureCloudTask<
+  TContext extends EaCTaskContext & CloudTaskContext
+>(configDir: string, cloudLookup?: string): ListrTask<TContext> {
+  return {
+    title: 'Select Cloud',
+    task: async (ctx, task) => {
+      ctx.CloudLookup = cloudLookup || '';
+
+      if (!ctx.CloudLookup) {
+        ctx.CloudLookup = await task.prompt([
+          {
+            type: 'eac:env:clouds|select',
+            eac: ctx.EaC,
+          } as any,
+        ]);
+      }
+
+      if (ctx.CloudLookup) {
+        task.title = `Cloud selected: ${ctx.CloudLookup}`;
+      } else {
+        throw new Error('Cloud lookup is required');
+      }
+    },
+  };
+}
+
+export function ensureCloudResourceGroupTask<
+  TContext extends EaCTaskContext &
+    CloudTaskContext &
+    CloudResourceGroupTaskContext
+>(configDir: string, cloudResGroupLookup?: string): ListrTask<TContext> {
+  return {
+    title: 'Select Cloud Resource Group',
+    task: async (ctx, task) => {
+      ctx.CloudResourceGroupLookup = cloudResGroupLookup || '';
+
+      if (!ctx.CloudResourceGroupLookup) {
+        ctx.CloudResourceGroupLookup = await task.prompt([
+          {
+            type: 'eac:env:clouds:groups|select',
+            eac: ctx.EaC,
+            cloudLookup: ctx.CloudLookup,
+          } as any,
+        ]);
+      }
+
+      if (ctx.CloudResourceGroupLookup) {
+        task.title = `Cloud Resource Group selected: ${ctx.CloudResourceGroupLookup}`;
+      } else {
+        throw new Error('Cloud Resource Group lookup is required');
+      }
+    },
+  };
 }
 
 export function commitDraftTask(

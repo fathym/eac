@@ -63,7 +63,9 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
   protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
     const { args, flags } = await this.parse(Upsert);
 
-    let { cloudLookup, generate } = flags;
+    let { cloudLookup } = flags;
+
+    const { generate } = flags;
 
     cloudLookup = cloudLookup || randomUUID();
 
