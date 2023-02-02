@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.65 win32-x64 node-v18.12.1
+@fathym/cli/0.0.66 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -45,6 +45,8 @@ USAGE
 * [`fathym eac commit NAME [DESCRIPTION]`](#fathym-eac-commit-name-description)
 * [`fathym eac draft`](#fathym-eac-draft)
 * [`fathym eac env clouds azure upsert`](#fathym-eac-env-clouds-azure-upsert)
+* [`fathym eac env clouds groups list`](#fathym-eac-env-clouds-groups-list)
+* [`fathym eac env clouds groups resources list`](#fathym-eac-env-clouds-groups-resources-list)
 * [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
 * [`fathym eac env pipelines create`](#fathym-eac-env-pipelines-create)
 * [`fathym eac env sources create`](#fathym-eac-env-sources-create)
@@ -102,7 +104,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.65/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.66/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -420,6 +422,51 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac env clouds azure upsert
+```
+
+## `fathym eac env clouds groups list`
+
+Used for listing available clouds.
+
+```
+USAGE
+  $ fathym eac env clouds groups list [--ci] [--json] [-c <value>]
+
+FLAGS
+  -c, --cloudLookup=<value>  Specify the cloud to list resource groups for.
+  --ci                       Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for listing available clouds.
+
+EXAMPLES
+  $ fathym eac env clouds groups list
+```
+
+## `fathym eac env clouds groups resources list`
+
+Used for listing available clouds.
+
+```
+USAGE
+  $ fathym eac env clouds groups resources list [--ci] [--json] [-c <value>] [-g <value>]
+
+FLAGS
+  -c, --cloudLookup=<value>          Specify the cloud to list resource groups for.
+  -g, --cloudResGroupLookup=<value>  Specify the cloud resource group to list resources for.
+  --ci                               Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for listing available clouds.
+
+EXAMPLES
+  $ fathym eac env clouds groups resources list
 ```
 
 ## `fathym eac env clouds list`
@@ -762,7 +809,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.65/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.66/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -967,7 +1014,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.65/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.66/dist/commands/lcu/index.ts)_
 
 ## `fathym plugins`
 
@@ -1220,5 +1267,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.65/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.66/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
