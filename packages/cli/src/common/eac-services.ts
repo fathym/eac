@@ -11,6 +11,7 @@ import {
 } from './core-helpers';
 import './prompts/eac-env-clouds-prompts';
 import './prompts/eac-env-cloud-resource-groups-prompts';
+import './prompts/az-sshkey-create-prompts';
 
 export interface CloudTaskContext {
   CloudLookup: string;
@@ -18,6 +19,10 @@ export interface CloudTaskContext {
 
 export interface CloudResourceGroupTaskContext {
   CloudResourceGroupLookup: string;
+}
+
+export interface SSHKeyTaskContext {
+  SSHPublicKey: string;
 }
 
 export interface EaCDraft {
@@ -87,6 +92,28 @@ export function ensureCloudTask<
   };
 }
 
+export function azSshKeyCreateTask<
+  TContext extends SSHKeyTaskContext & CloudResourceGroupTaskContext
+>(): ListrTask<TContext> {
+  return {
+    title: 'Create Azure SSH Key',
+    task: async (ctx, task) => {
+      ctx.SSHPublicKey = await task.prompt([
+        {
+          type: 'az:sshkey:create|confirm',
+          resourceGroup: ctx.CloudResourceGroupLookup,
+        } as any,
+      ]);
+
+      if (ctx.SSHPublicKey) {
+        task.title = `SSH Key Created`;
+      } else {
+        throw new Error('SSH Key was not created');
+      }
+    },
+  };
+}
+
 export function ensureCloudResourceGroupTask<
   TContext extends EaCTaskContext &
     CloudTaskContext &
@@ -150,6 +177,12 @@ export function commitDraftTask(
       }
     },
   };
+}
+
+export async function downloadContents(url: string): Promise<string> {
+  const response = await axios.get(url);
+
+  return response.data;
 }
 
 export async function downloadFile(url: string, file: string): Promise<void> {

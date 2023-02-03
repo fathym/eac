@@ -11,15 +11,23 @@ export class EaCSelectPrompt extends Select {
   ) {
     const lookups = choiceLookupsFactory();
 
+    if (options.optional) {
+      lookups.push('$--empty--$');
+    }
+
     options.choices = lookups.map((lookup) => {
       return {
         name: lookup,
-        message: `${choiceTextFactory(lookup)} (${color.blueBright(lookup)})`,
+        message: `${choiceTextFactory(lookup)}`,
         validate: (v: any) => options.optional || Boolean(v),
       };
     });
 
     options.message = message || options.message || 'Select the option:';
+
+    options.result = (val) => {
+      return val === '$--empty--$' ? '' : val;
+    };
 
     super(options);
   }

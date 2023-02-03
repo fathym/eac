@@ -14,7 +14,11 @@ export class CloudSelect extends EaCSelectPrompt {
       options,
       'Select cloud connection',
       () => clouds,
-      (lookup) => env.Clouds[lookup]?.Cloud?.Name || ''
+      (lookup) => {
+        const cloudName = env.Clouds[lookup]?.Cloud?.Name || '';
+
+        return `${cloudName} (${color.blueBright(lookup)})`;
+      }
     );
   }
 

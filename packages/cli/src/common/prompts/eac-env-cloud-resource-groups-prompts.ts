@@ -15,7 +15,13 @@ export class CloudResourceGroupSelect extends EaCSelectPrompt {
       options,
       'Select cloud resource group',
       () => resGroups,
-      (lookup) => cloud?.ResourceGroups[lookup]?.Name || ''
+      (lookup) => {
+        const cloudResGroupName = cloud?.ResourceGroups[lookup]?.Name || '';
+
+        return lookup === '$--empty--$'
+          ? '-- Create new cloud resource group --'
+          : `${cloudResGroupName} (${color.blueBright(lookup)})`;
+      }
     );
   }
 

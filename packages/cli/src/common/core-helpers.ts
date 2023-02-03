@@ -9,6 +9,8 @@ import path from 'node:path';
 import { readFile, readJson } from 'fs-extra';
 import loadAxios from './axios';
 import { EnterpriseAsCode } from '@semanticjs/common';
+import { runProc } from './task-helpers';
+import { downloadFile } from './eac-services';
 // import { EnterpriseAsCode } from '@semanticjs/common';
 
 const tenant = 'fathymcloudprd';
@@ -43,6 +45,26 @@ export interface ActiveEnterpriseTaskContext {
   ActiveEnterpriseLookup: string;
 }
 
+export interface AzureCLITaskContext {
+  AzureCLIInstalled: boolean;
+}
+
+export interface SubscriptionTaskContext {
+  SubscriptionID: string;
+
+  SubscriptionName: string;
+
+  TenantID: string;
+}
+
+export interface AzureSubscription {
+  id: string;
+
+  name: string;
+
+  tenantId: string;
+}
+
 export class SystemConfig {
   public APIRoot!: string;
 }
@@ -64,6 +86,169 @@ const oauthCodeClient = new oauth2.AuthorizationCode({
     authorizePath: `/${tenant}.onmicrosoft.com/${policy}/oauth2/v2.0/authorize`,
   },
 });
+
+export function azureCliInstallTask<TContext>(): ListrTask<
+  TContext & AzureCLITaskContext
+> {
+  return {
+    title: `Checking Azure CLI is installed`,
+    task: async (ctx, task) => {
+      try {
+        await runProc('az', []);
+
+        ctx.AzureCLIInstalled = true;
+      } catch {
+        task.title = 'Installing Azure CLI';
+
+        task.output = 'Downloading the Azure CLI installer';
+
+        await downloadFile(
+          'https://aka.ms/installazurecliwindows',
+          'azure-cli.msi'
+        );
+
+        task.output =
+          'Laucnhing the Azure CLI installer.  Completing in the background.';
+
+        // TODO: Cross platform support for msiexec
+
+        await runProc('msiexec', ['/q', '/i', 'azure-cli.msi']);
+
+        await runProc('refreshenv', []);
+
+        task.title = 'Azure CLI was successfully installed';
+
+        ctx.AzureCLIInstalled = true;
+      }
+    },
+  };
+}
+
+export function setAzureSubTask<
+  TContext extends SubscriptionTaskContext &
+    AzureCLITaskContext &
+    ActiveEnterpriseTaskContext
+>(configDir: string): ListrTask<TContext> {
+  return {
+    title: `Setting Azure Subscription`,
+    skip: (ctx) => !ctx.AzureCLIInstalled,
+    task: (ctx, task) => {
+      return task.newListr((parent) => [
+        {
+          title: 'Ensure login with Azure CLI',
+          task: async (ctx, task) => {
+            try {
+              await runProc('az', ['account', 'show']);
+
+              task.title = 'Azure CLI already authenticated';
+            } catch {
+              task.output = color.yellow(
+                'Opening a login form in your browser, complete sign in there, then return.'
+              );
+
+              await runProc('az', ['login']);
+            }
+          },
+        },
+        {
+          title: 'Select Azure Subscription',
+          task: async (ctx, task) => {
+            const subsList: AzureSubscription[] = JSON.parse(
+              (await runProc('az', ['account', 'list'])) || '[]'
+            );
+
+            subsList.unshift({
+              id: '',
+              name: '-- Create New Subscription --',
+              tenantId: '',
+            });
+
+            ctx.SubscriptionID = (
+              await task.prompt({
+                type: 'Select',
+                name: 'subId',
+                message: 'Choose Azure subscription:',
+                choices: subsList.map((account) => {
+                  return {
+                    message: `${account.name} (${color.blueBright(
+                      account.id
+                    )})`,
+                    name: account.id,
+                  };
+                }),
+                validate: (v) => Boolean(v),
+              } as PromptOptions<true>)
+            ).trim();
+
+            if (ctx.SubscriptionID) {
+              const sub = subsList.find((al) => al.id === ctx.SubscriptionID);
+
+              ctx.TenantID = sub?.tenantId || '';
+
+              ctx.SubscriptionName = sub?.name || ctx.SubscriptionID;
+
+              task.title = `Azure subscription selected: ${ctx.SubscriptionName}`;
+            } else {
+              task.title = `Creating azure subscription`;
+
+              ctx.SubscriptionName = (
+                await task.prompt({
+                  type: 'Select',
+                  name: 'subId',
+                  message: 'Azure subscription name:',
+                  choices: subsList.map((account) => {
+                    return {
+                      message: `${account.name} (${color.blueBright(
+                        account.id
+                      )})`,
+                      name: account.id,
+                    };
+                  }),
+                } as PromptOptions<true>)
+              ).trim();
+
+              task.title = `Creating azure subscription: ${ctx.SubscriptionName}`;
+
+              const sub = await createAzureSubscription(
+                configDir,
+                ctx.ActiveEnterpriseLookup,
+                ctx.SubscriptionName
+              );
+
+              ctx.SubscriptionID = sub.id;
+
+              ctx.SubscriptionName = sub.name;
+
+              ctx.TenantID = sub.tenantId;
+            }
+
+            await runProc('az', [
+              'account',
+              'set',
+              `--subscription ${ctx.SubscriptionID}`,
+            ]);
+
+            parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
+          },
+        },
+      ]);
+    },
+  };
+}
+
+export async function createAzureSubscription(
+  configDir: string,
+  entLookup: string,
+  subName: string
+): Promise<AzureSubscription> {
+  const axios = await loadAxios(configDir);
+
+  const response = await axios.post(`${entLookup}/subscriptions`, {
+    Name: subName,
+  });
+
+  return response.data.Model as AzureSubscription;
+}
 
 export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
@@ -255,6 +440,19 @@ export async function loadFileAsString(
   const str = await readFile(filePath);
 
   return String(str);
+}
+
+export async function processAsyncArray<T>(
+  vals: T[],
+  process: (val: T) => Promise<void>
+): Promise<void> {
+  const val: T = vals.shift()!;
+
+  await process(val);
+
+  if (vals?.length > 0) {
+    await processAsyncArray(vals, process);
+  }
 }
 
 export async function refreshAccessTokenTask<

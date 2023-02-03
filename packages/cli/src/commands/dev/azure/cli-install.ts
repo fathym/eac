@@ -5,7 +5,7 @@ import { FathymCommand } from '../../../common/fathym-command';
 import { FathymTaskContext } from '../../../common/core-helpers';
 import { runProc } from '../../../common/task-helpers';
 
-export default class Azure extends FathymCommand<FathymTaskContext> {
+export default class CLIInstall extends FathymCommand<FathymTaskContext> {
   static description = `Used for opening the link the the Azure CLI installer.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -17,7 +17,7 @@ export default class Azure extends FathymCommand<FathymTaskContext> {
   static title = 'Install Azure CLI';
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
-    // const { args } = await this.parse(Azure);
+    // const { args } = await this.parse(CLIInstall);
 
     return [
       {

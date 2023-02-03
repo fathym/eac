@@ -1,17 +1,22 @@
 import { Flags } from '@oclif/core';
-import { ListrTask, PromptOptions } from 'listr2';
+import { color } from '@oclif/color';
+import { ListrTask, ListrTaskWrapper, PromptOptions } from 'listr2';
+import Table from 'table-layout';
+import open from 'open';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { runProc } from '../../common/task-helpers';
 import { LcuPackageConfig } from '../../common/LcuPackageConfig';
 import {
   ActiveEnterpriseTaskContext,
+  azureCliInstallTask,
   EaCTaskContext,
   ensureActiveEnterprise,
   ensureProject,
   FathymTaskContext,
   loadEaCTask,
   loadFileAsJson,
+  processAsyncArray,
   ProjectTaskContext,
 } from '../../common/core-helpers';
 import loadAxios from '../../common/axios';
@@ -21,7 +26,7 @@ import path from 'node:path';
 import { InstallLCURequest } from '../../common/InstallLCURequest';
 
 import { EnterpriseAsCode } from '@semanticjs/common';
-import { EaCSelectPromptOptions } from '../../common/prompts/EaCSelectPromptOptions';
+import { downloadContents } from '../../common/eac-services';
 
 export interface InstallContext
   extends FathymTaskContext,
@@ -37,7 +42,11 @@ export interface InstallContext
 
   LCUPackageTarball: string;
 
-  LCUParamAnswers: { [key: string]: string };
+  LCUParamAnswers: ParamAnswers;
+}
+
+export interface ParamAnswers {
+  [key: string]: string;
 }
 
 export default class Install extends FathymCommand<InstallContext> {
@@ -77,10 +86,12 @@ export default class Install extends FathymCommand<InstallContext> {
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
+      azureCliInstallTask(),
       this.downloadLcu(lcu),
       this.unpackLcu(),
       this.loadLcuConfig(),
       this.confirmParameters(ci, parameters),
+      this.confirmAgreements(ci),
       ensureOrganization(this.config.configDir, organization),
       ensureProject(project),
       // // this.prepareLcuEaCDraft(),
@@ -105,6 +116,57 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
+  protected confirmAgreements(ci: boolean): ListrTask<InstallContext> {
+    return {
+      title: 'Processing LCU Agreements',
+      skip: () => false,
+      task: async (ctx, task) => {
+        if (ci) {
+          // TODO: This should do something to automatically accept agreements
+        } else {
+          const agreesCfg = await loadFileAsJson<any>(
+            ctx.LCUPackageFiles,
+            ctx.LCUPackageConfig.Agreements || './assets/agreements.json'
+          );
+
+          const prompts = await this.loadAgreementsPrompts(task, agreesCfg);
+
+          await processAsyncArray(prompts, async (prompt) => {
+            const agreeKey =
+              typeof prompt.name === 'function' ? prompt.name() : prompt.name;
+
+            const agreeCfg = agreesCfg[agreeKey];
+
+            let value = await task.prompt(prompt);
+
+            task.output = color.green(`Processing agreement for ${agreeKey}`);
+
+            if (value) {
+              const urn = `${agreeCfg.publisher}:${agreeCfg.offer}:${agreeCfg.sku}:${agreeCfg.version}`;
+
+              await runProc(agreeCfg.type, [
+                'vm',
+                'image',
+                'terms',
+                'accept',
+                `--urn ${urn}`,
+              ]);
+            } else {
+              task.output = '';
+
+              throw new Error(`Agreement declined for ${agreeKey}`);
+            }
+
+            return value;
+          });
+        }
+
+        task.title = 'Thanks for accepting agreements';
+      },
+      options: { persistentOutput: true },
+    };
+  }
+
   protected confirmParameters(
     ci: boolean,
     parameterDefaults?: string
@@ -118,31 +180,21 @@ export default class Install extends FathymCommand<InstallContext> {
         if (!ci) {
           const promptCfg = await this.loadParametersPrompts(
             ctx.LCUPackageConfig,
-            ctx.LCUPackageFiles,
+            ctx.LCUPackageFiles
+          );
+
+          ctx.LCUParamAnswers = await this.processPromptsSet(
+            task,
+            promptCfg.Prompts || [],
+            promptCfg.ParameterKeys,
             ctx.LCUParamAnswers,
             ctx.EaC
           );
-
-          promptCfg.Prompts.forEach(async (prompt) => {
-            if (!prompt) {
-              const answer = await task.prompt(prompt);
-
-              ctx.LCUParamAnswers =
-                answer && typeof answer === 'string'
-                  ? {
-                      ...ctx.LCUParamAnswers,
-                      [promptCfg.ParameterKeys[0]]: ctx.LCUParamAnswers,
-                    }
-                  : {
-                      ...ctx.LCUParamAnswers,
-                      ...answer,
-                    };
-            }
-          });
         }
 
         task.title = 'Thanks for inputing your parameters';
       },
+      options: { persistentOutput: true },
     };
   }
 
@@ -192,12 +244,75 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
+  protected async loadAgreementsPrompts(
+    task: ListrTaskWrapper<InstallContext, any>,
+    agreesCfg: any
+  ): Promise<PromptOptions<true>[]> {
+    task.output = `Looking for required agreements`;
+
+    const agreeKeys = Object.keys(agreesCfg);
+
+    const prompts: PromptOptions<true>[] = [];
+
+    await processAsyncArray(agreeKeys, async (agreeKey) => {
+      const agreeCfg = agreesCfg[agreeKey];
+
+      if (agreeCfg) {
+        task.output = `Retrieving agreement details for '${agreeKey}'`;
+
+        const agreeCfg = agreesCfg[agreeKey];
+
+        // const urn = `${agreeCfg.publisher}:${agreeCfg.offer}:${agreeCfg.sku}:${agreeCfg.version}`;
+
+        // const pckg = JSON.parse(
+        //   await runProc(agreeCfg.type, [
+        //     'vm',
+        //     'image',
+        //     'terms',
+        //     'show',
+        //     `--urn ${urn}`,
+        //   ])
+        // );
+
+        // task.output = `Download marketplace terms for '${agreeKey}'`;
+        // await open(pckg.marketplaceTermsLink);
+        // await open(pckg.licenseTermsLink);
+
+        // const marketplace = await downloadContents(pckg.marketplaceTermsLink);
+
+        // task.output = `Download license terms for '${agreeKey}'`;
+
+        // const license = await downloadContents(pckg.licenseTermsLink);
+
+        // const footer = new Table(
+        //   {
+        //     agreements: '', // `${marketplace}\n\n${license}`,
+        //   },
+        //   { maxWidth: 80 }
+        // );
+
+        task.output = `Agree to use ${agreeKey}:`;
+
+        prompts.push({
+          type: 'confirm',
+          // type: 'select',
+          message: `Agree to use '${agreeKey}'`,
+          name: agreeKey,
+          // footer: footer,
+          // choices: ['Agree', 'Cancel'],
+        } as PromptOptions<true>);
+      } else {
+        task.output = `No agreement details provided for '${agreeKey}'; skipping.`;
+      }
+    });
+
+    return prompts;
+  }
+
   protected async loadParametersPrompts(
     lcuCfg: LcuPackageConfig,
-    pckgFiles: string,
-    paramSet: any,
-    eac: EnterpriseAsCode
-  ): Promise<{ Prompts: PromptOptions<true>[]; ParameterKeys: string[] }> {
+    pckgFiles: string
+  ): Promise<{ Prompts: PromptOptions<true>[][]; ParameterKeys: string[] }> {
     const paramsCfg = await loadFileAsJson<any>(
       pckgFiles,
       lcuCfg.Parameters || './assets/parameters.json'
@@ -205,48 +320,96 @@ export default class Install extends FathymCommand<InstallContext> {
 
     const paramKeys = Object.keys(paramsCfg);
 
-    const prompts: PromptOptions<true>[] = [];
+    const prompts: PromptOptions<true>[][] = [];
 
     paramKeys.forEach((key) => {
-      const prompt: PromptOptions<true> = paramsCfg[key];
+      let promptCfgs: PromptOptions<true> | PromptOptions<true>[] =
+        paramsCfg[key];
 
-      prompt.name = key;
-
-      prompt.validate = (value) => {
-        return (prompt as any).optional || Boolean(value);
-      };
-
-      if (paramSet[key]) {
-        prompt.initial = paramSet[key];
+      if (!Array.isArray(promptCfgs)) {
+        promptCfgs = [promptCfgs as PromptOptions<true>];
       }
 
-      (prompt as any).eac = eac;
-
-      prompts.push(prompt);
+      prompts.push(promptCfgs);
     });
 
     return { Prompts: prompts, ParameterKeys: paramKeys };
   }
 
-  // protected prepareLcuEaCDraft(): ListrTask<InstallContext> {
-  //   return {
-  //     title: `Preparing EaC for commit`,
-  //     task: async (ctx, task) => {
-  //       const eacDraftTemplate = await this.loadFileAsString(
-  //         ctx.LCUPackageFiles,
-  //         path.join('assets', 'eac.json')
-  //       );
+  protected async processPromptSet(
+    task: ListrTaskWrapper<InstallContext, any>,
+    prompts: PromptOptions<true>[],
+    paramKey: string,
+    paramAnswers: ParamAnswers,
+    eac: EnterpriseAsCode
+  ): Promise<ParamAnswers> {
+    await processAsyncArray(prompts, async (prompt) => {
+      if (!paramAnswers[paramKey]) {
+        const answerKeys = Object.keys(paramAnswers);
 
-  //       const template = compile(eacDraftTemplate);
+        const promptKeys = Object.keys(prompt);
 
-  //       const eacDraftStr = template(ctx.LCUParamAnswers);
+        answerKeys.forEach((answerKey) => {
+          if (promptKeys.includes(answerKey)) {
+            const lookup = (prompt as any)[answerKey];
 
-  //       ctx.EaCDraft = JSON.parse(eacDraftStr);
+            delete (prompt as any)[answerKey];
 
-  //       task.title = 'EaC draft prepared for commit';
-  //     },
-  //   };
-  // }
+            (prompt as any)[lookup] = paramAnswers[answerKey];
+          }
+        });
+
+        prompt.name = paramKey;
+
+        prompt.validate = (value) => {
+          return (prompt as any).optional || Boolean(value);
+        };
+
+        if (paramAnswers[paramKey]) {
+          prompt.initial = paramAnswers[paramKey];
+        }
+
+        (prompt as any).eac = eac;
+
+        const answer = await task.prompt(prompt);
+
+        paramAnswers =
+          answer && typeof answer === 'string'
+            ? {
+                ...paramAnswers,
+                [paramKey]: answer,
+              }
+            : {
+                ...paramAnswers,
+                ...answer,
+              };
+      }
+    });
+
+    return paramAnswers;
+  }
+
+  protected async processPromptsSet(
+    task: ListrTaskWrapper<InstallContext, any>,
+    promptsSet: PromptOptions<true>[][],
+    paramKeys: string[],
+    paramAnswers: ParamAnswers,
+    eac: EnterpriseAsCode
+  ): Promise<ParamAnswers> {
+    await processAsyncArray(promptsSet, async (prompts) => {
+      const paramKey = paramKeys.shift() || '';
+
+      paramAnswers = await this.processPromptSet(
+        task,
+        prompts,
+        paramKey,
+        paramAnswers,
+        eac
+      );
+    });
+
+    return paramAnswers;
+  }
 
   protected runInstallLcu(lcu: string): ListrTask<InstallContext> {
     return {
