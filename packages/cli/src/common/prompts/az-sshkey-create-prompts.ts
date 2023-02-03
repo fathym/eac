@@ -52,7 +52,7 @@ export class AzureSSHKeyCreatePrompt extends Select {
         // );
       }
 
-      publicKey = existing?.publicKey?.replace(' generated-by-azure');
+      publicKey = existing.publicKey;
     };
 
     options.message = options.meesage || 'Create new Azure SSH Key?';

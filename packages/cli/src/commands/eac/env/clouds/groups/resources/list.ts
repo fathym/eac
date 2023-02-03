@@ -42,7 +42,7 @@ export default class List extends FathymCommand<ListContext> {
 
   static args = [];
 
-  static title = 'List Cloud Resource Groups';
+  static title = 'List Cloud Resource Group Resources';
 
   protected async loadTasks(): Promise<ListrTask<ListContext>[]> {
     const { flags } = await this.parse(List);
