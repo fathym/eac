@@ -96,7 +96,7 @@ export function azSshKeyCreateTask<
   TContext extends SSHKeyTaskContext & CloudResourceGroupTaskContext
 >(): ListrTask<TContext> {
   return {
-    title: 'Create Azure SSH Key',
+    title: 'Establish Azure SSH Key',
     task: async (ctx, task) => {
       ctx.SSHPublicKey = await task.prompt([
         {
@@ -106,9 +106,9 @@ export function azSshKeyCreateTask<
       ]);
 
       if (ctx.SSHPublicKey) {
-        task.title = `SSH Key Created`;
+        task.title = `Azure SSH key established`;
       } else {
-        throw new Error('SSH Key was not created');
+        throw new Error('Azure SSH key was not established');
       }
     },
   };

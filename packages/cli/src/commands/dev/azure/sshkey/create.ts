@@ -54,7 +54,7 @@ export default class SSHKey extends FathymCommand<SSHKeyContext> {
   protected async loadTasks(): Promise<ListrTask<SSHKeyContext>[]> {
     const { args, flags } = await this.parse(SSHKey);
 
-    let { resourceGroup } = args;
+    const { resourceGroup } = args;
 
     let { name } = flags;
 
@@ -65,8 +65,14 @@ export default class SSHKey extends FathymCommand<SSHKeyContext> {
       azureCliInstallTask(),
       loadEaCTask(this.config.configDir),
       ensureCloudTask(this.config.configDir), // , cloudLookup),
-      ensureCloudResourceGroupTask(this.config.configDir, resourceGroup), // , cloudResGroupLookup),
+      ensureCloudResourceGroupTask(this.config.configDir, resourceGroup),
       azSshKeyCreateTask(),
+      {
+        title: 'SSH Key Public Key',
+        task: (ctx) => {
+          ctx.Fathym.Result = ctx.SSHPublicKey;
+        },
+      },
     ];
   }
 }
