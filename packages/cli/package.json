@@ -26,7 +26,7 @@
     "@oclif/plugin-not-found": "^2.3.13",
     "@oclif/plugin-plugins": "^2.1.9",
     "@oclif/plugin-warn-if-update-available": "^2.0.24",
-    "@semanticjs/common": "^0.67.0",
+    "@semanticjs/common": "^0.68.0",
     "axios": "^1.2.2",
     "enquirer": "^2.3.6",
     "express": "^4.18.2",
