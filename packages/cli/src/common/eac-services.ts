@@ -1,4 +1,4 @@
-import { EaCEnterpriseDetails, EnterpriseAsCode } from '@semanticjs/common';
+import { EaCEnterpriseDetails, EaCLicense, EnterpriseAsCode } from '@semanticjs/common';
 import axios from 'axios';
 import { createWriteStream } from 'fs-extra';
 import { ListrTask, PromptOptions } from 'listr2';
@@ -223,4 +223,33 @@ export async function listEnterprises(
   const response = await axios.get(`user/enterprises`);
 
   return response.data?.Model || [];
+}
+
+export async function listLicenseTypes(
+  configDir: string,
+): Promise<string[]> {
+  const axios = await loadAxios(configDir);
+
+  const response = await axios.get(`enterprises/licenseTypes`,);
+
+  return response.data?.Model || [];
+}
+
+export async function listLicensesByEmail(
+  configDir: string,
+  licenseType?: string
+): Promise<(EaCLicense & { Lookup: string })[]> {
+  const axios = await loadAxios(configDir);
+  
+  if (licenseType == null){
+    const response = await axios.get(`user/licenses`);
+
+    return response.data?.Model || [];
+  }
+
+  else{
+    const response = await axios.get(`user/licenses`, {params: {licenseType:licenseType}});
+
+    return response.data?.Model || [];
+  } 
 }
