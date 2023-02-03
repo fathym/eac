@@ -23,20 +23,30 @@ export default class SetAPIRoot extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [{ name: 'env', required: true }];
+  static args = [{ name: 'env', required: false }];
 
   static title = 'Set API Root';
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args } = await this.parse(SetAPIRoot);
 
-    const { env } = args;
+    let { env } = args;
 
     return [
       {
-        title: `Setting API root for ${env}`,
-        task: async (ctx) => {
+        title: `Setting API root`,
+        task: async (ctx, task) => {
+          if (!env) {
+            env = await task.prompt({
+              type: 'select',
+              message: 'Select API Environment',
+              choices: ['prod', 'local'],
+            });
+          }
+
           await setApiRoot(this.config.configDir, env);
+
+          task.title = `Set API root for ${env}`;
         },
       },
     ];

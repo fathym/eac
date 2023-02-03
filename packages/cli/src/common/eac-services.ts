@@ -1,4 +1,8 @@
-import { EaCEnterpriseDetails, EaCLicense, EnterpriseAsCode } from '@semanticjs/common';
+import {
+  EaCEnterpriseDetails,
+  EaCLicense,
+  EnterpriseAsCode,
+} from '@semanticjs/common';
 import axios from 'axios';
 import { createWriteStream } from 'fs-extra';
 import { ListrTask, PromptOptions } from 'listr2';
@@ -96,7 +100,7 @@ export function azSshKeyCreateTask<
   TContext extends SSHKeyTaskContext & CloudResourceGroupTaskContext
 >(): ListrTask<TContext> {
   return {
-    title: 'Create Azure SSH Key',
+    title: 'Establish Azure SSH Key',
     task: async (ctx, task) => {
       ctx.SSHPublicKey = await task.prompt([
         {
@@ -106,9 +110,9 @@ export function azSshKeyCreateTask<
       ]);
 
       if (ctx.SSHPublicKey) {
-        task.title = `SSH Key Created`;
+        task.title = `Azure SSH key established`;
       } else {
-        throw new Error('SSH Key was not created');
+        throw new Error('Azure SSH key was not established');
       }
     },
   };
@@ -225,12 +229,10 @@ export async function listEnterprises(
   return response.data?.Model || [];
 }
 
-export async function listLicenseTypes(
-  configDir: string,
-): Promise<string[]> {
+export async function listLicenseTypes(configDir: string): Promise<string[]> {
   const axios = await loadAxios(configDir);
 
-  const response = await axios.get(`enterprises/licenseTypes`,);
+  const response = await axios.get(`enterprises/licenseTypes`);
 
   return response.data?.Model || [];
 }
@@ -240,16 +242,16 @@ export async function listLicensesByEmail(
   licenseType?: string
 ): Promise<(EaCLicense)[]> {
   const axios = await loadAxios(configDir);
-  
-  if (licenseType == null){
+
+  if (licenseType == null) {
     const response = await axios.get(`user/licenses`);
 
     return response.data?.Model || [];
-  }
-
-  else{
-    const response = await axios.get(`user/licenses`, {params: {licenseType:licenseType}});
+  } else {
+    const response = await axios.get(`user/licenses`, {
+      params: { licenseType: licenseType },
+    });
 
     return response.data?.Model || [];
-  } 
+  }
 }

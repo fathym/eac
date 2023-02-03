@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.68 win32-x64 node-v18.12.1
+@fathym/cli/0.0.71 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -32,11 +32,11 @@ USAGE
 * [`fathym auth`](#fathym-auth)
 * [`fathym auth config`](#fathym-auth-config)
 * [`fathym auth out`](#fathym-auth-out)
+* [`fathym dev api-root [ENV]`](#fathym-dev-api-root-env)
 * [`fathym dev azure cli-install`](#fathym-dev-azure-cli-install)
 * [`fathym dev azure sshkey create [RESOURCEGROUP]`](#fathym-dev-azure-sshkey-create-resourcegroup)
 * [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
-* [`fathym dev set-api-root ENV`](#fathym-dev-set-api-root-env)
 * [`fathym eac applications create`](#fathym-eac-applications-create)
 * [`fathym eac applications lcu`](#fathym-eac-applications-lcu)
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
@@ -73,6 +73,8 @@ USAGE
 * [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
 * [`fathym help [COMMAND]`](#fathym-help-command)
 * [`fathym lcu LCU`](#fathym-lcu-lcu)
+* [`fathym license get [LICENSETYPE]`](#fathym-license-get-licensetype)
+* [`fathym license list`](#fathym-license-list)
 * [`fathym plugins`](#fathym-plugins)
 * [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
 * [`fathym plugins:inspect PLUGIN...`](#fathym-pluginsinspect-plugin)
@@ -105,7 +107,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.68/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.71/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -147,6 +149,27 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym auth out
+```
+
+## `fathym dev api-root [ENV]`
+
+Used to set the api root.
+
+```
+USAGE
+  $ fathym dev api-root [ENV] [--ci] [--json]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to set the api root.
+
+EXAMPLES
+  $ fathym dev api-root
 ```
 
 ## `fathym dev azure cli-install`
@@ -236,27 +259,6 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym dev lcu scaffold dev lcu scaffold --help
-```
-
-## `fathym dev set-api-root ENV`
-
-Used to set the api root.
-
-```
-USAGE
-  $ fathym dev set-api-root [ENV] [--ci] [--json]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Used to set the api root.
-
-EXAMPLES
-  $ fathym dev set-api-root
 ```
 
 ## `fathym eac applications create`
@@ -835,7 +837,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.68/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.71/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1040,7 +1042,50 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.68/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.71/dist/commands/lcu/index.ts)_
+
+## `fathym license get [LICENSETYPE]`
+
+Get's the current user's active license by licenseType for the CLI. Determines
+
+```
+USAGE
+  $ fathym license get [LICENSETYPE] [--ci] [--json]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Get's the current user's active license by licenseType for the CLI. Determines
+  if a user has access to provision cloud resources in Azure.
+
+EXAMPLES
+  $ fathym license get
+```
+
+## `fathym license list`
+
+Used to list the current users active licenses.
+
+```
+USAGE
+  $ fathym license list [--ci] [--json]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to list the current users active licenses.
+
+EXAMPLES
+  $ fathym license list
+```
 
 ## `fathym plugins`
 
@@ -1293,5 +1338,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.68/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.71/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
