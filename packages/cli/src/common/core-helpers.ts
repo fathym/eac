@@ -6,7 +6,7 @@ import { ListrTask, PromptOptions } from 'listr2';
 import { withConfig } from './config-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
 import path from 'node:path';
-import { readFile, readJson } from 'fs-extra';
+import { readFile, existsSync, readJson } from 'fs-extra';
 import loadAxios from './axios';
 import { EnterpriseAsCode } from '@semanticjs/common';
 import { runProc } from './task-helpers';
@@ -426,7 +426,7 @@ export async function loadFileAsJson<T>(
 ): Promise<T> {
   const filePath = path.join(directory, filename);
 
-  const json = await readJson(filePath);
+  const json = existsSync(filePath) ? await readJson(filePath) : {};
 
   return json as T;
 }
@@ -437,7 +437,7 @@ export async function loadFileAsString(
 ): Promise<string> {
   const filePath = path.join(directory, filename);
 
-  const str = await readFile(filePath);
+  const str = existsSync(filePath) ? await readFile(filePath) : '';
 
   return String(str);
 }

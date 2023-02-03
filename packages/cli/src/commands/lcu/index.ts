@@ -94,7 +94,6 @@ export default class Install extends FathymCommand<InstallContext> {
       this.confirmAgreements(ci),
       ensureOrganization(this.config.configDir, organization),
       ensureProject(project),
-      // // this.prepareLcuEaCDraft(),
       this.runInstallLcu(lcu),
       this.cleanupLcuFiles(),
     ];
@@ -137,7 +136,7 @@ export default class Install extends FathymCommand<InstallContext> {
 
             const agreeCfg = agreesCfg[agreeKey];
 
-            let value = await task.prompt(prompt);
+            const value = await task.prompt(prompt);
 
             task.output = color.green(`Processing agreement for ${agreeKey}`);
 
