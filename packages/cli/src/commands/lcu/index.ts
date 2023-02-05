@@ -97,21 +97,27 @@ export default class Install extends FathymCommand<InstallContext> {
         task: async (ctx, task) => {
           const phases = await this.loadPhases(ctx.LCUPackageFiles);
 
-          return task.newListr<InstallContext>((parent) => {
-            parent.title = `Execute ${phases.length} Package Phases`;
+          return task.newListr<InstallContext>(
+            (parent) => {
+              parent.title = `Execute ${phases.length} Package Phases`;
 
-            return phases.map((phase) => {
-              return {
-                title: `Execute phase ${phase || 1}`,
-                task: (ctx, task) => {
-                  return task.newListr<InstallContext>([
-                    this.confirmParameters(ci, parameters, phase),
-                    this.runInstallLcu(lcu, phase),
-                  ]);
-                },
-              };
-            });
-          });
+              return phases.map((phase) => {
+                return {
+                  title: `Execute phase ${phase || 1}`,
+                  task: (ctx, task) => {
+                    return task.newListr<InstallContext>(
+                      [
+                        this.confirmParameters(ci, parameters, phase),
+                        this.runInstallLcu(lcu, phase),
+                      ],
+                      { rendererOptions: { collapse: true } }
+                    );
+                  },
+                };
+              });
+            },
+            { rendererOptions: { collapse: false } }
+          );
         },
         options: { rendererOptions: { collapse: false } },
       },
@@ -124,7 +130,10 @@ export default class Install extends FathymCommand<InstallContext> {
   ): Promise<(number | undefined)[]> {
     const dirs = await loadChildDirectories(pckgFiles, `./assets`);
 
-    const phases = dirs.length === 0 ? [undefined] : dirs.map((d) => Number(d));
+    const phases =
+      dirs.length === 0
+        ? [undefined]
+        : dirs.map((d) => Number(d)).sort((a, b) => a - b);
 
     return phases;
   }
