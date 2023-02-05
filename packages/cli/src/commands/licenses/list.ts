@@ -7,9 +7,12 @@ import loadAxios from '../../common/axios';
 import {
   ensureActiveEnterprise,
   FathymTaskContext,
-  loadApiRootUrl
+  loadApiRootUrl,
 } from '../../common/core-helpers';
-import { listEnterprises, listLicensesByEmail } from '../../common/eac-services';
+import {
+  listEnterprises,
+  listLicensesByEmail,
+} from '../../common/eac-services';
 
 export default class List extends FathymCommand<FathymTaskContext> {
   static description = 'Used to list the current users active licenses.';
@@ -40,14 +43,14 @@ export default class List extends FathymCommand<FathymTaskContext> {
       {
         title: `Loading user licenses`,
         task: async (ctx, task) => {
-          const licenses = await listLicensesByEmail(this.config.configDir)
-                    
+          const licenses = await listLicensesByEmail(this.config.configDir);
+
           licenses.map((lic) => {
-            if(lic.Details != null){
-              var licJson = JSON.parse(lic.Details)
-              licenseText = `${licJson.LicenseType} - ${licJson.Group}`
-              licenseLookupss.push(licenseText)
-            }
+            // if (lic.Details != null) {
+            //   var licJson = JSON.parse(lic.Details);
+            //   licenseText = `${licJson.LicenseType} - ${licJson.Group}`;
+            //   licenseLookupss.push(licenseText);
+            // }
             return `${licenseText}`;
           });
 
