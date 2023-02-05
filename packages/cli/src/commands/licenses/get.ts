@@ -10,7 +10,7 @@ import {
 } from '../../common/core-helpers';
 import { listLicensesByEmail, listLicenseTypes } from '../../common/eac-services';
 
-interface GetContext extends FathymTaskContext, ActiveEnterpriseTaskContext {}
+interface GetContext extends FathymTaskContext{}
 export default class Get extends FathymCommand<GetContext> {
   static description = `Get's the current user's active license by licenseType for the CLI. Determines
   if a user has access to provision cloud resources in Azure.`;

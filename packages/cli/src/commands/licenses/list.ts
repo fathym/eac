@@ -7,7 +7,7 @@ import loadAxios from '../../common/axios';
 import {
   ensureActiveEnterprise,
   FathymTaskContext,
-  loadApiRootUrl,
+  loadApiRootUrl
 } from '../../common/core-helpers';
 import { listEnterprises, listLicensesByEmail } from '../../common/eac-services';
 
@@ -32,24 +32,33 @@ export default class List extends FathymCommand<FathymTaskContext> {
   }
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
+    var licenseLookupss: string[] = [];
+
+    var licenseText: string;
+
     return [
       {
         title: `Loading user licenses`,
         task: async (ctx, task) => {
-          await listLicensesByEmail(this.config.configDir)
+          const licenses = await listLicensesByEmail(this.config.configDir)
+                    
+          licenses.map((lic) => {
+            if(lic.Details != null){
+              var licJson = JSON.parse(lic.Details)
+              licenseText = `${licJson.LicenseType} - ${licJson.Group}`
+              licenseLookupss.push(licenseText)
+            }
+            return `${licenseText}`;
+          });
 
-          // const entLookups = ents.map((ent) => {
-          //   return `${ent.Name} (${color.blueBright(ent.Lookup)})`;
-          // });
-
-          // ctx.Fathym.Lookups = {
-          //   name: `Name (${color.blueBright('ent-lookup')})`,
-          //   lookups: entLookups,
-          // };
+          ctx.Fathym.Lookups = {
+            name: `License - Group`,
+            lookups: licenseLookupss,
+          };
 
           // ctx.Fathym.Instructions = await this.loadInstructions();
 
-          // task.title = 'User enterprises loaded';
+          task.title = 'User licenses loaded';
         },
       },
     ];

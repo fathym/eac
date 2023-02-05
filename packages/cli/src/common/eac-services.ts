@@ -240,7 +240,7 @@ export async function listLicenseTypes(configDir: string): Promise<string[]> {
 export async function listLicensesByEmail(
   configDir: string,
   licenseType?: string
-): Promise<(EaCLicense & { Lookup: string })[]> {
+): Promise<(EaCLicense)[]> {
   const axios = await loadAxios(configDir);
 
   if (licenseType == null) {

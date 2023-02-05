@@ -22,6 +22,6 @@
     "url": "https://github.com/fathym/eac/issues"
   },
   "dependencies": {
-    "@semanticjs/common": "^0.67.0"
+    "@semanticjs/common": "^0.68.0"
   }
 }
