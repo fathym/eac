@@ -41,15 +41,6 @@ export class AzureSSHKeyCreatePrompt extends Select {
             `--name "${resGroup}_lcu_key"`,
           ])
         );
-
-        // existing = JSON.parse(
-        //   await runProc('az', [
-        //     'sshkey',
-        //     'show',
-        //     `--resourceGroup "${resGroup}"`,
-        //     `--name "${resGroup}_lcu_key"`,
-        //   ])
-        // );
       }
 
       publicKey = existing.publicKey;

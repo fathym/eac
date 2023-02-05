@@ -1,17 +1,8 @@
 import { Flags } from '@oclif/core';
-import path from 'node:path';
-import { ListrTask, PromptOptions } from 'listr2';
-import { readFile, read, readJson } from 'fs-extra';
+import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import { runProc } from '../../../common/task-helpers';
-import { LcuPackageConfig } from '../../../common/LcuPackageConfig';
-import {
-  ActiveEnterpriseTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
-  setApiRoot,
-} from '../../../common/core-helpers';
+import { FathymTaskContext } from '../../../common/core-helpers';
 
 export default class Scaffold extends FathymCommand<FathymTaskContext> {
   static description = 'Used to scaffold a new LCU.';
@@ -29,7 +20,7 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
 
   static args = [{ name: 'name', required: false }];
 
-  static title = 'Saffold LCU';
+  static title = 'Scaffold LCU';
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args, flags } = await this.parse(Scaffold);

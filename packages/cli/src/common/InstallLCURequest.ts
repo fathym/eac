@@ -5,6 +5,8 @@ export interface InstallLCURequest {
 
   Parameters: { [key: string]: string };
 
+  Phase?: number;
+
   ProjectCreate: boolean;
 
   Project: string;

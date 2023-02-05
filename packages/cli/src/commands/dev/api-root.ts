@@ -1,20 +1,6 @@
-import { Flags } from '@oclif/core';
-import path from 'node:path';
-import { ListrTask, PromptOptions } from 'listr2';
-import { readFile, read, readJson } from 'fs-extra';
+import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
-import { runProc } from '../../common/task-helpers';
-import { LcuPackageConfig } from '../../common/LcuPackageConfig';
-import {
-  ActiveEnterpriseTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
-  setApiRoot,
-} from '../../common/core-helpers';
-import loadAxios from '../../common/axios';
-import { GitHubTaskContext } from '../../common/git-helpers';
-import { InstallLCURequest } from '../../common/InstallLCURequest';
+import { FathymTaskContext, setApiRoot } from '../../common/core-helpers';
 
 export default class SetAPIRoot extends FathymCommand<FathymTaskContext> {
   static description = 'Used to set the api root.';

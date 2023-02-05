@@ -1,19 +1,18 @@
 import { Flags } from '@oclif/core';
 import { color } from '@oclif/color';
-import { ListrTask, ListrTaskWrapper, PromptOptions } from 'listr2';
-import Table from 'table-layout';
-import open from 'open';
+import { Listr, ListrTask, ListrTaskWrapper, PromptOptions } from 'listr2';
 import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
 import { runProc } from '../../common/task-helpers';
 import { LcuPackageConfig } from '../../common/LcuPackageConfig';
 import {
   ActiveEnterpriseTaskContext,
   azureCliInstallTask,
+  AzureCLITaskContext,
   EaCTaskContext,
   ensureActiveEnterprise,
   ensureProject,
   FathymTaskContext,
+  loadChildDirectories,
   loadEaCTask,
   loadFileAsJson,
   processAsyncArray,
@@ -26,11 +25,11 @@ import path from 'node:path';
 import { InstallLCURequest } from '../../common/InstallLCURequest';
 
 import { EnterpriseAsCode } from '@semanticjs/common';
-import { downloadContents } from '../../common/eac-services';
 
 export interface InstallContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
+    AzureCLITaskContext,
     EaCTaskContext,
     GitHubTaskContext,
     ProjectTaskContext {
@@ -74,7 +73,7 @@ export default class Install extends FathymCommand<InstallContext> {
 
   static title = 'Install LCU';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<InstallContext>[]> {
     const { args, flags } = await this.parse(Install);
 
     let { lcu } = args;
@@ -90,13 +89,44 @@ export default class Install extends FathymCommand<InstallContext> {
       this.downloadLcu(lcu),
       this.unpackLcu(),
       this.loadLcuConfig(),
-      this.confirmParameters(ci, parameters),
       this.confirmAgreements(ci),
       ensureOrganization(this.config.configDir, organization),
       ensureProject(project),
-      this.runInstallLcu(lcu),
+      {
+        title: 'Executing Package Phases',
+        task: async (ctx, task) => {
+          const phases = await this.loadPhases(ctx.LCUPackageFiles);
+
+          return task.newListr<InstallContext>((parent) => {
+            parent.title = `Execute ${phases.length} Package Phases`;
+
+            return phases.map((phase) => {
+              return {
+                title: `Execute phase ${phase || 1}`,
+                task: (ctx, task) => {
+                  return task.newListr<InstallContext>([
+                    this.confirmParameters(ci, parameters, phase),
+                    this.runInstallLcu(lcu, phase),
+                  ]);
+                },
+              };
+            });
+          });
+        },
+        options: { rendererOptions: { collapse: false } },
+      },
       this.cleanupLcuFiles(),
     ];
+  }
+
+  protected async loadPhases(
+    pckgFiles: string
+  ): Promise<(number | undefined)[]> {
+    const dirs = await loadChildDirectories(pckgFiles, `./assets`);
+
+    const phases = dirs.length === 0 ? [undefined] : dirs.map((d) => Number(d));
+
+    return phases;
   }
 
   protected cleanupLcuFiles(): ListrTask<InstallContext> {
@@ -125,7 +155,7 @@ export default class Install extends FathymCommand<InstallContext> {
         } else {
           const agreesCfg = await loadFileAsJson<any>(
             ctx.LCUPackageFiles,
-            ctx.LCUPackageConfig.Agreements || './assets/agreements.json'
+            './assets/agreements.json'
           );
 
           const prompts = await this.loadAgreementsPrompts(task, agreesCfg);
@@ -168,7 +198,8 @@ export default class Install extends FathymCommand<InstallContext> {
 
   protected confirmParameters(
     ci: boolean,
-    parameterDefaults?: string
+    parameterDefaults?: string,
+    phase?: number
   ): ListrTask<InstallContext> {
     return {
       title: 'Collecting LCU Parameters',
@@ -179,7 +210,8 @@ export default class Install extends FathymCommand<InstallContext> {
         if (!ci) {
           const promptCfg = await this.loadParametersPrompts(
             ctx.LCUPackageConfig,
-            ctx.LCUPackageFiles
+            ctx.LCUPackageFiles,
+            phase
           );
 
           ctx.LCUParamAnswers = await this.processPromptsSet(
@@ -297,6 +329,9 @@ export default class Install extends FathymCommand<InstallContext> {
           // type: 'select',
           message: `Agree to use '${agreeKey}'`,
           name: agreeKey,
+          async onDetails(type: string): Promise<void> {
+            task.title = type;
+          },
           // footer: footer,
           // choices: ['Agree', 'Cancel'],
         } as PromptOptions<true>);
@@ -310,11 +345,12 @@ export default class Install extends FathymCommand<InstallContext> {
 
   protected async loadParametersPrompts(
     lcuCfg: LcuPackageConfig,
-    pckgFiles: string
+    pckgFiles: string,
+    phase?: number
   ): Promise<{ Prompts: PromptOptions<true>[][]; ParameterKeys: string[] }> {
     const paramsCfg = await loadFileAsJson<any>(
       pckgFiles,
-      lcuCfg.Parameters || './assets/parameters.json'
+      phase ? `./assets/${phase}/parameters.json` : './assets/parameters.json'
     );
 
     const paramKeys = Object.keys(paramsCfg);
@@ -396,21 +432,26 @@ export default class Install extends FathymCommand<InstallContext> {
     eac: EnterpriseAsCode
   ): Promise<ParamAnswers> {
     await processAsyncArray(promptsSet, async (prompts) => {
-      const paramKey = paramKeys.shift() || '';
+      const paramKey = paramKeys?.shift() || '';
 
-      paramAnswers = await this.processPromptSet(
-        task,
-        prompts,
-        paramKey,
-        paramAnswers,
-        eac
-      );
+      if (paramKey) {
+        paramAnswers = await this.processPromptSet(
+          task,
+          prompts,
+          paramKey,
+          paramAnswers,
+          eac
+        );
+      }
     });
 
     return paramAnswers;
   }
 
-  protected runInstallLcu(lcu: string): ListrTask<InstallContext> {
+  protected runInstallLcu(
+    lcu: string,
+    phase?: number
+  ): ListrTask<InstallContext> {
     return {
       title: `Installing LCU`,
       task: async (ctx, task) => {
@@ -421,6 +462,7 @@ export default class Install extends FathymCommand<InstallContext> {
             LCUPackage: lcu,
             Organization: ctx.GitHubOrganization,
             Parameters: ctx.LCUParamAnswers,
+            Phase: phase,
             ProjectCreate: !ctx.ProjectLookup,
             Project: ctx.ProjectLookup,
           }

@@ -48,10 +48,10 @@ export function commitGitChanges(commitMessage: string): ListrTask {
   };
 }
 
-export function ensureOrganization(
+export function ensureOrganization<TContext extends GitHubTaskContext>(
   configDir: string,
   organization?: string
-): ListrTask<GitHubTaskContext> {
+): ListrTask<TContext> {
   return {
     title: `Ensuring organization set`,
     task: async (ctx, task) => {

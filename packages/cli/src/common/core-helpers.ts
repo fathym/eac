@@ -6,7 +6,7 @@ import { ListrTask, PromptOptions } from 'listr2';
 import { withConfig } from './config-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
 import path from 'node:path';
-import { readFile, existsSync, readJson } from 'fs-extra';
+import { readFile, existsSync, readJson, readdir } from 'fs-extra';
 import loadAxios from './axios';
 import { EnterpriseAsCode } from '@semanticjs/common';
 import { runProc } from './task-helpers';
@@ -275,9 +275,9 @@ export function ensureActiveEnterprise<
   };
 }
 
-export function ensureProject(
-  project?: string
-): ListrTask<ProjectTaskContext & EaCTaskContext> {
+export function ensureProject<
+  TContext extends ProjectTaskContext & EaCTaskContext
+>(project?: string): ListrTask<TContext> {
   return {
     title: `Ensuring project set`,
     task: async (ctx, task) => {
@@ -420,6 +420,19 @@ export function loadEaCTask<
   };
 }
 
+export async function loadChildDirectories(
+  directory: string,
+  checkPath: string
+): Promise<string[]> {
+  const dirPath = path.join(directory, checkPath);
+
+  const entries = await readdir(dirPath, { withFileTypes: true });
+
+  const dirs = entries.filter((e) => e.isDirectory()).map((e) => e.name);
+
+  return dirs;
+}
+
 export async function loadFileAsJson<T>(
   directory: string,
   filename: string
@@ -446,12 +459,14 @@ export async function processAsyncArray<T>(
   vals: T[],
   process: (val: T) => Promise<void>
 ): Promise<void> {
-  const val: T = vals.shift()!;
+  const val: T = vals?.shift()!;
 
-  await process(val);
+  if (val) {
+    await process(val);
 
-  if (vals?.length > 0) {
-    await processAsyncArray(vals, process);
+    if (vals?.length > 0) {
+      await processAsyncArray(vals, process);
+    }
   }
 }
 
