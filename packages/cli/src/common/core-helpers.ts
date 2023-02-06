@@ -288,7 +288,9 @@ export function ensureProject<
       if (!project) {
         const projects = Object.keys(ctx.EaC?.Projects || {}) || [];
 
-        projects.push('');
+        if (create) {
+          projects.push('');
+        }
 
         project = (
           await task.prompt({
