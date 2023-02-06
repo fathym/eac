@@ -12,11 +12,15 @@ import {
   ensureActiveEnterprise,
   ensureProject,
   FathymTaskContext,
+  LCUParamAnswersTaskContext,
   loadChildDirectories,
   loadEaCTask,
   loadFileAsJson,
+  ParamAnswers,
   processAsyncArray,
   ProjectTaskContext,
+  setAzureSubTask,
+  SubscriptionTaskContext,
 } from '../../common/core-helpers';
 import loadAxios from '../../common/axios';
 import { GitHubTaskContext } from '../../common/git-helpers';
@@ -32,20 +36,18 @@ export interface InstallContext
     AzureCLITaskContext,
     EaCTaskContext,
     GitHubTaskContext,
-    ProjectTaskContext {
+    ProjectTaskContext,
+    LCUParamAnswersTaskContext,
+    SubscriptionTaskContext {
   EaCDraft: any;
+
+  LCUAgreements: { [urn: string]: boolean };
 
   LCUPackageConfig: LcuPackageConfig;
 
   LCUPackageFiles: string;
 
   LCUPackageTarball: string;
-
-  LCUParamAnswers: ParamAnswers;
-}
-
-export interface ParamAnswers {
-  [key: string]: string;
 }
 
 export default class Install extends FathymCommand<InstallContext> {
@@ -143,7 +145,7 @@ export default class Install extends FathymCommand<InstallContext> {
                         this.confirmParameters(ci, parameters, phase),
                         this.runInstallLcu(lcu, phase),
                       ],
-                      { rendererOptions: { collapse: true } }
+                      { rendererOptions: { collapse: false } } // true } }
                     );
                   },
                 };
@@ -215,6 +217,11 @@ export default class Install extends FathymCommand<InstallContext> {
             if (value) {
               const urn = `${agreeCfg.publisher}:${agreeCfg.offer}:${agreeCfg.sku}:${agreeCfg.version}`;
 
+              // ctx.LCUAgreements = {
+              //   ...ctx.LCUAgreements,
+              //   [urn]: true,
+              // };
+
               await runProc(agreeCfg.type, [
                 'vm',
                 'image',
@@ -234,7 +241,6 @@ export default class Install extends FathymCommand<InstallContext> {
 
         task.title = 'Thanks for accepting agreements';
       },
-      options: { persistentOutput: true },
     };
   }
 
@@ -251,8 +257,6 @@ export default class Install extends FathymCommand<InstallContext> {
           ...JSON.parse(parameterDefaults || '{}'),
           ...ctx.LCUParamAnswers,
         };
-
-        task.title = JSON.stringify(ctx.LCUParamAnswers);
 
         if (!ci) {
           const promptCfg = await this.loadParametersPrompts(
@@ -304,12 +308,12 @@ export default class Install extends FathymCommand<InstallContext> {
     configDir: string,
     entLookup: string,
     installReq: InstallLCURequest
-  ): Promise<void> {
+  ): Promise<ParamAnswers> {
     const axios = await loadAxios(configDir);
 
     const response = await axios.post(`${entLookup}/lcu/install`, installReq);
 
-    return response.data?.Model || [];
+    return response.data?.Model || {};
   }
 
   protected loadLcuConfig(): ListrTask<InstallContext> {
@@ -376,13 +380,9 @@ export default class Install extends FathymCommand<InstallContext> {
         prompts.push({
           type: 'confirm',
           // type: 'select',
-          message: `Agree to use '${agreeKey}'`,
+          message: `Do you agree to use '${agreeCfg.Name}'?`,
           name: agreeKey,
-          async onDetails(type: string): Promise<void> {
-            task.title = type;
-          },
           // footer: footer,
-          // choices: ['Agree', 'Cancel'],
         } as PromptOptions<true>);
       } else {
         task.output = `No agreement details provided for '${agreeKey}'; skipping.`;
@@ -504,7 +504,7 @@ export default class Install extends FathymCommand<InstallContext> {
     return {
       title: `Installing LCU`,
       task: async (ctx, task) => {
-        await this.installLcu(
+        const paramswers = await this.installLcu(
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           {
@@ -516,6 +516,13 @@ export default class Install extends FathymCommand<InstallContext> {
             Project: ctx.ProjectLookup,
           }
         );
+
+        ctx.LCUParamAnswers = {
+          ...ctx.LCUParamAnswers,
+          ...paramswers,
+        };
+
+        task.title = JSON.stringify(ctx.LCUParamAnswers);
       },
     };
   }

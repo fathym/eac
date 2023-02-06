@@ -45,6 +45,10 @@ export interface ProjectTaskContext {
   ProjectLookup: string;
 }
 
+export interface LCUParamAnswersTaskContext {
+  LCUParamAnswers: ParamAnswers;
+}
+
 export interface ActiveEnterpriseTaskContext {
   ActiveEnterpriseLookup: string;
 }
@@ -67,6 +71,10 @@ export interface AzureSubscription {
   name: string;
 
   tenantId: string;
+}
+
+export interface ParamAnswers {
+  [key: string]: string;
 }
 
 export class SystemConfig {
@@ -161,11 +169,11 @@ export function setAzureSubTask<
               (await runProc('az', ['account', 'list'])) || '[]'
             );
 
-            subsList.unshift({
-              id: '',
-              name: '-- Create New Subscription --',
-              tenantId: '',
-            });
+            // subsList.unshift({
+            //   id: '',
+            //   name: '-- Create New Subscription --',
+            //   tenantId: '',
+            // });
 
             ctx.SubscriptionID = (
               await task.prompt({
