@@ -9,8 +9,10 @@ import {
   EaCRemovalsTaskContext,
   EaCTaskContext,
   ensureActiveEnterprise,
+  ensureProject,
   FathymTaskContext,
   loadEaCTask,
+  ProjectTaskContext,
 } from '../../../common/core-helpers';
 import { deleteFromEaCTask } from '../../../common/eac-services';
 
@@ -18,10 +20,11 @@ interface DeleteContext
   extends FathymTaskContext,
     EaCTaskContext,
     EaCRemovalsTaskContext,
-    ActiveEnterpriseTaskContext {}
+    ActiveEnterpriseTaskContext,
+    ProjectTaskContext {}
 
 export default class Delete extends FathymCommand<DeleteContext> {
-  static description = `Used for listing available projects.`;
+  static description = `Used for deleting a project.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -36,7 +39,7 @@ export default class Delete extends FathymCommand<DeleteContext> {
     { name: 'projectLookup', description: 'The project lookup to delete.' },
   ];
 
-  static title = 'List Projects';
+  static title = 'Delete Project';
 
   protected async loadTasks(): Promise<ListrTask<DeleteContext>[]> {
     const { args, flags } = await this.parse(Delete);
@@ -48,12 +51,15 @@ export default class Delete extends FathymCommand<DeleteContext> {
     return [
       ensureActiveEnterprise(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
+      ensureProject(projectLookup),
       {
-        title: `Configure project removals for '${projectLookup}'`,
+        title: `Configure project removals`,
         task: async (ctx, task) => {
-          const project = ctx.EaC?.Projects![projectLookup];
+          const project = ctx.EaC?.Projects![ctx.ProjectLookup];
 
           if (project) {
+            task.title = `Configure project removals for '${project.Project?.Name}'`;
+
             const remove: boolean = await task.prompt({
               type: 'Confirm',
               message: 'Are you sure you want to remove?',
@@ -63,7 +69,7 @@ export default class Delete extends FathymCommand<DeleteContext> {
               ctx.EaCRemovals = {
                 EnterpriseLookup: ctx.ActiveEnterpriseLookup,
                 Projects: {
-                  projectLookup: {},
+                  [ctx.ProjectLookup]: {},
                 },
                 Applications: project.ApplicationLookups?.reduce(
                   (apps, appLookup) => {
