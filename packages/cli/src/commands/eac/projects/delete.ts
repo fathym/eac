@@ -62,18 +62,18 @@ export default class Delete extends FathymCommand<DeleteContext> {
 
             const remove: boolean = await task.prompt({
               type: 'Confirm',
-              message: 'Are you sure you want to remove?',
+              message: `Are you sure you want to remove '${project.Project?.Name}'?`,
             });
 
             if (remove) {
               ctx.EaCRemovals = {
                 EnterpriseLookup: ctx.ActiveEnterpriseLookup,
                 Projects: {
-                  [ctx.ProjectLookup]: {},
+                  [ctx.ProjectLookup]: { Project: {} },
                 },
                 Applications: project.ApplicationLookups?.reduce(
                   (apps, appLookup) => {
-                    apps![appLookup] = {};
+                    apps![appLookup] = { Application: {} };
 
                     return apps;
                   },
