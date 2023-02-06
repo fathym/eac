@@ -37,6 +37,10 @@ export interface EaCTaskContext {
   EaC: EnterpriseAsCode;
 }
 
+export interface EaCRemovalsTaskContext {
+  EaCRemovals: EnterpriseAsCode;
+}
+
 export interface ProjectTaskContext {
   ProjectLookup: string;
 }

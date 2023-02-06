@@ -83,12 +83,45 @@ export default class Install extends FathymCommand<InstallContext> {
     lcu = lcu.replace(/\\/g, '/');
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
-      loadEaCTask(this.config.configDir),
-      azureCliInstallTask(),
-      this.downloadLcu(lcu),
-      this.unpackLcu(),
-      this.loadLcuConfig(),
+      {
+        title: `Setup for LCU package install`,
+        task: (ctx, task) => {
+          return task.newListr<InstallContext>(
+            [
+              {
+                title: 'Configure for EaC',
+                task: (ctx, task) => {
+                  return task.newListr<InstallContext>(
+                    [
+                      ensureActiveEnterprise(this.config.configDir),
+                      loadEaCTask(this.config.configDir),
+                    ],
+                    {
+                      concurrent: false,
+                      rendererOptions: { collapse: true },
+                    }
+                  );
+                },
+              },
+              azureCliInstallTask(),
+              {
+                title: 'Prepare LCU Package',
+                task: (ctx, task) => {
+                  return task.newListr<InstallContext>([
+                    this.downloadLcu(lcu),
+                    this.unpackLcu(),
+                    this.loadLcuConfig(),
+                  ]);
+                },
+              },
+            ],
+            {
+              concurrent: true,
+              rendererOptions: { collapse: false },
+            }
+          );
+        },
+      },
       this.confirmAgreements(ci),
       ensureOrganization(this.config.configDir, organization),
       ensureProject(project),
@@ -214,7 +247,12 @@ export default class Install extends FathymCommand<InstallContext> {
       title: 'Collecting LCU Parameters',
       skip: () => false,
       task: async (ctx, task) => {
-        ctx.LCUParamAnswers = JSON.parse(parameterDefaults || '{}');
+        ctx.LCUParamAnswers = {
+          ...JSON.parse(parameterDefaults || '{}'),
+          ...ctx.LCUParamAnswers,
+        };
+
+        task.title = JSON.stringify(ctx.LCUParamAnswers);
 
         if (!ci) {
           const promptCfg = await this.loadParametersPrompts(
@@ -223,13 +261,15 @@ export default class Install extends FathymCommand<InstallContext> {
             phase
           );
 
-          ctx.LCUParamAnswers = await this.processPromptsSet(
+          const paramswers = await this.processPromptsSet(
             task,
             promptCfg.Prompts || [],
             promptCfg.ParameterKeys,
             ctx.LCUParamAnswers,
             ctx.EaC
           );
+
+          ctx.LCUParamAnswers = { ...ctx.LCUParamAnswers, ...paramswers };
         }
 
         task.title = 'Thanks for inputing your parameters';

@@ -10,6 +10,7 @@ import loadAxios from './axios';
 import { withConfig } from './config-helpers';
 import {
   ActiveEnterpriseTaskContext,
+  EaCRemovalsTaskContext,
   EaCTaskContext,
   FathymTaskContext,
 } from './core-helpers';
@@ -183,6 +184,35 @@ export function commitDraftTask(
   };
 }
 
+export function deleteFromEaCTask<
+  TContext extends ActiveEnterpriseTaskContext & EaCRemovalsTaskContext
+>(configDir: string, name: string, description: string): ListrTask<TContext> {
+  return {
+    title: 'Removing from EaC',
+    skip: (ctx) => !ctx.EaCRemovals,
+    task: async (ctx, task) => {
+      const axios = await loadAxios(configDir);
+
+      const response = await axios.put(
+        `${ctx.ActiveEnterpriseLookup}/eac/removals`,
+        {
+          EaC: ctx.EaCRemovals,
+          Name: name,
+          Description: description || name,
+        }
+      );
+
+      const resp = response.data;
+
+      if (resp.Status.Code === 0) {
+        task.title = `EaC Removals Committed`;
+      } else {
+        throw new Error(resp.Status.Message);
+      }
+    },
+  };
+}
+
 export async function downloadContents(url: string): Promise<string> {
   const response = await axios.get(url);
 
@@ -240,7 +270,7 @@ export async function listLicenseTypes(configDir: string): Promise<string[]> {
 export async function listLicensesByEmail(
   configDir: string,
   licenseType?: string
-): Promise<(EaCLicense)[]> {
+): Promise<EaCLicense[]> {
   const axios = await loadAxios(configDir);
 
   if (licenseType == null) {
