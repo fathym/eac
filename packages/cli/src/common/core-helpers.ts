@@ -169,11 +169,11 @@ export function setAzureSubTask<
               (await runProc('az', ['account', 'list'])) || '[]'
             );
 
-            // subsList.unshift({
-            //   id: '',
-            //   name: '-- Create New Subscription --',
-            //   tenantId: '',
-            // });
+            subsList.unshift({
+              id: '',
+              name: '-- Create New Subscription --',
+              tenantId: '',
+            });
 
             ctx.SubscriptionID = (
               await task.prompt({
