@@ -210,25 +210,27 @@ export default class Install extends FathymCommand<InstallContext> {
 
             const agreeCfg = agreesCfg[agreeKey];
 
+            task.output = color.yellow(`Agree to ${agreeCfg.Name} below`);
+
             const value = await task.prompt(prompt);
 
-            task.output = color.green(`Processing agreement for ${agreeKey}`);
+            task.output = color.green(
+              `Processed agreement for ${agreeCfg.Name}`
+            );
 
             if (value) {
-              const urn = `${agreeCfg.publisher}:${agreeCfg.offer}:${agreeCfg.sku}:${agreeCfg.version}`;
-
+              // const urn = `${agreeCfg.publisher}:${agreeCfg.offer}:${agreeCfg.sku}:${agreeCfg.version}`;
               // ctx.LCUAgreements = {
               //   ...ctx.LCUAgreements,
               //   [urn]: true,
               // };
-
-              await runProc(agreeCfg.type, [
-                'vm',
-                'image',
-                'terms',
-                'accept',
-                `--urn ${urn}`,
-              ]);
+              // await runProc(agreeCfg.type, [
+              //   'vm',
+              //   'image',
+              //   'terms',
+              //   'accept',
+              //   `--urn ${urn}`,
+              // ]);
             } else {
               task.output = '';
 
