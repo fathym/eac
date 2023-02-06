@@ -51,7 +51,7 @@ export default class Delete extends FathymCommand<DeleteContext> {
     return [
       ensureActiveEnterprise(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
-      ensureProject(projectLookup),
+      ensureProject(projectLookup, false),
       {
         title: `Configure project removals`,
         task: async (ctx, task) => {

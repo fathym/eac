@@ -281,7 +281,7 @@ export function ensureActiveEnterprise<
 
 export function ensureProject<
   TContext extends ProjectTaskContext & EaCTaskContext
->(project?: string): ListrTask<TContext> {
+>(project?: string, create: boolean = true): ListrTask<TContext> {
   return {
     title: `Ensuring project set`,
     task: async (ctx, task) => {
@@ -304,6 +304,7 @@ export function ensureProject<
                 name: proj,
               };
             }),
+            validate: (v) => create || Boolean(v),
           } as PromptOptions<true>)
         ).trim();
       }
