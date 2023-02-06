@@ -50,10 +50,13 @@ export function commitGitChanges(commitMessage: string): ListrTask {
 
 export function ensureOrganization<TContext extends GitHubTaskContext>(
   configDir: string,
-  organization?: string
+  organization?: string,
+  enabled?: (ctx: TContext) => boolean
 ): ListrTask<TContext> {
   return {
     title: `Ensuring organization set`,
+    enabled: enabled,
+    // enabled: enabled,
     task: async (ctx, task) => {
       if (!organization) {
         let orgs = await listGitHubOrganizations(configDir);

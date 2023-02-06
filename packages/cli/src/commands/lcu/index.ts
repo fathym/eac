@@ -125,8 +125,12 @@ export default class Install extends FathymCommand<InstallContext> {
         },
       },
       this.confirmAgreements(ci),
-      ensureOrganization(this.config.configDir, organization),
       ensureProject(project),
+      ensureOrganization(
+        this.config.configDir,
+        organization,
+        (ctx) => ctx.LCUPackageConfig.Package!.UsesGit
+      ),
       {
         title: 'Executing Package Phases',
         task: async (ctx, task) => {

@@ -6,4 +6,6 @@ export class LcuPackageDetails {
   public Image?: string;
 
   public PreviewImage?: string;
+
+  public UsesGit!: boolean;
 }
