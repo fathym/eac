@@ -163,7 +163,7 @@ export default class Install extends FathymCommand<InstallContext> {
                         this.confirmParameters(ci, parameters, phase),
                         this.runInstallLcu(lcu, phase),
                       ],
-                      { rendererOptions: { collapse: false } } // true } }
+                      { rendererOptions: { collapse: true } }
                     );
                   },
                 };
@@ -448,8 +448,6 @@ export default class Install extends FathymCommand<InstallContext> {
     eac: EnterpriseAsCode
   ): Promise<ParamAnswers> {
     await processAsyncArray(prompts, async (prompt) => {
-      task.title = JSON.stringify(paramAnswers);
-
       if (!paramAnswers[paramKey]) {
         const answerKeys = Object.keys(paramAnswers);
 
@@ -539,12 +537,18 @@ export default class Install extends FathymCommand<InstallContext> {
           }
         );
 
+        if (paramswers['$ProjectLookup']) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.ProjectLookup = paramswers['$ProjectLookup'];
+
+          delete paramswers['$ProjectLookup'];
+        }
+
         ctx.LCUParamAnswers = {
           ...ctx.LCUParamAnswers,
           ...paramswers,
         };
-
-        task.title = JSON.stringify(ctx.LCUParamAnswers);
       },
     };
   }
