@@ -537,12 +537,12 @@ export default class Install extends FathymCommand<InstallContext> {
           }
         );
 
-        if (paramswers['$ProjectLookup']) {
+        if (paramswers.$ProjectLookup) {
           //  TODO:  Handle any $ prop onto the CTX
 
-          ctx.ProjectLookup = paramswers['$ProjectLookup'];
+          ctx.ProjectLookup = paramswers.$ProjectLookup;
 
-          delete paramswers['$ProjectLookup'];
+          delete paramswers.$ProjectLookup;
         }
 
         ctx.LCUParamAnswers = {
