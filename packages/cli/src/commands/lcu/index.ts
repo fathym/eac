@@ -105,7 +105,21 @@ export default class Install extends FathymCommand<InstallContext> {
                   );
                 },
               },
-              azureCliInstallTask(),
+              {
+                title: 'Setup Azure CLI',
+                task: (ctx, task) => {
+                  return task.newListr<InstallContext>(
+                    [
+                      azureCliInstallTask(),
+                      // TODO: Ensure az login
+                    ],
+                    {
+                      concurrent: false,
+                      rendererOptions: { collapse: true },
+                    }
+                  );
+                },
+              },
               {
                 title: 'Prepare LCU Package',
                 task: (ctx, task) => {
@@ -434,6 +448,8 @@ export default class Install extends FathymCommand<InstallContext> {
     eac: EnterpriseAsCode
   ): Promise<ParamAnswers> {
     await processAsyncArray(prompts, async (prompt) => {
+      task.title = JSON.stringify(paramAnswers);
+
       if (!paramAnswers[paramKey]) {
         const answerKeys = Object.keys(paramAnswers);
 

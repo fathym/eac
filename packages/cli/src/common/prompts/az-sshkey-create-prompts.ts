@@ -1,4 +1,5 @@
 import { color } from '@oclif/color';
+import { EaCEnvironmentAsCode } from '@semanticjs/common';
 import { runProc } from '../task-helpers';
 const { Confirm, Select } = require('enquirer');
 
@@ -20,6 +21,15 @@ export class AzureSSHKeyCreatePrompt extends Select {
       return publicKey;
     };
 
+    const env: EaCEnvironmentAsCode =
+      options.eac.Environments[options.eac.Enterprise!.PrimaryEnvironment!];
+
+    const cloud = env.Clouds![options.cloudLookup];
+
+    const subscriptionId = cloud.Cloud!.SubscriptionID;
+
+    // throw new Error(subscriptionId);
+
     options.onSubmit = async (name, val) => {
       let existing: any;
 
@@ -30,6 +40,7 @@ export class AzureSSHKeyCreatePrompt extends Select {
             'show',
             `--resource-group "${resGroup}"`,
             `--name "${resGroup}_lcu_key"`,
+            subscriptionId ? `--subscription "${subscriptionId}"` : '',
           ])
         );
       } catch {
@@ -39,6 +50,7 @@ export class AzureSSHKeyCreatePrompt extends Select {
             'create',
             `--resource-group "${resGroup}"`,
             `--name "${resGroup}_lcu_key"`,
+            subscriptionId ? `--subscription "${subscriptionId}"` : '',
           ])
         );
       }

@@ -62,7 +62,7 @@ export default class Delete extends FathymCommand<DeleteContext> {
 
             const remove: boolean = await task.prompt({
               type: 'Confirm',
-              message: `Are you sure you want to remove '${project.Project?.Name}'?`,
+              message: `Are you sure you want to remove project '${project.Project?.Name}'?`,
             });
 
             if (remove) {
