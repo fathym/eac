@@ -123,11 +123,17 @@ export default class Install extends FathymCommand<InstallContext> {
               {
                 title: 'Prepare LCU Package',
                 task: (ctx, task) => {
-                  return task.newListr<InstallContext>([
-                    this.downloadLcu(lcu),
-                    this.unpackLcu(),
-                    this.loadLcuConfig(),
-                  ]);
+                  return task.newListr<InstallContext>(
+                    [
+                      this.downloadLcu(lcu),
+                      this.unpackLcu(),
+                      this.loadLcuConfig(),
+                    ],
+                    {
+                      concurrent: false,
+                      rendererOptions: { collapse: true },
+                    }
+                  );
                 },
               },
             ],
