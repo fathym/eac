@@ -555,6 +555,8 @@ export default class Install extends FathymCommand<InstallContext> {
           ...ctx.LCUParamAnswers,
           ...paramswers,
         };
+
+        ctx.Fathym.Result = JSON.stringify(ctx.LCUParamAnswers, null, 2);
       },
     };
   }
