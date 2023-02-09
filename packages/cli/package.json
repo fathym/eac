@@ -1,6 +1,6 @@
 {
   "name": "@fathym/cli",
-  "version": "0.0.93",
+  "version": "0.0.94",
   "description": "The CLI used for code first flows with Fathym EaC.",
   "author": "Fathym, Inc",
   "bin": {
