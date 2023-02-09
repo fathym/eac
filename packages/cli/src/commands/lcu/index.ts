@@ -165,7 +165,7 @@ export default class Install extends FathymCommand<InstallContext> {
                   ? ctx.LCUPackageConfig.Phases[phase || '']
                   : ({} as any);
 
-                const phaseExtra = phaseCfg ? ` - ${phaseCfg.Name}` : '';
+                const phaseExtra = phaseCfg?.Name ? ` - ${phaseCfg.Name}` : '';
 
                 return {
                   title: `Execute phase ${phase || 1}${phaseExtra}`,
@@ -557,12 +557,21 @@ export default class Install extends FathymCommand<InstallContext> {
           delete paramswers.$ProjectLookup;
         }
 
+        // if (phase === 3) {
+        //   ctx.Fathym.Result = JSON.stringify(paramswers, null, 2);
+        // } else {
         ctx.LCUParamAnswers = {
           ...ctx.LCUParamAnswers,
           ...paramswers,
         };
 
-        ctx.Fathym.Result = JSON.stringify(ctx.LCUParamAnswers, null, 2);
+        ctx.Fathym.Result =
+          JSON.stringify(paramswers, null, 2) +
+          '\n' +
+          JSON.stringify(ctx.LCUParamAnswers, null, 2);
+
+        // ctx.Fathym.Result = JSON.stringify(ctx.LCUParamAnswers, null, 2);
+        // }
       },
     };
   }
