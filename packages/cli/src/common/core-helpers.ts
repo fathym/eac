@@ -164,7 +164,7 @@ export function setAzureSubTask<
         },
         {
           title: 'Select Azure Subscription',
-          task: async (ctx, task) => {
+          task: async (ctx, task) => {            
             const subsList: AzureSubscription[] = JSON.parse(
               (await runProc('az', ['account', 'list'])) || '[]'
             );
@@ -175,22 +175,22 @@ export function setAzureSubTask<
               tenantId: '',
             });
 
-            ctx.SubscriptionID = (
+            var subCheck: string = (
               await task.prompt({
                 type: 'Select',
                 name: 'subId',
                 message: 'Choose Azure subscription:',
                 choices: subsList.map((account) => {
                   return {
-                    message: `${account.name} (${color.blueBright(
-                      account.id
-                    )})`,
+                    message: `${account.name}`,
                     name: account.id,
                   };
                 }),
                 validate: (v) => Boolean(v),
               } as PromptOptions<true>)
             ).trim();
+            
+            subCheck = subCheck === '-- Create New Subscription --' ? '' : subCheck;
 
             if (ctx.SubscriptionID) {
               const sub = subsList.find((al) => al.id === ctx.SubscriptionID);
@@ -199,25 +199,17 @@ export function setAzureSubTask<
 
               ctx.SubscriptionName = sub?.name || ctx.SubscriptionID;
 
-              task.title = `Azure subscription selected: ${ctx.SubscriptionName}`;
+              task.title = `Azure subscription selected: ${ctx.SubscriptionID}`;
             } else {
               task.title = `Creating azure subscription`;
 
               ctx.SubscriptionName = (
                 await task.prompt({
-                  type: 'Select',
-                  name: 'subId',
-                  message: 'Azure subscription name:',
-                  choices: subsList.map((account) => {
-                    return {
-                      message: `${account.name} (${color.blueBright(
-                        account.id
-                      )})`,
-                      name: account.id,
-                    };
-                  }),
-                } as PromptOptions<true>)
-              ).trim();
+                  type: 'input',
+                  name: 'subName',
+                  message: 'Enter name for new Azure subscription name:',
+                })
+              );
 
               task.title = `Creating azure subscription: ${ctx.SubscriptionName}`;
 
@@ -237,7 +229,7 @@ export function setAzureSubTask<
             await runProc('az', [
               'account',
               'set',
-              `--subscription ${ctx.SubscriptionID}`,
+              `--subscription ${ctx.SubscriptionName}`,
             ]);
 
             parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
@@ -255,7 +247,7 @@ export async function createAzureSubscription(
 ): Promise<AzureSubscription> {
   const axios = await loadAxios(configDir);
 
-  const response = await axios.post(`${entLookup}/subscriptions`, {
+  const response = await axios.post(`${entLookup}/azure/subscription/create`, {
     Name: subName,
   });
 
