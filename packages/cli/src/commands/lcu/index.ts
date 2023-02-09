@@ -161,8 +161,14 @@ export default class Install extends FathymCommand<InstallContext> {
               parent.title = `Execute ${phases.length} Package Phases`;
 
               return phases.map((phase) => {
+                const phaseCfg = ctx.LCUPackageConfig.Phases
+                  ? ctx.LCUPackageConfig.Phases[phase || '']
+                  : ({} as any);
+
+                const phaseExtra = phaseCfg ? ` - ${phaseCfg.Name}` : '';
+
                 return {
-                  title: `Execute phase ${phase || 1}`,
+                  title: `Execute phase ${phase || 1}${phaseExtra}`,
                   task: (ctx, task) => {
                     return task.newListr<InstallContext>(
                       [
