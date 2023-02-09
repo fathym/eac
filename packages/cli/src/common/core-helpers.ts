@@ -164,13 +164,13 @@ export function setAzureSubTask<
         },
         {
           title: 'Select Azure Subscription',
-          task: async (ctx, task) => {            
+          task: async (ctx, task) => {
             const subsList: AzureSubscription[] = JSON.parse(
               (await runProc('az', ['account', 'list'])) || '[]'
             );
 
             subsList.unshift({
-              id: '',
+              id: '-- Create New Subscription --',
               name: '-- Create New Subscription --',
               tenantId: '',
             });
@@ -189,8 +189,9 @@ export function setAzureSubTask<
                 validate: (v) => Boolean(v),
               } as PromptOptions<true>)
             ).trim();
-            
-            subCheck = subCheck === '-- Create New Subscription --' ? '' : subCheck;
+
+            ctx.SubscriptionID =
+              subCheck === '-- Create New Subscription --' ? '' : subCheck;
 
             if (ctx.SubscriptionID) {
               const sub = subsList.find((al) => al.id === ctx.SubscriptionID);
@@ -203,13 +204,11 @@ export function setAzureSubTask<
             } else {
               task.title = `Creating azure subscription`;
 
-              ctx.SubscriptionName = (
-                await task.prompt({
-                  type: 'input',
-                  name: 'subName',
-                  message: 'Enter name for new Azure subscription name:',
-                })
-              );
+              ctx.SubscriptionName = await task.prompt({
+                type: 'input',
+                name: 'subName',
+                message: 'Enter name for new Azure subscription name:',
+              });
 
               task.title = `Creating azure subscription: ${ctx.SubscriptionName}`;
 
@@ -229,7 +228,7 @@ export function setAzureSubTask<
             await runProc('az', [
               'account',
               'set',
-              `--subscription ${ctx.SubscriptionName}`,
+              `--subscription ${ctx.SubscriptionID}`,
             ]);
 
             parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
