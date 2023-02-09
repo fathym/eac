@@ -156,6 +156,22 @@ export function commitDraftTask(
   return {
     title: 'Commiting EaC Draft',
     task: async (ctx, task) => {
+      if (!name) {
+        name = await task.prompt({
+          type: 'input',
+          message: 'Name for the commit:',
+          validate: (v) => Boolean(v),
+        });
+      }
+
+      if (!description) {
+        description = await task.prompt({
+          type: 'input',
+          message: 'Description for the commit:',
+          validate: (v) => Boolean(v),
+        });
+      }
+
       const axios = await loadAxios(configDir);
 
       const eacDraft = await withEaCDraft(configDir);
