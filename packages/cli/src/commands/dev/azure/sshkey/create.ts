@@ -36,7 +36,7 @@ export default class SSHKey extends FathymCommand<SSHKeyContext> {
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {
-    name: Flags.string({
+    keyName: Flags.string({
       char: 'n',
       description: 'Set the name of the SSH key to create.',
     }),
@@ -56,9 +56,7 @@ export default class SSHKey extends FathymCommand<SSHKeyContext> {
 
     const { resourceGroup } = args;
 
-    let { name } = flags;
-
-    name = name || `${resourceGroup}_key`;
+    const { keyName } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
@@ -66,7 +64,7 @@ export default class SSHKey extends FathymCommand<SSHKeyContext> {
       loadEaCTask(this.config.configDir),
       ensureCloudTask(this.config.configDir), // , cloudLookup),
       ensureCloudResourceGroupTask(this.config.configDir, resourceGroup),
-      azSshKeyCreateTask(),
+      azSshKeyCreateTask(this.config, keyName!),
       {
         title: 'SSH Key Public Key',
         task: (ctx) => {

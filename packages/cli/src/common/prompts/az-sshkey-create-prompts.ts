@@ -1,5 +1,9 @@
 import { color } from '@oclif/color';
+import { Config } from '@oclif/core';
 import { EaCEnvironmentAsCode } from '@semanticjs/common';
+import { mkdir, rm } from 'fs-extra';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import { runProc } from '../task-helpers';
 const { Confirm, Select } = require('enquirer');
 
@@ -11,7 +15,11 @@ export class AzureSSHKeyCreatePrompt extends Select {
       throw new Error('A resource group is required');
     }
 
-    let publicKey = 'gkfjhjfjgd';
+    const config: Config = options.config;
+
+    const keyName = options.keyName || `${resGroup}_lcu_key`;
+
+    let publicKey = '';
 
     options.result = (val) => {
       if (val) {
@@ -38,18 +46,42 @@ export class AzureSSHKeyCreatePrompt extends Select {
           await runProc('az', [
             'sshkey',
             'show',
+            `--name "${keyName}"`,
             `--resource-group "${resGroup}"`,
-            `--name "${resGroup}_lcu_key"`,
             subscriptionId ? `--subscription "${subscriptionId}"` : '',
           ])
         );
       } catch {
+        const keyPathDir = path.join(config.configDir, '/.ssh');
+
+        if (!existsSync(keyPathDir)) {
+          await mkdir(keyPathDir);
+        }
+
+        const keyPath = path.join(keyPathDir, keyName);
+
+        if (existsSync(keyPath)) {
+          await rm(keyPath);
+
+          await rm(`${keyPath}.pub`);
+        }
+
+        const res = await runProc('ssh-keygen', [
+          '-m PEM',
+          '-t rsa',
+          `-b 2048`,
+          `-f "${keyPath}"`,
+          '-q',
+          `-N ""`,
+        ]);
+
         existing = JSON.parse(
           await runProc('az', [
             'sshkey',
             'create',
+            `--name "${keyName}"`,
             `--resource-group "${resGroup}"`,
-            `--name "${resGroup}_lcu_key"`,
+            `--public-key "@${keyPath}.pub"`,
             subscriptionId ? `--subscription "${subscriptionId}"` : '',
           ])
         );

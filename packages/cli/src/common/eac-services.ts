@@ -17,6 +17,7 @@ import {
 import './prompts/eac-env-clouds-prompts';
 import './prompts/eac-env-cloud-resource-groups-prompts';
 import './prompts/az-sshkey-create-prompts';
+import { Config } from '@oclif/core';
 
 export interface CloudTaskContext {
   CloudLookup: string;
@@ -98,15 +99,22 @@ export function ensureCloudTask<
 }
 
 export function azSshKeyCreateTask<
-  TContext extends SSHKeyTaskContext & CloudResourceGroupTaskContext
->(): ListrTask<TContext> {
+  TContext extends SSHKeyTaskContext &
+    EaCTaskContext &
+    CloudTaskContext &
+    CloudResourceGroupTaskContext
+>(config: Config, keyName: string): ListrTask<TContext> {
   return {
     title: 'Establish Azure SSH Key',
     task: async (ctx, task) => {
       ctx.SSHPublicKey = await task.prompt([
         {
           type: 'az:sshkey:create|confirm',
+          eac: ctx.EaC,
           resourceGroup: ctx.CloudResourceGroupLookup,
+          cloudLookup: ctx.CloudLookup,
+          config: config,
+          keyName: keyName,
         } as any,
       ]);
 

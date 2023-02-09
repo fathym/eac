@@ -487,6 +487,8 @@ export default class Install extends FathymCommand<InstallContext> {
 
         (prompt as any).eac = eac;
 
+        (prompt as any).config = this.config;
+
         const answer = await task.prompt(prompt);
 
         paramAnswers =
