@@ -4,6 +4,8 @@ import { EaCEnvironmentAsCode } from '@semanticjs/common';
 import { mkdir, rm } from 'fs-extra';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { withConfig } from '../config-helpers';
+import { loadFileAsString } from '../core-helpers';
 import { runProc } from '../task-helpers';
 const { Confirm, Select } = require('enquirer');
 
@@ -73,6 +75,7 @@ export class AzureSSHKeyCreatePrompt extends Select {
           `-f "${keyPath}"`,
           '-q',
           `-N ""`,
+          '-C fathym-cli',
         ]);
 
         existing = JSON.parse(
@@ -82,6 +85,16 @@ export class AzureSSHKeyCreatePrompt extends Select {
             `--name "${keyName}"`,
             `--resource-group "${resGroup}"`,
             `--public-key "@${keyPath}.pub"`,
+            subscriptionId ? `--subscription "${subscriptionId}"` : '',
+          ])
+        );
+
+        existing = JSON.parse(
+          await runProc('az', [
+            'sshkey',
+            'show',
+            `--name "${keyName}"`,
+            `--resource-group "${resGroup}"`,
             subscriptionId ? `--subscription "${subscriptionId}"` : '',
           ])
         );
