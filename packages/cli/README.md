@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.95 win32-x64 node-v18.12.1
+@fathym/cli/0.0.96 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -35,6 +35,7 @@ USAGE
 * [`fathym dev api-root [ENV]`](#fathym-dev-api-root-env)
 * [`fathym dev azure cli-install`](#fathym-dev-azure-cli-install)
 * [`fathym dev azure sshkey create [RESOURCEGROUP]`](#fathym-dev-azure-sshkey-create-resourcegroup)
+* [`fathym dev config open [CONFIG]`](#fathym-dev-config-open-config)
 * [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
 * [`fathym eac applications create`](#fathym-eac-applications-create)
@@ -109,7 +110,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.95/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.96/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -207,8 +208,8 @@ ARGUMENTS
   RESOURCEGROUP  The resource group to create the SSH key for
 
 FLAGS
-  -n, --name=<value>  Set the name of the SSH key to create.
-  --ci                Run command in yield mode for automation, to prevent prompts.
+  -n, --keyName=<value>  Set the name of the SSH key to create.
+  --ci                   Run command in yield mode for automation, to prevent prompts.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -218,6 +219,27 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym dev azure sshkey create
+```
+
+## `fathym dev config open [CONFIG]`
+
+Used to open the config directory.
+
+```
+USAGE
+  $ fathym dev config open [CONFIG] [--ci] [--json]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to open the config directory.
+
+EXAMPLES
+  $ fathym dev config open
 ```
 
 ## `fathym dev download URL OUTPUTFILE`
@@ -888,7 +910,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.95/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.96/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1093,7 +1115,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.95/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.96/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1389,5 +1411,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.95/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.96/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
