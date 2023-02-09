@@ -15,7 +15,7 @@ export default class Commit extends FathymCommand<any> {
   static flags = {};
 
   static args = [
-    { name: 'name', required: true },
+    { name: 'name', required: false },
     { name: 'description', required: false },
   ];
 
