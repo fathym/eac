@@ -83,8 +83,8 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
               draft.EaC!.Projects = {};
             }
 
-            if (!draft.EaC!.Projects) {
-              draft.EaC!.Projects = {};
+            if (!draft.EaC!.Projects[projectLookup]) {
+              draft.EaC!.Projects[projectLookup] = {};
             }
 
             draft.EaC!.Projects[projectLookup].Project = {

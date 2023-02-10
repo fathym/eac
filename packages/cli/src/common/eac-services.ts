@@ -169,15 +169,20 @@ export async function ensurePromptValue<
   task: ListrTaskWrapper<Ctx, Renderer>,
   message: string,
   value: string,
-  choices?: string[] | { name: string | (() => string) }[]
+  choices?: string[] | { name: string | (() => string) }[],
+  createValue?: () => Promise<string>
 ): Promise<string> {
   if (!value) {
     value = await task.prompt({
       type: choices?.length! > 0 ? 'select' : 'input',
       message: message,
-      validate: (v) => Boolean(v),
+      validate: (v) => !createValue && Boolean(v),
       choices: choices,
     });
+  }
+
+  if (!value && createValue) {
+    value = await createValue();
   }
 
   return value;
