@@ -9,7 +9,6 @@ import {
   EaCRemovalsTaskContext,
   EaCTaskContext,
   ensureActiveEnterprise,
-  ensureProject,
   FathymTaskContext,
   loadEaCTask,
   ProjectTaskContext,

@@ -173,12 +173,27 @@ export async function ensurePromptValue<
   createValue?: () => Promise<string>
 ): Promise<string> {
   if (!value) {
-    value = await task.prompt({
-      type: choices?.length! > 0 ? 'select' : 'input',
-      message: message,
-      validate: (v) => !createValue && Boolean(v),
-      choices: choices,
-    });
+    if (createValue && choices) {
+      if (typeof choices[0] === 'string') {
+        choices.push('' as any);
+      } else {
+        choices.push({
+          message: '- Create new -',
+          name: '____',
+        } as any);
+      }
+    }
+
+    value = (
+      await task.prompt({
+        type: choices?.length! > 0 ? 'select' : 'input',
+        message: message,
+        validate: (v) => !!createValue || Boolean(v),
+        choices: choices,
+      })
+    ).trim();
+
+    value = value === '____' ? '' : value;
   }
 
   if (!value && createValue) {

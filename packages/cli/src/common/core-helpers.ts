@@ -10,7 +10,13 @@ import { readFile, existsSync, readJson, readdir } from 'fs-extra';
 import loadAxios from './axios';
 import { EnterpriseAsCode } from '@semanticjs/common';
 import { runProc } from './task-helpers';
-import { downloadFile } from './eac-services';
+import {
+  downloadFile,
+  EaCDraft,
+  ensurePromptValue,
+  withEaCDraft,
+} from './eac-services';
+import { randomUUID } from 'node:crypto';
 // import { EnterpriseAsCode } from '@semanticjs/common';
 
 const tenant = 'fathymcloudprd';
@@ -39,6 +45,10 @@ export interface EaCTaskContext {
 
 export interface EaCRemovalsTaskContext {
   EaCRemovals: EnterpriseAsCode;
+}
+
+export interface ApplicationTaskContext {
+  ApplicationLookup: string;
 }
 
 export interface ProjectTaskContext {
@@ -175,7 +185,7 @@ export function setAzureSubTask<
               tenantId: '',
             });
 
-            var subCheck: string = (
+            const subCheck: string = (
               await task.prompt({
                 type: 'Select',
                 name: 'subId',
@@ -278,45 +288,98 @@ export function ensureActiveEnterprise<
   };
 }
 
+export function ensureApplication<
+  TContext extends ActiveEnterpriseTaskContext &
+    EaCTaskContext &
+    ApplicationTaskContext
+>(
+  configDir: string,
+  appLookup?: string,
+  create: boolean = false,
+  addFromDraft: boolean = false
+): ListrTask<TContext> {
+  return {
+    title: `Ensuring application set`,
+    task: async (ctx, task) => {
+      if (!appLookup) {
+        const draft: EaCDraft = addFromDraft
+          ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
+          : ({} as EaCDraft);
+
+        const apps = Object.keys({
+          ...ctx.EaC?.Applications,
+          ...draft.EaC?.Applications,
+        });
+
+        appLookup = await ensurePromptValue(
+          task,
+          'Choose EaC Application:',
+          appLookup!,
+          apps.map((app) => {
+            return {
+              message:
+                (draft.EaC?.Applications || {})[app]?.Application?.Name ||
+                ctx.EaC?.Applications![app]?.Application?.Name,
+              name: app,
+            };
+          }),
+          create ? async () => randomUUID() : undefined
+        );
+      }
+
+      ctx.ApplicationLookup = appLookup || '';
+
+      task.title = `Selected application: ${
+        ctx.EaC.Applications![ctx.ApplicationLookup]?.Application?.Name ||
+        'Creating New'
+      }`; //  (${ctx.ProjectLookup})
+    },
+  };
+}
+
 export function ensureProject<
-  TContext extends ProjectTaskContext & EaCTaskContext
->(project?: string, create: boolean = true): ListrTask<TContext> {
+  TContext extends ProjectTaskContext &
+    EaCTaskContext &
+    ActiveEnterpriseTaskContext
+>(
+  configDir: string,
+  projectLookup?: string,
+  create: boolean = false,
+  addFromDraft: boolean = false
+): ListrTask<TContext> {
   return {
     title: `Ensuring project set`,
     task: async (ctx, task) => {
-      if (!project) {
-        const projects = Object.keys(ctx.EaC?.Projects || {}) || [];
+      if (!projectLookup) {
+        const draft: EaCDraft = addFromDraft
+          ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
+          : ({} as EaCDraft);
 
-        if (create) {
-          projects.push('');
-        }
+        const projects = Object.keys({
+          ...ctx.EaC?.Projects,
+          ...draft.EaC?.Projects,
+        });
 
-        project = (
-          await task.prompt({
-            type: 'Select',
-            // type: 'Input',
-            name: 'project',
-            message: 'Choose EaC Project:',
-            choices: projects.map((proj) => {
-              return {
-                message: `${
-                  ctx.EaC?.Projects![proj]?.Project?.Name || '-Create new-'
-                }`, //  (${color.blueBright(proj)})
-                name: proj,
-              };
-            }),
-            validate: (v) => create || Boolean(v),
-          } as PromptOptions<true>)
-        ).trim();
+        projectLookup = await ensurePromptValue(
+          task,
+          'Choose EaC Project:',
+          projectLookup!,
+          projects.map((proj) => {
+            return {
+              message:
+                (draft.EaC?.Projects || {})[proj]?.Project?.Name ||
+                ctx.EaC?.Projects![proj]?.Project?.Name,
+              name: proj,
+            };
+          }),
+          create ? async () => randomUUID() : undefined
+        );
       }
 
-      project = project === '-Create new-' ? '' : project;
+      ctx.ProjectLookup = projectLookup || '';
 
-      ctx.ProjectLookup = project || '';
-
-      task.title = `Selected project is ${
-        ctx.EaC.Projects![ctx.ProjectLookup]?.Project?.Name ||
-        'Creating New Project'
+      task.title = `Selected project: ${
+        ctx.EaC.Projects![ctx.ProjectLookup]?.Project?.Name || 'Creating New'
       }`; //  (${ctx.ProjectLookup})
     },
   };

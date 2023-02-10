@@ -41,8 +41,7 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
     }),
     cloudLookup: Flags.string({
       char: 'c',
-      description:
-        'The cloud lookup to use for upsert or declared lookup on create.',
+      description: 'The cloud lookup to use for upsert.',
     }),
   };
 

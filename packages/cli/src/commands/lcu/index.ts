@@ -79,7 +79,7 @@ export default class Install extends FathymCommand<InstallContext> {
   protected async loadTasks(): Promise<ListrTask<InstallContext>[]> {
     const { args, flags } = await this.parse(Install);
 
-    let { lcu } = args;
+    const { lcu } = args;
 
     const { ci, parameters, organization, project } = flags;
 
@@ -144,7 +144,7 @@ export default class Install extends FathymCommand<InstallContext> {
         },
       },
       this.confirmAgreements(ci),
-      ensureProject(project),
+      ensureProject(this.config.configDir, project),
       ensureOrganization(this.config.configDir, organization, (ctx) =>
         ctx.LCUPackageConfig?.Package
           ? ctx.LCUPackageConfig.Package!.UsesGit

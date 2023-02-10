@@ -1,34 +1,25 @@
 import { Flags } from '@oclif/core';
-import { color } from '@oclif/color';
-import { ListrTask, PromptOptions } from 'listr2';
-import { randomUUID } from 'node:crypto';
+import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../common/fathym-command';
 import {
   ActiveEnterpriseTaskContext,
-  azureCliInstallTask,
-  AzureCLITaskContext,
-  delay,
+  ApplicationTaskContext,
   EaCTaskContext,
   ensureActiveEnterprise,
-  ensureProject,
+  ensureApplication,
   FathymTaskContext,
   loadEaCTask,
-  ProjectTaskContext,
-  setAzureSubTask,
-  SubscriptionTaskContext,
 } from '../../../common/core-helpers';
-import { runProc } from '../../../common/task-helpers';
-import { downloadFile, withEaCDraft } from '../../../common/eac-services';
-import { EaCCloudDetails } from '@semanticjs/common';
+import { withEaCDraft } from '../../../common/eac-services';
 
 interface UpsertTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
     EaCTaskContext,
-    ProjectTaskContext {}
+    ApplicationTaskContext {}
 
 export default class Upsert extends FathymCommand<UpsertTaskContext> {
-  static description = `Used for creating or updating a project.`;
+  static description = `Used for creating or updating an application.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -45,64 +36,65 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
 
   static args = [
     {
-      name: 'projectLookup',
-      description: 'The project lookup to use for upsert.',
+      name: 'applicationLookup',
+      description: 'The application lookup to use for upsert.',
     },
   ];
 
-  static title = 'Upsert Project';
+  static title = 'Upsert Application';
 
   protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
     const { args, flags } = await this.parse(Upsert);
 
-    const { projectLookup } = args;
+    const { applicationLookup } = args;
 
     const { name, description } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureProject(this.config.configDir, projectLookup, true, true),
-      await this.addProjectToDraft(name, description),
+      ensureApplication(this.config.configDir, applicationLookup, true, true),
+      await this.addApplicationToDraft(name, description),
     ];
   }
 
-  protected async addProjectToDraft(
+  protected async addApplicationToDraft(
     name?: string,
     description?: string
   ): Promise<ListrTask<UpsertTaskContext>> {
     return {
-      title: 'Create project',
+      title: 'Create application',
       task: async (ctx, task) => {
         const currentEaCProj =
-          ctx.EaC.Projects && ctx.EaC.Projects[ctx.ProjectLookup]
-            ? ctx.EaC.Projects[ctx.ProjectLookup] || {}
+          ctx.EaC.Applications && ctx.EaC.Applications[ctx.ApplicationLookup]
+            ? ctx.EaC.Applications[ctx.ApplicationLookup] || {}
             : {};
 
         await withEaCDraft(
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC!.Projects) {
-              draft.EaC!.Projects = {};
+            if (!draft.EaC!.Applications) {
+              draft.EaC!.Applications = {};
             }
 
-            if (!draft.EaC!.Projects[ctx.ProjectLookup]) {
-              draft.EaC!.Projects[ctx.ProjectLookup] = {};
+            if (!draft.EaC!.Applications[ctx.ApplicationLookup]) {
+              draft.EaC!.Applications[ctx.ApplicationLookup] = {};
             }
 
             if (name || description) {
-              draft.EaC!.Projects[ctx.ProjectLookup].Project = {
-                ...currentEaCProj.Project,
+              draft.EaC!.Applications[ctx.ApplicationLookup].Application = {
+                ...currentEaCProj.Application,
                 Name:
                   name ||
-                  draft.EaC!.Projects[ctx.ProjectLookup]?.Project?.Name ||
-                  currentEaCProj.Project?.Name,
+                  draft.EaC!.Applications[ctx.ApplicationLookup]?.Application
+                    ?.Name ||
+                  currentEaCProj.Application?.Name,
                 Description:
                   description ||
-                  draft.EaC!.Projects[ctx.ProjectLookup]?.Project
+                  draft.EaC!.Applications[ctx.ApplicationLookup]?.Application
                     ?.Description ||
-                  currentEaCProj.Project?.Description ||
+                  currentEaCProj.Application?.Description ||
                   name,
               };
             }
