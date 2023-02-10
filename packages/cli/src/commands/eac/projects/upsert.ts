@@ -75,11 +75,6 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
             ? ctx.EaC.Projects[projectLookup] || {}
             : {};
 
-        currentEaCProj.Project = {
-          ...currentEaCProj.Project,
-          Name: name,
-        };
-
         await withEaCDraft(
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
@@ -88,21 +83,15 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
               draft.EaC!.Projects = {};
             }
 
-            // if (
-            //   !draft.EaC!.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
-            // ) {
-            //   draft.EaC!.Environments![
-            //     ctx.EaC.Enterprise!.PrimaryEnvironment!
-            //   ] = {};
-            // }
+            if (!draft.EaC!.Projects) {
+              draft.EaC!.Projects = {};
+            }
 
-            // draft.EaC!.Environments![
-            //   ctx.EaC.Enterprise!.PrimaryEnvironment!
-            // ].Clouds = {
-            //   [cloudLookup]: {
-            //     Cloud: azCloud,
-            //   },
-            // };
+            draft.EaC!.Projects[projectLookup].Project = {
+              ...currentEaCProj.Project,
+              Name: name,
+              Description: description,
+            };
 
             return draft;
           }

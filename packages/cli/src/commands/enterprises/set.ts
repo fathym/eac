@@ -7,7 +7,11 @@ import {
   FathymTaskContext,
   withUserAuthConfig,
 } from '../../common/core-helpers';
-import { listEnterprises, withEaCDraft } from '../../common/eac-services';
+import {
+  ensurePromptValue,
+  listEnterprises,
+  withEaCDraft,
+} from '../../common/eac-services';
 
 export default class Set extends FathymCommand<FathymTaskContext> {
   static description = `Set's the current user's active enterprise for the CLI. Determines
@@ -30,24 +34,19 @@ export default class Set extends FathymCommand<FathymTaskContext> {
       {
         title: `Setting the user's active enterprise`,
         task: async (ctx, task) => {
-          if (!entLookup) {
-            const ents = await listEnterprises(this.config.configDir);
+          const ents = await listEnterprises(this.config.configDir);
 
-            entLookup = (
-              await task.prompt({
-                type: 'Select',
-                name: 'entLookup',
-                message: 'Choose enterprise:',
-                choices: ents.map((ent) => {
-                  return {
-                    message: `${ent.Name} (${color.blueBright(ent.Lookup)})`,
-                    name: ent.Lookup,
-                  };
-                }),
-                validate: (v: any) => Boolean(v),
-              } as PromptOptions<true>)
-            ).trim();
-          }
+          entLookup = await ensurePromptValue(
+            task,
+            'Choose enterprise:',
+            entLookup,
+            ents.map((ent) => {
+              return {
+                message: `${ent.Name} (${color.blueBright(ent.Lookup)})`,
+                name: ent.Lookup,
+              };
+            })
+          );
 
           task.title = `Setting the user's active enterprise to '${entLookup}'`;
 

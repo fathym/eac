@@ -14,21 +14,18 @@ export default class Commit extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [
-    { name: 'name', required: false },
-    { name: 'description', required: false },
-  ];
+  static args = [{ name: 'message', required: false }];
 
   static title = 'EaC Commit';
 
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args } = await this.parse(Commit);
 
-    const { name, description } = args;
+    const { message } = args;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
-      commitDraftTask(this.config.cacheDir, name, description),
+      commitDraftTask(this.config.cacheDir, message),
     ];
   }
 }

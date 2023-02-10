@@ -58,11 +58,12 @@ USAGE
 * [`fathym eac modifiers create`](#fathym-eac-modifiers-create)
 * [`fathym eac projects applications add`](#fathym-eac-projects-applications-add)
 * [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
-* [`fathym eac projects create`](#fathym-eac-projects-create)
 * [`fathym eac projects delete [PROJECTLOOKUP]`](#fathym-eac-projects-delete-projectlookup)
 * [`fathym eac projects list`](#fathym-eac-projects-list)
 * [`fathym eac projects modifiers add`](#fathym-eac-projects-modifiers-add)
 * [`fathym eac projects set APPLOOKUP`](#fathym-eac-projects-set-applookup)
+* [`fathym eac projects upsert [PROJECTLOOKUP]`](#fathym-eac-projects-upsert-projectlookup)
+* [`fathym enterprises dashboard`](#fathym-enterprises-dashboard)
 * [`fathym enterprises get`](#fathym-enterprises-get)
 * [`fathym enterprises list`](#fathym-enterprises-list)
 * [`fathym enterprises set [ENTLOOKUP]`](#fathym-enterprises-set-entlookup)
@@ -75,7 +76,7 @@ USAGE
 * [`fathym git init`](#fathym-git-init)
 * [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
 * [`fathym help [COMMAND]`](#fathym-help-command)
-* [`fathym lcu LCU`](#fathym-lcu-lcu)
+* [`fathym lcu [LCU]`](#fathym-lcu-lcu)
 * [`fathym licenses get [LICENSETYPE]`](#fathym-licenses-get-licensetype)
 * [`fathym licenses list`](#fathym-licenses-list)
 * [`fathym plugins`](#fathym-plugins)
@@ -714,27 +715,6 @@ EXAMPLES
   $ fathym eac projects applications preview
 ```
 
-## `fathym eac projects create`
-
-Used for creating a new project.
-
-```
-USAGE
-  $ fathym eac projects create [--ci] [--json]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Used for creating a new project.
-
-EXAMPLES
-  $ fathym eac projects create
-```
-
 ## `fathym eac projects delete [PROJECTLOOKUP]`
 
 Used for deleting a project.
@@ -821,6 +801,53 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac projects set
+```
+
+## `fathym eac projects upsert [PROJECTLOOKUP]`
+
+Used for creating or updating a project.
+
+```
+USAGE
+  $ fathym eac projects upsert [PROJECTLOOKUP] [--ci] [--json] [-d <value>] [-n <value>]
+
+ARGUMENTS
+  PROJECTLOOKUP  The project lookup to use for upsert or declared lookup on create.
+
+FLAGS
+  -d, --description=<value>  The description of the pojrect.
+  -n, --name=<value>         The name of the pojrect.
+  --ci                       Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for creating or updating a project.
+
+EXAMPLES
+  $ fathym eac projects upsert
+```
+
+## `fathym enterprises dashboard`
+
+Used to open the enterprise dashboard.
+
+```
+USAGE
+  $ fathym enterprises dashboard [--ci] [--json]
+
+FLAGS
+  --ci  Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to open the enterprise dashboard.
+
+EXAMPLES
+  $ fathym enterprises dashboard
 ```
 
 ## `fathym enterprises get`
@@ -1091,7 +1118,7 @@ DESCRIPTION
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.22/src/commands/help.ts)_
 
-## `fathym lcu LCU`
+## `fathym lcu [LCU]`
 
 Used to install, or walk a user through installing an LCU.
 

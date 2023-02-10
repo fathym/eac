@@ -10,7 +10,6 @@ import {
   pushOrigin,
 } from '../../common/git-tasks';
 import { runProc } from '../../common/task-helpers';
-import { ensureMessage } from '../../common/git-helpers';
 
 export default class Feature extends FathymCommand<any> {
   static description = `Used for configuring a repository with best practices.`;

@@ -10,7 +10,6 @@ import {
   pushOrigin,
 } from '../../common/git-tasks';
 import { runProc } from '../../common/task-helpers';
-import { ensureMessage } from '../../common/git-helpers';
 
 export default class Hotfix extends FathymCommand<any> {
   static description = `Used for creating a hotfix branch from 'main' in git.`;
@@ -34,11 +33,9 @@ export default class Hotfix extends FathymCommand<any> {
 
     const { ci, name } = args;
 
-    const message = await ensureMessage('', ci);
-
     return [
       confirmGitRepo(),
-      commitGitChanges(message),
+      commitGitChanges(''),
       {
         title: 'Create new hotfix branch',
         task: async () => {

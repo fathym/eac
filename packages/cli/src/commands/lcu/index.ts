@@ -29,6 +29,7 @@ import path from 'node:path';
 import { InstallLCURequest } from '../../common/InstallLCURequest';
 
 import { EnterpriseAsCode } from '@semanticjs/common';
+import { ensurePromptValue } from '../../common/eac-services';
 
 export interface InstallContext
   extends FathymTaskContext,
@@ -71,7 +72,7 @@ export default class Install extends FathymCommand<InstallContext> {
     }),
   };
 
-  static args = [{ name: 'lcu', required: true }];
+  static args = [{ name: 'lcu', required: false }];
 
   static title = 'Install LCU';
 
@@ -81,8 +82,6 @@ export default class Install extends FathymCommand<InstallContext> {
     let { lcu } = args;
 
     const { ci, parameters, organization, project } = flags;
-
-    lcu = lcu.replace(/\\/g, '/');
 
     return [
       {
@@ -318,6 +317,10 @@ export default class Install extends FathymCommand<InstallContext> {
     return {
       title: `Download LCU: ${lcu}`,
       task: async (ctx, task) => {
+        lcu = await ensurePromptValue(task, 'Enter LCU Package name:', lcu);
+
+        lcu = lcu.replace(/\\/g, '/');
+
         await runProc('npx', ['make-dir-cli', 'lcus']);
 
         ctx.LCUPackageTarball = await runProc('npm', [

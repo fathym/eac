@@ -13,7 +13,6 @@ import {
   pushOrigin,
   rebaseIntegration,
 } from '../../common/git-tasks';
-import { ensureMessage } from '../../common/git-helpers';
 
 export default class Commit extends FathymCommand<any> {
   static description = `Used for committing changes to the current working branch and syncing with integration.`;
@@ -38,9 +37,7 @@ export default class Commit extends FathymCommand<any> {
 
     const { ci, rebase } = flags;
 
-    let { message } = args;
-
-    message = await ensureMessage(message, ci);
+    const { message } = args;
 
     return [
       confirmGitRepo(),

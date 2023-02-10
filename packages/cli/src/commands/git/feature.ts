@@ -10,7 +10,6 @@ import {
   pushOrigin,
 } from '../../common/git-tasks';
 import { runProc } from '../../common/task-helpers';
-import { ensureMessage } from '../../common/git-helpers';
 
 export default class Feature extends FathymCommand<any> {
   static description = `Used for creating a feature branch from 'integration' in git.`;
@@ -36,11 +35,9 @@ export default class Feature extends FathymCommand<any> {
 
     const { ci } = flags;
 
-    const message = await ensureMessage('', ci);
-
     return [
       confirmGitRepo(),
-      commitGitChanges(message),
+      commitGitChanges(''),
       {
         title: 'Create new feature branch',
         task: async () => {

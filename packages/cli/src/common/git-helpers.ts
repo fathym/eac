@@ -3,6 +3,7 @@ import { prompt } from 'enquirer';
 import loadAxios from './axios';
 import { loadApiRootUrl } from './core-helpers';
 import { InstallLCURequest } from './InstallLCURequest';
+import { ensurePromptValue } from './eac-services';
 
 export interface GitHubTaskContext {
   GitHubConnection: boolean;
@@ -10,23 +11,6 @@ export interface GitHubTaskContext {
   GitHubOrganization: string;
 
   GitHubRepository: string;
-}
-
-export async function ensureMessage(
-  message: string,
-  ci: boolean
-): Promise<string> {
-  if (!ci && !message && (await hasNotCommittedChanges())) {
-    const { commitMessage } = await prompt<any>({
-      type: 'input',
-      name: 'commitMessage',
-      message: 'Enter commit message:',
-    });
-
-    message = commitMessage || (await ensureMessage(message, ci));
-  }
-
-  return message;
 }
 
 export async function getCurrentBranch(): Promise<string> {

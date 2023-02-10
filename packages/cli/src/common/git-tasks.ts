@@ -1,10 +1,12 @@
 import { ListrTask, PromptOptions } from 'listr2';
 import loadAxios from './axios';
+import { ensurePromptValue } from './eac-services';
 import {
   getCurrentBranch,
   GitHubTaskContext,
   hasCommittedChanges,
   hasGitHubConnection,
+  hasNotCommittedChanges,
   listGitHubOrganizations,
   loadGitUsername,
   remoteExists,
@@ -36,14 +38,22 @@ export function confirmGitRepo<T>(): ListrTask<T> {
   };
 }
 
-export function commitGitChanges(commitMessage: string): ListrTask {
+export function commitGitChanges(message: string): ListrTask {
   return {
     title: 'Committing uncommitted changes',
     skip: () => hasCommittedChanges(),
-    task: async () => {
+    task: async (ctx, task) => {
+      if (await hasNotCommittedChanges()) {
+        message = await ensurePromptValue(
+          task,
+          'Enter commit message:',
+          message
+        );
+      }
+
       await runProc('git', ['add', '-A']);
 
-      await runProc('git', ['commit', '-a', '-m', `"${commitMessage}"`]);
+      await runProc('git', ['commit', '-a', '-m', `"${message}"`]);
     },
   };
 }
@@ -64,16 +74,12 @@ export function ensureOrganization<TContext extends GitHubTaskContext>(
         orgs = orgs || [];
 
         if (orgs.length > 0) {
-          organization = (
-            await task.prompt({
-              type: 'Select',
-              // type: 'Input',
-              name: 'organization',
-              message: 'Choose GitHub organization:',
-              choices: orgs.map((org) => org.Name),
-              validate: (v: any) => Boolean(v),
-            } as PromptOptions<true>)
-          ).trim();
+          organization = await ensurePromptValue(
+            task,
+            'Choose GitHub organization:',
+            '',
+            orgs.map((org) => org.Name)
+          );
         } else {
           const user = await loadGitUsername();
 

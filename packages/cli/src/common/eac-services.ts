@@ -185,18 +185,15 @@ export async function ensurePromptValue<
 
 export function commitDraftTask(
   configDir: string,
-  name: string,
-  description: string
+  message: string
 ): ListrTask<ActiveEnterpriseTaskContext> {
   return {
     title: 'Commiting EaC Draft',
     task: async (ctx, task) => {
-      name = await ensurePromptValue(task, 'Name for the commit:', name);
-
-      description = await ensurePromptValue(
+      message = await ensurePromptValue(
         task,
-        'Description for the commit:',
-        description
+        'Message for the EaC commit:',
+        message
       );
 
       const axios = await loadAxios(configDir);
@@ -207,8 +204,7 @@ export function commitDraftTask(
         `${ctx.ActiveEnterpriseLookup}/eac/commit`,
         {
           ...eacDraft,
-          Name: name,
-          Description: description || name,
+          Message: message,
         }
       );
 
