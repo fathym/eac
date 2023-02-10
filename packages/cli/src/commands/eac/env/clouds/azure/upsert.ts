@@ -48,7 +48,7 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
 
   static args = [];
 
-  static title = 'Create Azure Cloud';
+  static title = 'Upsert Azure Cloud';
 
   protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
     const { args, flags } = await this.parse(Upsert);

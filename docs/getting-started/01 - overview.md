@@ -73,13 +73,15 @@ To view a list of your available enterprises, run:
 fathym enterprises list
 ```
 
-Locate the lookup for the enterprise you want to manage and copy it. Then, set the active enterprise using:
+> **NOTE** - If you don't see any enterprises in the list, you will need to make sure you first visit the dashboard. Run `fathym enterprises dashboard` and an initial enterprise will be created for you.
+
+Next you need to set your active enterprise, run the following and follow the prompts:
 
 ```cli
 fathym enterprises set {ent-lookup}
 ```
 
-This will set the enterprise that you will work with and manage. If you are just starting with Fathym, this will be the lookup for your personal enterprise.
+This will set the enterprise that you will work with and manage. If you are just starting with Fathym, this will be your personal enterprise.
 
 > **NOTE** - The previous fathym commands will only need to be run again if you lose your authentication or want to change the enterprise you are managing. Otherwise, they do not need to be repeated.
 

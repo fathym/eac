@@ -5,7 +5,12 @@ import {
 } from '@semanticjs/common';
 import axios from 'axios';
 import { createWriteStream } from 'fs-extra';
-import { ListrTask, PromptOptions } from 'listr2';
+import {
+  ListrRendererFactory,
+  ListrTask,
+  ListrTaskWrapper,
+  PromptOptions,
+} from 'listr2';
 import loadAxios from './axios';
 import { withConfig } from './config-helpers';
 import {
@@ -18,6 +23,7 @@ import './prompts/eac-env-clouds-prompts';
 import './prompts/eac-env-cloud-resource-groups-prompts';
 import './prompts/az-sshkey-create-prompts';
 import { Config } from '@oclif/core';
+import { TcpNetConnectOpts } from 'node:net';
 
 export interface CloudTaskContext {
   CloudLookup: string;
@@ -156,6 +162,25 @@ export function ensureCloudResourceGroupTask<
   };
 }
 
+export async function ensurePromptValue<
+  Ctx,
+  Renderer extends ListrRendererFactory
+>(
+  task: ListrTaskWrapper<Ctx, Renderer>,
+  message: string,
+  value: string
+): Promise<string> {
+  if (!value) {
+    value = await task.prompt({
+      type: 'input',
+      message: message,
+      validate: (v) => Boolean(v),
+    });
+  }
+
+  return value;
+}
+
 export function commitDraftTask(
   configDir: string,
   name: string,
@@ -164,21 +189,13 @@ export function commitDraftTask(
   return {
     title: 'Commiting EaC Draft',
     task: async (ctx, task) => {
-      if (!name) {
-        name = await task.prompt({
-          type: 'input',
-          message: 'Name for the commit:',
-          validate: (v) => Boolean(v),
-        });
-      }
+      name = await ensurePromptValue(task, 'Name for the commit:', name);
 
-      if (!description) {
-        description = await task.prompt({
-          type: 'input',
-          message: 'Description for the commit:',
-          validate: (v) => Boolean(v),
-        });
-      }
+      description = await ensurePromptValue(
+        task,
+        'Description for the commit:',
+        description
+      );
 
       const axios = await loadAxios(configDir);
 
