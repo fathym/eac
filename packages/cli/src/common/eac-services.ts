@@ -168,13 +168,15 @@ export async function ensurePromptValue<
 >(
   task: ListrTaskWrapper<Ctx, Renderer>,
   message: string,
-  value: string
+  value: string,
+  choices?: string[] | { name: string | (() => string) }[]
 ): Promise<string> {
   if (!value) {
     value = await task.prompt({
-      type: 'input',
+      type: choices?.length! > 0 ? 'select' : 'input',
       message: message,
       validate: (v) => Boolean(v),
+      choices: choices,
     });
   }
 
