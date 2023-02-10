@@ -9,10 +9,10 @@ import {
   EaCRemovalsTaskContext,
   EaCTaskContext,
   ensureActiveEnterprise,
-  ensureProject,
+  ensureApplication,
   FathymTaskContext,
   loadEaCTask,
-  ProjectTaskContext,
+  ApplicationTaskContext,
 } from '../../../common/core-helpers';
 import { deleteFromEaCTask } from '../../../common/eac-services';
 
@@ -21,63 +21,52 @@ interface DeleteContext
     EaCTaskContext,
     EaCRemovalsTaskContext,
     ActiveEnterpriseTaskContext,
-    ProjectTaskContext {}
+    ApplicationTaskContext {}
 
 export default class Delete extends FathymCommand<DeleteContext> {
-  static description = `Used for deleting a project.`;
+  static description = `Used for deleting a application.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {
-    saveApps: Flags.boolean({
-      char: 'a',
-      description: 'If on, the associated applications will NOT be deleted.',
-    }),
-  };
+  static flags = {};
 
   static args = [
-    { name: 'projectLookup', description: 'The project lookup to delete.' },
+    {
+      name: 'applicationLookup',
+      description: 'The application lookup to delete.',
+    },
   ];
 
-  static title = 'Delete Project';
+  static title = 'Delete Application';
 
   protected async loadTasks(): Promise<ListrTask<DeleteContext>[]> {
-    const { args, flags } = await this.parse(Delete);
+    const { args } = await this.parse(Delete);
 
-    const { projectLookup } = args;
-
-    const { saveApps } = flags;
+    const { applicationLookup } = args;
 
     return [
       ensureActiveEnterprise(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
-      ensureProject(this.config.configDir, projectLookup),
+      ensureApplication(this.config.configDir, applicationLookup),
       {
-        title: `Configure project removals`,
+        title: `Configure application removals`,
         task: async (ctx, task) => {
-          const project = ctx.EaC?.Projects![ctx.ProjectLookup];
+          const application = ctx.EaC?.Applications![ctx.ApplicationLookup];
 
-          if (project) {
-            task.title = `Configure project removals for '${project.Project?.Name}'`;
+          if (application) {
+            task.title = `Configure application removals for '${application.Application?.Name}'`;
 
             const remove: boolean = await task.prompt({
               type: 'Confirm',
-              message: `Are you sure you want to remove project '${project.Project?.Name}'?`,
+              message: `Are you sure you want to remove application '${application.Application?.Name}'?`,
             });
 
             if (remove) {
               ctx.EaCRemovals = {
                 EnterpriseLookup: ctx.ActiveEnterpriseLookup,
-                Projects: {
-                  [ctx.ProjectLookup]: { Project: {} },
+                Applications: {
+                  [ctx.ApplicationLookup]: { Application: {} },
                 },
-                Applications: saveApps
-                  ? undefined
-                  : project.ApplicationLookups?.reduce((apps, appLookup) => {
-                      apps![appLookup] = { Application: {} };
-
-                      return apps;
-                    }, {}),
               };
             }
           }
