@@ -175,11 +175,11 @@ export async function ensurePromptValue<
   if (!value) {
     if (createValue && choices) {
       if (typeof choices[0] === 'string') {
-        choices.push('' as any);
+        choices.unshift('- Create new -' as any);
       } else {
-        choices.push({
+        choices.unshift({
           message: '- Create new -',
-          name: '____',
+          name: '- Create new -',
         } as any);
       }
     }
@@ -193,7 +193,7 @@ export async function ensurePromptValue<
       })
     ).trim();
 
-    value = value === '____' ? '' : value;
+    value = value === '- Create new -' ? '' : value;
   }
 
   if (!value && createValue) {
