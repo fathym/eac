@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.100 win32-x64 node-v18.12.1
+@fathym/cli/0.0.101 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -38,11 +38,11 @@ USAGE
 * [`fathym dev config open [CONFIG]`](#fathym-dev-config-open-config)
 * [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
-* [`fathym eac applications create`](#fathym-eac-applications-create)
 * [`fathym eac applications lcu`](#fathym-eac-applications-lcu)
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
 * [`fathym eac applications processor`](#fathym-eac-applications-processor)
 * [`fathym eac applications set APPLOOKUP`](#fathym-eac-applications-set-applookup)
+* [`fathym eac applications upsert [APPLICATIONLOOKUP]`](#fathym-eac-applications-upsert-applicationlookup)
 * [`fathym eac clear`](#fathym-eac-clear)
 * [`fathym eac commit [MESSAGE]`](#fathym-eac-commit-message)
 * [`fathym eac draft`](#fathym-eac-draft)
@@ -111,7 +111,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.100/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.101/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -286,27 +286,6 @@ EXAMPLES
   $ fathym dev lcu scaffold dev lcu scaffold --help
 ```
 
-## `fathym eac applications create`
-
-Used for creating a new application.
-
-```
-USAGE
-  $ fathym eac applications create [--ci] [--json]
-
-FLAGS
-  --ci  Run command in yield mode for automation, to prevent prompts.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Used for creating a new application.
-
-EXAMPLES
-  $ fathym eac applications create
-```
-
 ## `fathym eac applications lcu`
 
 Used for creating a managing application LCU settings.
@@ -391,6 +370,32 @@ EXAMPLES
   $ fathym eac applications set
 ```
 
+## `fathym eac applications upsert [APPLICATIONLOOKUP]`
+
+Used for creating or updating an application.
+
+```
+USAGE
+  $ fathym eac applications upsert [APPLICATIONLOOKUP] [--ci] [--json] [-d <value>] [-n <value>]
+
+ARGUMENTS
+  APPLICATIONLOOKUP  The application lookup to use for upsert.
+
+FLAGS
+  -d, --description=<value>  The description of the pojrect.
+  -n, --name=<value>         The name of the pojrect.
+  --ci                       Run command in yield mode for automation, to prevent prompts.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for creating or updating an application.
+
+EXAMPLES
+  $ fathym eac applications upsert
+```
+
 ## `fathym eac clear`
 
 Used to clear the current draft to EaC that is queued for commit.
@@ -463,7 +468,7 @@ USAGE
   $ fathym eac env clouds azure upsert [--ci] [--json] [-g] [-c <value>]
 
 FLAGS
-  -c, --cloudLookup=<value>  The cloud lookup to use for upsert or declared lookup on create.
+  -c, --cloudLookup=<value>  The cloud lookup to use for upsert.
   -g, --[no-]generate        Determines if the CLI should help generate the cloud connection.
   --ci                       Run command in yield mode for automation, to prevent prompts.
 
@@ -812,7 +817,7 @@ USAGE
   $ fathym eac projects upsert [PROJECTLOOKUP] [--ci] [--json] [-d <value>] [-n <value>]
 
 ARGUMENTS
-  PROJECTLOOKUP  The project lookup to use for upsert or declared lookup on create.
+  PROJECTLOOKUP  The project lookup to use for upsert.
 
 FLAGS
   -d, --description=<value>  The description of the pojrect.
@@ -937,7 +942,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.100/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.101/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1142,7 +1147,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.100/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.101/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1438,5 +1443,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.100/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.101/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
