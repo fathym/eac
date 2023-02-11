@@ -1,4 +1,4 @@
-import { Args } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
@@ -12,7 +12,7 @@ import {
   FathymTaskContext,
   loadEaCTask,
 } from '../../../common/core-helpers';
-import { withEaCDraft } from '../../../common/eac-services';
+import { ensurePromptValue, withEaCDraft } from '../../../common/eac-services';
 
 interface LCUTaskContext
   extends FathymTaskContext,
@@ -25,14 +25,28 @@ export default class LCU extends FathymCommand<LCUTaskContext> {
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    zipFile: Flags.string({
+      char: 'z',
+      description: 'The path to the zip file containing your site.',
+      // relationships: [
+      //   {
+      //     type: 'all',
+      //     flags: [
+      //       {
+      //         name: 'zipFile',
+      //         when: async (flags) => flags.type === 'Zip',
+      //       },
+      //     ],
+      //   },
+      // ],
+    }),
+  };
 
   static args = {
-    appLookup: Args.string({
-      description: 'The application lookup to manage LCU settings for.',
-    }),
     type: Args.string({
       description: 'The type of the LCU settings to configure.',
+      required: true,
       options: [
         'API',
         'ApplicationPointer',
@@ -44,33 +58,42 @@ export default class LCU extends FathymCommand<LCUTaskContext> {
         'Zip',
       ],
     }),
-    zipFile: Args.string({
-      description: 'The path to the zip file containing your site.',
+    appLookup: Args.string({
+      description: 'The application lookup to manage LCU settings for.',
     }),
   };
 
   static title = 'Manage LCU Settings';
 
   protected async loadTasks(): Promise<ListrTask<LCUTaskContext>[]> {
-    const { args } = await this.parse(LCU);
+    const { args, flags } = await this.parse(LCU);
 
     const { appLookup, type } = args;
+
+    const { zipFile } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
       ensureApplication(this.config.configDir, appLookup, false, true),
-      this.addApplicationLCUToDraft(type),
+      this.addApplicationZipLCUToDraft(type, { ZipFile: zipFile }),
     ];
   }
 
-  protected addApplicationLCUToDraft(
-    type?: string,
-    typeDetails?: any
+  protected addApplicationZipLCUToDraft(
+    type: string,
+    zipDets: Partial<{ ZipFile: string }>
   ): ListrTask<LCUTaskContext> {
     return {
-      title: 'Create application',
+      title: 'Create zip application',
+      enabled: type === 'Zip',
       task: async (ctx, task) => {
+        zipDets.ZipFile = await ensurePromptValue(
+          task,
+          'Location of zip file',
+          zipDets.ZipFile
+        );
+
         const currentEaCAppLCU = ctx.EaC.Applications
           ? ctx.EaC.Applications[ctx.ApplicationLookup]?.LowCodeUnit || {}
           : {};
@@ -87,13 +110,11 @@ export default class LCU extends FathymCommand<LCUTaskContext> {
               draft.EaC.Applications[ctx.ApplicationLookup] = {};
             }
 
-            if (type) {
-              draft.EaC.Applications[ctx.ApplicationLookup].LowCodeUnit = {
-                ...(currentEaCAppLCU.Type === type ? currentEaCAppLCU : {}),
-                Type: type,
-                ...typeDetails,
-              };
-            }
+            draft.EaC.Applications[ctx.ApplicationLookup].LowCodeUnit = {
+              ...(currentEaCAppLCU.Type === type ? currentEaCAppLCU : {}),
+              Type: type,
+              ...zipDets,
+            };
 
             return draft;
           }

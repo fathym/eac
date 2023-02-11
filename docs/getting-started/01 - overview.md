@@ -75,13 +75,13 @@ fathym enterprises list
 
 > **NOTE** - If you don't see any enterprises in the list, you will need to make sure you first visit the dashboard. Run `fathym enterprises dashboard` and an initial enterprise will be created for you.
 
-Next you need to set your active enterprise, run the following and follow the prompts:
+Next you need to set your active enterprise, run the following and complete the prompts:
 
 ```cli
-fathym enterprises set {ent-lookup}
+fathym enterprises set
 ```
 
-This will set the enterprise that you will work with and manage. If you are just starting with Fathym, this will be your personal enterprise.
+This will set the enterprise that you will work with and manage. If you are just starting with Fathym, this will most likely be your personal enterprise.
 
 > **NOTE** - The previous fathym commands will only need to be run again if you lose your authentication or want to change the enterprise you are managing. Otherwise, they do not need to be repeated.
 
@@ -102,7 +102,7 @@ fathym eac applications upsert -n "My First Application"
 The LCU for an application can be configured to manage security and server-side file modifications for the application. We'll configure a simple one for our zip file now.
 
 ```cli
-fathym eac applications lcu zip {app-lookup} [options]
+fathym eac applications lcu zip
 ```
 
 > **NOTE** - We'll upload the zip file into the Fathym Distributed File System at the specified path later on.

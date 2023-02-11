@@ -316,10 +316,16 @@ export function ensureApplication<
           'Choose EaC Application:',
           appLookup!,
           apps.map((app) => {
+            const draftApp = (draft.EaC?.Applications || {})[app];
+
+            const appName =
+              draftApp?.Application?.Name ||
+              ctx.EaC?.Applications![app]?.Application?.Name;
+
+            const draftText = draftApp ? color.yellow('draft') : '';
+
             return {
-              message:
-                (draft.EaC?.Applications || {})[app]?.Application?.Name ||
-                ctx.EaC?.Applications![app]?.Application?.Name,
+              message: `${appName} ${draftText}`,
               name: app,
             };
           }),
@@ -365,10 +371,16 @@ export function ensureProject<
           'Choose EaC Project:',
           projectLookup!,
           projects.map((proj) => {
+            const drfatProj = (draft.EaC?.Projects || {})[proj];
+
+            const projName =
+              drfatProj?.Project?.Name ||
+              ctx.EaC?.Projects![proj]?.Project?.Name;
+
+            const draftText = drfatProj ? color.yellow('draft') : '';
+
             return {
-              message:
-                (draft.EaC?.Projects || {})[proj]?.Project?.Name ||
-                ctx.EaC?.Projects![proj]?.Project?.Name,
+              message: `${projName} ${draftText}`,
               name: proj,
             };
           }),
