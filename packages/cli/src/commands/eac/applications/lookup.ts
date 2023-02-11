@@ -20,75 +20,59 @@ interface LCUTaskContext
     EaCTaskContext,
     ApplicationTaskContext {}
 
-export default class Processor extends FathymCommand<LCUTaskContext> {
-  static description = `Used for managing application processor settings.`;
+export default class Lookup extends FathymCommand<LCUTaskContext> {
+  static description = `Used for managing application lookup settings.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {
-    defaultFile: Flags.string({
-      char: 'd',
-      description: 'The path of the default file.',
-    }),
-    baseHref: Flags.string({
-      char: 'b',
-      description: 'The base href.',
+    path: Flags.string({
+      char: 'p',
+      description: 'The path the application will be hosted on',
     }),
   };
 
   static args = {
-    type: Args.string({
-      description: 'The type of the processor settings to configure.',
-      required: true,
-      options: ['DFS', 'OAuth', 'Proxy', 'Redirect'],
-    }),
     appLookup: Args.string({
-      description: 'The application lookup to manage processor settings for.',
+      description: 'The application lookup to manage.',
     }),
   };
 
   static title = 'Manage processor Settings';
 
   protected async loadTasks(): Promise<ListrTask<LCUTaskContext>[]> {
-    const { args, flags } = await this.parse(Processor);
+    const { args, flags } = await this.parse(Lookup);
 
-    const { appLookup, type } = args;
+    const { appLookup } = args;
 
-    const { defaultFile, baseHref } = flags;
+    const { path } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
       ensureApplication(this.config.configDir, appLookup, false, true),
-      this.addApplicationViewPackageProcessorToDraft(type, {
-        BaseHref: baseHref,
-        DefaultFile: defaultFile,
+      this.addApplicationLookupToDraft({
+        PathRegex: path,
       }),
     ];
   }
 
-  protected addApplicationViewPackageProcessorToDraft(
-    type: string,
-    dets: Partial<{ BaseHref: string; DefaultFile: string }>
+  protected addApplicationLookupToDraft(
+    dets: Partial<{ PathRegex: string }>
   ): ListrTask<LCUTaskContext> {
     return {
       title: 'Create zip application',
-      enabled: type === 'DFS',
       task: async (ctx, task) => {
-        dets.BaseHref = await ensurePromptValue(
+        dets.PathRegex = await ensurePromptValue(
           task,
-          'Base href for the application',
-          dets.BaseHref
+          'Path for the application',
+          dets.PathRegex
         );
 
-        dets.DefaultFile = await ensurePromptValue(
-          task,
-          'Location of default file',
-          dets.DefaultFile
-        );
+        dets.PathRegex = `${dets.PathRegex}.*`;
 
-        const currentEaCAppProcessor = ctx.EaC.Applications
-          ? ctx.EaC.Applications[ctx.ApplicationLookup]?.Processor || {}
+        const currentEaCAppLookup = ctx.EaC.Applications
+          ? ctx.EaC.Applications[ctx.ApplicationLookup]?.LookupConfig || {}
           : {};
 
         await withEaCDraft(
@@ -103,11 +87,8 @@ export default class Processor extends FathymCommand<LCUTaskContext> {
               draft.EaC.Applications[ctx.ApplicationLookup] = {};
             }
 
-            draft.EaC.Applications[ctx.ApplicationLookup].Processor = {
-              ...(currentEaCAppProcessor.Type === type
-                ? currentEaCAppProcessor
-                : {}),
-              Type: type,
+            draft.EaC.Applications[ctx.ApplicationLookup].LookupConfig = {
+              ...currentEaCAppLookup,
               ...dets,
             };
 

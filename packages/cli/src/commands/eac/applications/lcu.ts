@@ -21,7 +21,7 @@ interface LCUTaskContext
     ApplicationTaskContext {}
 
 export default class LCU extends FathymCommand<LCUTaskContext> {
-  static description = `Used for creating a managing application LCU settings.`;
+  static description = `Used for managing application LCU settings.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 

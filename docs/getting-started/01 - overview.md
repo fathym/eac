@@ -99,19 +99,25 @@ Now, using a similar command, we will create an application that we can add to o
 fathym eac applications upsert -n "My First Application"
 ```
 
-The LCU for an application can be configured to manage security and server-side file modifications for the application. We'll configure a simple one for our zip file now.
+We need to configure how our application will be chosen to handle a request. There are a number of options here, we'll keep it simple with a basic path lookup.
+
+```cli
+fathym eac applications lookup -p /
+```
+
+There are a number of different options for configuring how the application handles requests. To do so we configure the application's processor.
+
+```cli
+fathym eac applications processor DFS -d index.html -b /
+```
+
+The LCU for an application can be configured to manage security and server-side file modifications for the application. We'll configure a simple application for our zip files now.
 
 ```cli
 fathym eac applications lcu Zip -z /deploy.zip
 ```
 
-> **NOTE** - We'll upload the zip file into the Fathym Distributed File System at the specified path later on.
-
-There are a number of different options for configuring how the application handles requests. To do so we configure the application's processor.
-
-```cli
-fathym eac applications processor {app-lookup} [options]
-```
+> **NOTE** - We'll upload the zip file into the Fathym Distributed File System (DFS) at the specified path later on.
 
 Then, we can add the application to the project.
 
