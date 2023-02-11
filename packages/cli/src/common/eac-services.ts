@@ -18,6 +18,7 @@ import {
   EaCRemovalsTaskContext,
   EaCTaskContext,
   FathymTaskContext,
+  loadFileAsString,
 } from './core-helpers';
 import './prompts/eac-env-clouds-prompts';
 import './prompts/eac-env-cloud-resource-groups-prompts';
@@ -344,4 +345,29 @@ export async function listLicensesByEmail(
   const response = await axios.get(`user/licenses`, config);
 
   return response.data?.Model || [];
+}
+
+export async function uploadFile(
+  inputFile: string,
+  entLookup: string,
+  filePath: string
+): Promise<void> {
+  const inputStr = await loadFileAsString(inputFile, '');
+
+  const response = await axios({
+    method: 'post',
+    url: `${entLookup}/dfs${filePath}`,
+    responseType: 'json',
+    data: inputStr,
+  });
+
+  return new Promise((resolve, reject) => {
+    response.data.on('end', () => {
+      resolve();
+    });
+
+    response.data.on('error', (error: any) => {
+      reject(error);
+    });
+  });
 }
