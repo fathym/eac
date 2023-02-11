@@ -102,7 +102,7 @@ fathym eac applications upsert -n "My First Application"
 The LCU for an application can be configured to manage security and server-side file modifications for the application. We'll configure a simple one for our zip file now.
 
 ```cli
-fathym eac applications lcu zip
+fathym eac applications lcu Zip -z /deploy.zip
 ```
 
 > **NOTE** - We'll upload the zip file into the Fathym Distributed File System at the specified path later on.

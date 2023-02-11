@@ -1,36 +1,109 @@
-import {} from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
 import { ClosureInstruction } from '../../../common/ClosureInstruction';
+import {
+  ActiveEnterpriseTaskContext,
+  ApplicationTaskContext,
+  EaCTaskContext,
+  ensureActiveEnterprise,
+  ensureApplication,
+  FathymTaskContext,
+  loadEaCTask,
+} from '../../../common/core-helpers';
+import { ensurePromptValue, withEaCDraft } from '../../../common/eac-services';
 
-export default class Processor extends FathymCommand<any> {
-  static description = `Used for creating a managing application Processor settings.`;
+interface LCUTaskContext
+  extends FathymTaskContext,
+    ActiveEnterpriseTaskContext,
+    EaCTaskContext,
+    ApplicationTaskContext {}
+
+export default class Processor extends FathymCommand<LCUTaskContext> {
+  static description = `Used for creating a managing application processor settings.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    defaultFile: Flags.string({
+      char: 'd',
+      description: 'The path of the default file.',
+    }),
+  };
 
-  static args = {};
+  static args = {
+    type: Args.string({
+      description: 'The type of the processor settings to configure.',
+      required: true,
+      options: ['DFS', 'OAuth', 'Proxy', 'Redirect'],
+    }),
+    appLookup: Args.string({
+      description: 'The application lookup to manage processor settings for.',
+    }),
+  };
 
-  static title = 'Manage Processor Settings';
+  static title = 'Manage processor Settings';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
-    // const { args } = await this.parse(Processor);
+  protected async loadTasks(): Promise<ListrTask<LCUTaskContext>[]> {
+    const { args, flags } = await this.parse(Processor);
+
+    const { appLookup, type } = args;
+
+    const { defaultFile } = flags;
 
     return [
-      {
-        title: `Updating application Processor settings`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Updated application Processor settings`;
-
-              resolve(true);
-            }, 3000);
-          });
-        },
-      },
+      ensureActiveEnterprise(this.config.configDir),
+      loadEaCTask(this.config.configDir),
+      ensureApplication(this.config.configDir, appLookup, false, true),
+      this.addApplicationViewPackageProcessorToDraft(type, {
+        DefaultFile: defaultFile,
+      }),
     ];
+  }
+
+  protected addApplicationViewPackageProcessorToDraft(
+    type: string,
+    dets: Partial<{ DefaultFile: string }>
+  ): ListrTask<LCUTaskContext> {
+    return {
+      title: 'Create zip application',
+      enabled: type === 'DFS',
+      task: async (ctx, task) => {
+        dets.DefaultFile = await ensurePromptValue(
+          task,
+          'Location of default file',
+          dets.DefaultFile
+        );
+
+        const currentEaCAppProcessor = ctx.EaC.Applications
+          ? ctx.EaC.Applications[ctx.ApplicationLookup]?.Processor || {}
+          : {};
+
+        await withEaCDraft(
+          this.config.configDir,
+          ctx.ActiveEnterpriseLookup,
+          async (draft) => {
+            if (!draft.EaC.Applications) {
+              draft.EaC.Applications = {};
+            }
+
+            if (!draft.EaC.Applications[ctx.ApplicationLookup]) {
+              draft.EaC.Applications[ctx.ApplicationLookup] = {};
+            }
+
+            draft.EaC.Applications[ctx.ApplicationLookup].Processor = {
+              ...(currentEaCAppProcessor.Type === type
+                ? currentEaCAppProcessor
+                : {}),
+              Type: type,
+              ...dets,
+            };
+
+            return draft;
+          }
+        );
+      },
+    };
   }
 }
