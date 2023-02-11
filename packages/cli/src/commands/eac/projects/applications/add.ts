@@ -1,36 +1,95 @@
-import {} from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
 import { FathymCommand } from '../../../../common/fathym-command';
-import { ClosureInstruction } from '../../../../common/ClosureInstruction';
+import {
+  ActiveEnterpriseTaskContext,
+  ApplicationTaskContext,
+  EaCTaskContext,
+  ensureActiveEnterprise,
+  ensureApplication,
+  ensureProject,
+  FathymTaskContext,
+  loadEaCTask,
+  ProjectTaskContext,
+} from '../../../../common/core-helpers';
+import { withEaCDraft } from '../../../../common/eac-services';
 
-export default class Add extends FathymCommand<any> {
+interface AddTaskContext
+  extends FathymTaskContext,
+    ActiveEnterpriseTaskContext,
+    EaCTaskContext,
+    ProjectTaskContext,
+    ApplicationTaskContext {}
+
+export default class Add extends FathymCommand<AddTaskContext> {
   static description = `Used for adding an application to a project.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {};
 
-  static args = {};
+  static args = {
+    projectLookup: Args.string({
+      description: 'The project lookup to add the application to.',
+    }),
+    appLookup: Args.string({
+      description: 'The application lookup to add to the project.',
+    }),
+  };
 
   static title = 'Add Project Application';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
-    // const { args } = await this.parse(Add);
+  protected async loadTasks(): Promise<ListrTask<AddTaskContext>[]> {
+    const { args, flags } = await this.parse(Add);
+
+    const { projectLookup, appLookup } = args;
+
+    const { name, description } = flags;
 
     return [
-      {
-        title: `Adding application to project`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Application added to project`;
-
-              resolve(true);
-            }, 3000);
-          });
-        },
-      },
+      ensureActiveEnterprise(this.config.configDir),
+      loadEaCTask(this.config.configDir),
+      ensureProject(this.config.configDir, projectLookup, false, true),
+      ensureApplication(this.config.configDir, appLookup, false, true),
+      this.addApplicationToProject(),
     ];
+  }
+
+  protected addApplicationToProject(): ListrTask<AddTaskContext> {
+    return {
+      title: 'Create project',
+      task: async (ctx, task) => {
+        const currentEaCProj =
+          ctx.EaC.Projects && ctx.EaC.Projects[ctx.ProjectLookup]
+            ? ctx.EaC.Projects[ctx.ProjectLookup] || {}
+            : {};
+
+        await withEaCDraft(
+          this.config.configDir,
+          ctx.ActiveEnterpriseLookup,
+          async (draft) => {
+            if (!draft.EaC.Projects) {
+              draft.EaC.Projects = {};
+            }
+
+            if (!draft.EaC.Projects[ctx.ProjectLookup]) {
+              draft.EaC.Projects[ctx.ProjectLookup] = {};
+            }
+
+            if (!draft.EaC.Projects[ctx.ProjectLookup].ApplicationLookups) {
+              draft.EaC.Projects[ctx.ProjectLookup].ApplicationLookups = [];
+            }
+
+            draft.EaC.Projects[ctx.ProjectLookup].ApplicationLookups = [
+              ...(draft.EaC.Projects[ctx.ProjectLookup].ApplicationLookups ||
+                []),
+              ctx.ApplicationLookup,
+            ];
+
+            return draft;
+          }
+        );
+      },
+    };
   }
 }

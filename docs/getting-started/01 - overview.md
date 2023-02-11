@@ -114,39 +114,46 @@ fathym eac applications processor DFS -d index.html -b /
 The LCU for an application can be configured to manage security and server-side file modifications for the application. We'll configure a simple application for our zip files now.
 
 ```cli
-fathym eac applications lcu Zip -z /deploy.zip
+fathym eac applications lcu Zip -z {{Project.Host}}/deploy.zip
 ```
 
 > **NOTE** - We'll upload the zip file into the Fathym Distributed File System (DFS) at the specified path later on.
 
-Then, we can add the application to the project.
+Then, we can add the application to the project using the prompts and selecting our `draft` project and application.
 
 ```cli
-fathym eac projects applications add {project-lookup} {app-lookup}
+fathym eac projects applications add
 ```
 
-Finally, we can commit all of our changes to the EaC at once.
+At this point, we haven't actually made any updates to our EaC. The commands we have used have simply created a draft. The purpose of this is to allow you to craft all of your updates for a single concept, in a single request. Instead of individually updating, we can check our draft before committing.
+
+```cli
+fathym eac draft
+```
+
+If your happy with the draft, we can commit all of our changes to the EaC at once.
 
 ```cli
 fathym eac commit "Added my first project and it's first application"
 ```
 
-There are a couple of different things happening here that start to further reveal the EaC and what it does. The system is organized into multiple management groups. This particular set works with projects and how/where its applications are hosted/deployed.
-
-> **NOTE** - There are a number of different ways to configure the application and how it handles a request. It also provides a container to manage security and server-side file modifications.
-
-Finally we can get the application details to get the URL it's running on. (The same can be done for projects by dropping the `applications {app-lookup}`).
+Finally we can get the application details to get the URL it's running on. (The same can be done for projects by dropping the `applications`).
 
 ```cli
-fathym eac projects applications preview {project-lookup} {app-lookup}
+fathym eac projects applications preview
+fathym eac projects preview
 ```
 
-This will give you a URL you can click to open and preview the application.
+This will automatically open a browser to preview the application.
 
 # Wrapping Up
 
 That's it, we've launched our first application. We've seen a few core features of Fathym; we were introduced to the CLI and we can see how Fathym can host markdown from a deployment artifact.
 
 This may seem like an overly simple flow, but note what most projects include at the root – a README file. At its very simplest, with Fathym you can host your README file to share with the world.
+
+There are a couple of different things happening here that start to further reveal the EaC and what it does. The system is organized into multiple management groups. This particular set works with projects and how/where its applications are hosted/deployed.
+
+> **NOTE** - There are a number of different ways to configure the application and how it handles a request. It also provides a container to manage security and server-side file modifications.
 
 In the next example we will expand on this blog by adding in some HTML, leveraging additional Fathym Runtime features and changing up our deployment artifact.
