@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.110 win32-x64 node-v18.12.1
+@fathym/cli/0.0.111 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -40,6 +40,7 @@ USAGE
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
 * [`fathym eac applications delete [APPLOOKUP]`](#fathym-eac-applications-delete-applookup)
 * [`fathym eac applications lcu TYPE [APPLOOKUP]`](#fathym-eac-applications-lcu-type-applookup)
+* [`fathym eac applications lookup [APPLOOKUP]`](#fathym-eac-applications-lookup-applookup)
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
 * [`fathym eac applications processor TYPE [APPLOOKUP]`](#fathym-eac-applications-processor-type-applookup)
 * [`fathym eac applications set [APPLOOKUP]`](#fathym-eac-applications-set-applookup)
@@ -109,7 +110,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.110/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.111/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -300,7 +301,7 @@ EXAMPLES
 
 ## `fathym eac applications lcu TYPE [APPLOOKUP]`
 
-Used for creating a managing application LCU settings.
+Used for managing application LCU settings.
 
 ```
 USAGE
@@ -318,10 +319,34 @@ GLOBAL FLAGS
   --json  Format output as json.
 
 DESCRIPTION
-  Used for creating a managing application LCU settings.
+  Used for managing application LCU settings.
 
 EXAMPLES
   $ fathym eac applications lcu
+```
+
+## `fathym eac applications lookup [APPLOOKUP]`
+
+Used for managing application lookup settings.
+
+```
+USAGE
+  $ fathym eac applications lookup [APPLOOKUP] [--json] [-p <value>]
+
+ARGUMENTS
+  APPLOOKUP  The application lookup to manage.
+
+FLAGS
+  -p, --path=<value>  The path the application will be hosted on
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for managing application lookup settings.
+
+EXAMPLES
+  $ fathym eac applications lookup
 ```
 
 ## `fathym eac applications modifiers add`
@@ -344,24 +369,25 @@ EXAMPLES
 
 ## `fathym eac applications processor TYPE [APPLOOKUP]`
 
-Used for creating a managing application processor settings.
+Used for managing application processor settings.
 
 ```
 USAGE
-  $ fathym eac applications processor [TYPE] [APPLOOKUP] [--json] [-d <value>]
+  $ fathym eac applications processor [TYPE] [APPLOOKUP] [--json] [-d <value>] [-b <value>]
 
 ARGUMENTS
   TYPE       (DFS|OAuth|Proxy|Redirect) The type of the processor settings to configure.
   APPLOOKUP  The application lookup to manage processor settings for.
 
 FLAGS
+  -b, --baseHref=<value>     The base href.
   -d, --defaultFile=<value>  The path of the default file.
 
 GLOBAL FLAGS
   --json  Format output as json.
 
 DESCRIPTION
-  Used for creating a managing application processor settings.
+  Used for managing application processor settings.
 
 EXAMPLES
   $ fathym eac applications processor
@@ -907,7 +933,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.110/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.111/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1113,7 +1139,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.110/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.111/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1406,5 +1432,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.110/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.111/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
