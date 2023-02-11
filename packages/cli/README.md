@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.108 win32-x64 node-v18.12.1
+@fathym/cli/0.0.109 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -39,7 +39,7 @@ USAGE
 * [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
 * [`fathym eac applications delete [APPLOOKUP]`](#fathym-eac-applications-delete-applookup)
-* [`fathym eac applications lcu [APPLOOKUP] [TYPE] [ZIPFILE]`](#fathym-eac-applications-lcu-applookup-type-zipfile)
+* [`fathym eac applications lcu TYPE [APPLOOKUP]`](#fathym-eac-applications-lcu-type-applookup)
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
 * [`fathym eac applications processor`](#fathym-eac-applications-processor)
 * [`fathym eac applications set [APPLOOKUP]`](#fathym-eac-applications-set-applookup)
@@ -109,7 +109,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.108/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.109/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -298,19 +298,21 @@ EXAMPLES
   $ fathym eac applications delete
 ```
 
-## `fathym eac applications lcu [APPLOOKUP] [TYPE] [ZIPFILE]`
+## `fathym eac applications lcu TYPE [APPLOOKUP]`
 
 Used for creating a managing application LCU settings.
 
 ```
 USAGE
-  $ fathym eac applications lcu [APPLOOKUP] [TYPE] [ZIPFILE] [--json]
+  $ fathym eac applications lcu [TYPE] [APPLOOKUP] [--json] [-z <value>]
 
 ARGUMENTS
-  APPLOOKUP  The application lookup to manage LCU settings for.
   TYPE       (API|ApplicationPointer|GitHub|GitHubOAuth|SPA|NPM|WordPress|Zip) The type of the LCU settings to
              configure.
-  ZIPFILE    The path to the zip file containing your site.
+  APPLOOKUP  The application lookup to manage LCU settings for.
+
+FLAGS
+  -z, --zipFile=<value>  The path to the zip file containing your site.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -898,7 +900,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.108/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.109/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1104,7 +1106,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.108/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.109/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1397,5 +1399,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.108/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.109/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
