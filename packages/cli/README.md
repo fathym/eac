@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.109 win32-x64 node-v18.12.1
+@fathym/cli/0.0.110 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -41,7 +41,7 @@ USAGE
 * [`fathym eac applications delete [APPLOOKUP]`](#fathym-eac-applications-delete-applookup)
 * [`fathym eac applications lcu TYPE [APPLOOKUP]`](#fathym-eac-applications-lcu-type-applookup)
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
-* [`fathym eac applications processor`](#fathym-eac-applications-processor)
+* [`fathym eac applications processor TYPE [APPLOOKUP]`](#fathym-eac-applications-processor-type-applookup)
 * [`fathym eac applications set [APPLOOKUP]`](#fathym-eac-applications-set-applookup)
 * [`fathym eac applications upsert [APPLOOKUP]`](#fathym-eac-applications-upsert-applookup)
 * [`fathym eac clear`](#fathym-eac-clear)
@@ -109,7 +109,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.109/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.110/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -342,19 +342,26 @@ EXAMPLES
   $ fathym eac applications modifiers add
 ```
 
-## `fathym eac applications processor`
+## `fathym eac applications processor TYPE [APPLOOKUP]`
 
-Used for creating a managing application Processor settings.
+Used for creating a managing application processor settings.
 
 ```
 USAGE
-  $ fathym eac applications processor [--json]
+  $ fathym eac applications processor [TYPE] [APPLOOKUP] [--json] [-d <value>]
+
+ARGUMENTS
+  TYPE       (DFS|OAuth|Proxy|Redirect) The type of the processor settings to configure.
+  APPLOOKUP  The application lookup to manage processor settings for.
+
+FLAGS
+  -d, --defaultFile=<value>  The path of the default file.
 
 GLOBAL FLAGS
   --json  Format output as json.
 
 DESCRIPTION
-  Used for creating a managing application Processor settings.
+  Used for creating a managing application processor settings.
 
 EXAMPLES
   $ fathym eac applications processor
@@ -900,7 +907,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.109/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.110/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1106,7 +1113,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.109/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.110/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1399,5 +1406,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.109/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.110/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
