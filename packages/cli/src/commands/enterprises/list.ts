@@ -18,7 +18,7 @@ export default class List extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'List User Enterprises';
 

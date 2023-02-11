@@ -13,7 +13,7 @@ export default class Draft extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'EaC Draft';
 

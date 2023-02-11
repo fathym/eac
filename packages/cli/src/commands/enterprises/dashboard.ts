@@ -11,7 +11,7 @@ export default class Open extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Open Dashboard';
 

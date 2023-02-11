@@ -18,7 +18,7 @@ export default class Get extends FathymCommand<GetContext> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Get Active Enterprise';
 

@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { ListrTask, PromptOptions } from 'listr2';
 import { randomUUID } from 'node:crypto';
@@ -43,12 +43,11 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
     }),
   };
 
-  static args = [
-    {
-      name: 'projectLookup',
+  static args = {
+    projectLookup: Args.string({
       description: 'The project lookup to use for upsert.',
-    },
-  ];
+    }),
+  };
 
   static title = 'Upsert Project';
 
@@ -63,14 +62,14 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
       ensureProject(this.config.configDir, projectLookup, true, true),
-      await this.addProjectToDraft(name, description),
+      this.addProjectToDraft(name, description),
     ];
   }
 
-  protected async addProjectToDraft(
+  protected addProjectToDraft(
     name?: string,
     description?: string
-  ): Promise<ListrTask<UpsertTaskContext>> {
+  ): ListrTask<UpsertTaskContext> {
     return {
       title: 'Create project',
       task: async (ctx, task) => {
@@ -83,25 +82,24 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC!.Projects) {
-              draft.EaC!.Projects = {};
+            if (!draft.EaC.Projects) {
+              draft.EaC.Projects = {};
             }
 
-            if (!draft.EaC!.Projects[ctx.ProjectLookup]) {
-              draft.EaC!.Projects[ctx.ProjectLookup] = {};
+            if (!draft.EaC.Projects[ctx.ProjectLookup]) {
+              draft.EaC.Projects[ctx.ProjectLookup] = {};
             }
 
             if (name || description) {
-              draft.EaC!.Projects[ctx.ProjectLookup].Project = {
+              draft.EaC.Projects[ctx.ProjectLookup].Project = {
                 ...currentEaCProj.Project,
                 Name:
                   name ||
-                  draft.EaC!.Projects[ctx.ProjectLookup]?.Project?.Name ||
+                  draft.EaC.Projects[ctx.ProjectLookup]?.Project?.Name ||
                   currentEaCProj.Project?.Name,
                 Description:
                   description ||
-                  draft.EaC!.Projects[ctx.ProjectLookup]?.Project
-                    ?.Description ||
+                  draft.EaC.Projects[ctx.ProjectLookup]?.Project?.Description ||
                   currentEaCProj.Project?.Description ||
                   name,
               };

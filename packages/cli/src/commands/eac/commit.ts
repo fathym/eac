@@ -1,4 +1,4 @@
-import {} from '@oclif/core';
+import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
@@ -14,7 +14,11 @@ export default class Commit extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [{ name: 'message', required: false }];
+  static args = {
+    message: Args.string({
+      description: 'The commit message.',
+    }),
+  };
 
   static title = 'EaC Commit';
 
@@ -25,7 +29,7 @@ export default class Commit extends FathymCommand<any> {
 
     return [
       ensureActiveEnterprise(this.config.configDir),
-      commitDraftTask(this.config.cacheDir, message),
+      commitDraftTask(this.config.cacheDir, message!),
     ];
   }
 }

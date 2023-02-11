@@ -21,7 +21,7 @@ export default class Clear extends FathymCommand<ClearTaskContext> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'EaC Draft Clear';
 

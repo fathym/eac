@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../common/fathym-command';
 import { runProc } from '../../../common/task-helpers';
@@ -18,7 +18,11 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
     }),
   };
 
-  static args = [{ name: 'name', required: false }];
+  static args = {
+    name: Args.string({
+      description: 'The name of the LCUt to scaffold.',
+    }),
+  };
 
   static title = 'Scaffold LCU';
 
@@ -57,8 +61,8 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
 
           await runProc('npx', [
             '@fathym/create-lcu-package@latest',
-            name,
-            directory,
+            name!,
+            directory!,
           ]);
         },
       },

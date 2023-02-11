@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import open from 'open';
 import { FathymCommand } from '../../../../common/fathym-command';
@@ -42,12 +42,11 @@ export default class SSHKey extends FathymCommand<SSHKeyContext> {
     }),
   };
 
-  static args = [
-    {
-      name: 'resourceGroup',
+  static args = {
+    resourceGroup: Args.string({
       description: 'The resource group to create the SSH key for',
-    },
-  ];
+    }),
+  };
 
   static title = 'Azure SSH Key Create';
 

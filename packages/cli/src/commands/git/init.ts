@@ -18,7 +18,7 @@ export default class Feature extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Initialize Repository';
 

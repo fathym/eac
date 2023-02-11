@@ -3,6 +3,7 @@ import { FathymCommand } from '../../../common/fathym-command';
 import { FathymTaskContext, setApiRoot } from '../../../common/core-helpers';
 import path from 'node:path';
 import open from 'open';
+import { Args } from '@oclif/core';
 
 export default class Open extends FathymCommand<FathymTaskContext> {
   static description = 'Used to open the config directory.';
@@ -11,7 +12,11 @@ export default class Open extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [{ name: 'config', required: false }];
+  static args = {
+    config: Args.string({
+      description: 'The config location to open.',
+    }),
+  };
 
   static title = 'Open Config';
 

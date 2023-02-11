@@ -31,7 +31,7 @@ export default class Export extends FathymCommand<ExportTaskContext> {
     }),
   };
 
-  static args = [];
+  static args = {};
 
   static title = 'EaC Export';
 

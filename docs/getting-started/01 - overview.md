@@ -87,23 +87,25 @@ This will set the enterprise that you will work with and manage. If you are just
 
 ## Project Setup
 
-With the CLI connected, we first need to create a project to house our new application. To do this, we will use Fathym's `eac` commands.
+With the CLI connected, we first need to create a project to house our new application. To do this, we will use Fathym's `eac` commands. Select `- Create New -` from the prompts.
 
 ```cli
 fathym eac projects upsert -n "My First Project"
 ```
 
-Next, we will create an application that we can add to our project.
+Now, using a similar command, we will create an application that we can add to our project.
 
 ```cli
-fathym eac applications create "My First Application"
+fathym eac applications upsert -n "My First Application"
 ```
 
-The LCU is configured to manage security and server-side file modifications for the application.
+The LCU for an application can be configured to manage security and server-side file modifications for the application. We'll configure a simple one for our zip file now.
 
 ```cli
-fathym eac applications lcu {app-lookup} [options]
+fathym eac applications lcu zip {app-lookup} [options]
 ```
+
+> **NOTE** - We'll upload the zip file into the Fathym Distributed File System at the specified path later on.
 
 There are a number of different options for configuring how the application handles requests. To do so we configure the application's processor.
 

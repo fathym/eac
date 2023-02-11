@@ -45,7 +45,7 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
     }),
   };
 
-  static args = [];
+  static args = {};
 
   static title = 'Upsert Azure Cloud';
 
@@ -119,19 +119,18 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC!.Environments) {
-              draft.EaC!.Environments = {};
+            if (!draft.EaC.Environments) {
+              draft.EaC.Environments = {};
             }
 
             if (
-              !draft.EaC!.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
+              !draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
             ) {
-              draft.EaC!.Environments![
-                ctx.EaC.Enterprise!.PrimaryEnvironment!
-              ] = {};
+              draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!] =
+                {};
             }
 
-            draft.EaC!.Environments![
+            draft.EaC.Environments![
               ctx.EaC.Enterprise!.PrimaryEnvironment!
             ].Clouds = {
               [cloudLookup]: {

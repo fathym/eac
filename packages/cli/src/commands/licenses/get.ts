@@ -6,12 +6,16 @@ import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
   ensureActiveEnterprise,
-  FathymTaskContext, 
+  FathymTaskContext,
 } from '../../common/core-helpers';
-import { listLicensesByEmail, listLicenseTypes } from '../../common/eac-services';
+import {
+  ensurePromptValue,
+  listLicensesByEmail,
+  listLicenseTypes,
+} from '../../common/eac-services';
+import { Args } from '@oclif/core';
 
-interface GetContext extends FathymTaskContext{}
-export default class Get extends FathymCommand<GetContext> {
+export default class Get extends FathymCommand<FathymTaskContext> {
   static description = `Get's the current user's active license by licenseType for the CLI. Determines
   if a user has access to provision cloud resources in Azure.`;
 
@@ -19,11 +23,15 @@ export default class Get extends FathymCommand<GetContext> {
 
   static flags = {};
 
-  static args = [{ name: 'licenseType', required: false }];
+  static args = {
+    licenseType: Args.string({
+      description: 'The license type to get',
+    }),
+  };
 
   static title = 'Get Active License';
 
-  protected async loadTasks(): Promise<ListrTask<GetContext>[]> {
+  protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args } = await this.parse(Get);
 
     let { licenseType } = args;
@@ -31,26 +39,23 @@ export default class Get extends FathymCommand<GetContext> {
     return [
       {
         task: async (ctx, task) => {
-          const licenseTypes = await listLicenseTypes(this.config.configDir)
-      if(!licenseType){      
-        licenseType = (
-          await task.prompt({
-            type: 'Select',
-            name: 'licenseType',
-            message: 'Choose License Type:',
-            choices: licenseTypes.map((licenseType) => {
+          const licenseTypes = await listLicenseTypes(this.config.configDir);
+
+          licenseType = await ensurePromptValue(
+            task,
+            'Choose License Type:',
+            licenseType,
+            licenseTypes.map((licenseType) => {
               return {
                 message: `${color.blueBright(licenseType)})`,
                 name: licenseType,
               };
-            }),
-            validate: (v: any) => Boolean(v),
-          } as PromptOptions<true>)
-        ).trim();        
-      }
-      await listLicensesByEmail(this.config.configDir, licenseType)
-    },
-  },
-];
+            })
+          );
+
+          await listLicensesByEmail(this.config.configDir, licenseType);
+        },
+      },
+    ];
   }
 }

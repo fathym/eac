@@ -575,7 +575,7 @@ export async function refreshAccessToken(
 
 export async function setApiRoot(
   configDir: string,
-  env: 'prod' | 'local'
+  env: string
 ): Promise<void> {
   await withSystemConfig(configDir, async (cfg) => {
     if (env === 'prod') {

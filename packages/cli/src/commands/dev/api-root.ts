@@ -2,6 +2,7 @@ import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../common/fathym-command';
 import { FathymTaskContext, setApiRoot } from '../../common/core-helpers';
 import { ensurePromptValue } from '../../common/eac-services';
+import { Args } from '@oclif/core';
 
 export default class SetAPIRoot extends FathymCommand<FathymTaskContext> {
   static description = 'Used to set the api root.';
@@ -10,7 +11,12 @@ export default class SetAPIRoot extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [{ name: 'env', required: false }];
+  static args = {
+    env: Args.string({
+      description: 'The environment APIs to use.',
+      options: ['prod', 'local'],
+    }),
+  };
 
   static title = 'Set API Root';
 
@@ -23,7 +29,7 @@ export default class SetAPIRoot extends FathymCommand<FathymTaskContext> {
       {
         title: `Setting API root`,
         task: async (ctx, task) => {
-          env = await ensurePromptValue(task, 'Select API Environment', env, [
+          env = await ensurePromptValue(task, 'Select API Environment', env!, [
             'prod',
             'local',
           ]);

@@ -1,4 +1,4 @@
-import {} from '@oclif/core';
+import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
@@ -11,7 +11,11 @@ export default class LCU extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [{ name: 'appLookup', required: true }];
+  static args = {
+    appLookup: Args.string({
+      description: 'The application lookup to configure.',
+    }),
+  };
 
   static title = 'Set Active Application';
 

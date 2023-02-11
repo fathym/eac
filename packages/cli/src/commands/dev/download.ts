@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { ListrTask, PromptOptions } from 'listr2';
 import {} from '@semanticjs/common';
@@ -13,10 +13,16 @@ export default class Download extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [
-    { name: 'url', required: true },
-    { name: 'outputFile', required: true },
-  ];
+  static args = {
+    url: Args.string({
+      description: 'The URL of the artifact to download.',
+      required: true,
+    }),
+    outputFile: Args.string({
+      description: 'The output file location of the download.',
+      required: true,
+    }),
+  };
 
   static title = 'Download File';
 

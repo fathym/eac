@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { ListrTask } from 'listr2';
 import { EnterpriseAsCode } from '@semanticjs/common';
@@ -30,24 +30,23 @@ export default class Delete extends FathymCommand<DeleteContext> {
 
   static flags = {};
 
-  static args = [
-    {
-      name: 'applicationLookup',
+  static args = {
+    appLookup: Args.string({
       description: 'The application lookup to delete.',
-    },
-  ];
+    }),
+  };
 
   static title = 'Delete Application';
 
   protected async loadTasks(): Promise<ListrTask<DeleteContext>[]> {
     const { args } = await this.parse(Delete);
 
-    const { applicationLookup } = args;
+    const { appLookup } = args;
 
     return [
       ensureActiveEnterprise(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, applicationLookup),
+      ensureApplication(this.config.configDir, appLookup),
       {
         title: `Configure application removals`,
         task: async (ctx, task) => {

@@ -11,7 +11,7 @@ export default class LCU extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [{ name: 'appLookup', required: true }];
+  static args = {};
 
   static title = 'Set Active Project';
 

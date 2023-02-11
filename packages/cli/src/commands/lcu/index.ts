@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { Listr, ListrTask, ListrTaskWrapper, PromptOptions } from 'listr2';
 import { FathymCommand } from '../../common/fathym-command';
@@ -72,7 +72,11 @@ export default class Install extends FathymCommand<InstallContext> {
     }),
   };
 
-  static args = [{ name: 'lcu', required: false }];
+  static args = {
+    lcu: Args.string({
+      description: 'The LCU package to install.',
+    }),
+  };
 
   static title = 'Install LCU';
 
@@ -172,7 +176,7 @@ export default class Install extends FathymCommand<InstallContext> {
                     return task.newListr<InstallContext>(
                       [
                         this.confirmParameters(ci, parameters, phase),
-                        this.runInstallLcu(lcu, phase),
+                        this.runInstallLcu(lcu!, phase),
                       ],
                       { rendererOptions: { collapse: true } }
                     );
@@ -313,7 +317,7 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
-  protected downloadLcu(lcu: string): ListrTask<InstallContext> {
+  protected downloadLcu(lcu?: string): ListrTask<InstallContext> {
     return {
       title: `Download LCU: ${lcu}`,
       task: async (ctx, task) => {

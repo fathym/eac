@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import open from 'open';
 import {} from '@semanticjs/common';
@@ -20,11 +20,17 @@ export default class Auth extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [
-    { name: 'organization', required: false },
-    { name: 'repository', required: false },
-    { name: 'branch', required: false },
-  ];
+  static args = {
+    organization: Args.string({
+      description: 'The organization.',
+    }),
+    repository: Args.string({
+      description: 'The repository.',
+    }),
+    branch: Args.string({
+      description: 'The branch.',
+    }),
+  };
 
   static title = 'Git Authentication';
 
@@ -60,7 +66,7 @@ export default class Auth extends FathymCommand<FathymTaskContext> {
         task: async (ctx, task) => {
           const repos = await listGitHubRepositories(
             this.config.configDir,
-            organization
+            organization!
           );
 
           ctx.Fathym.Lookups = {
@@ -82,8 +88,8 @@ export default class Auth extends FathymCommand<FathymTaskContext> {
         task: async (ctx, task) => {
           const branches = await listGitHubBranches(
             this.config.configDir,
-            organization,
-            repository
+            organization!,
+            repository!
           );
 
           ctx.Fathym.Lookups = {

@@ -12,6 +12,7 @@ import {
   listEnterprises,
   withEaCDraft,
 } from '../../common/eac-services';
+import { Args } from '@oclif/core';
 
 export default class Set extends FathymCommand<FathymTaskContext> {
   static description = `Set's the current user's active enterprise for the CLI. Determines
@@ -21,7 +22,11 @@ export default class Set extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [{ name: 'entLookup', required: false }];
+  static args = {
+    entLookup: Args.string({
+      description: 'The enterprise lookup to set as active.',
+    }),
+  };
 
   static title = 'Set Active Enterprise';
 
@@ -39,7 +44,7 @@ export default class Set extends FathymCommand<FathymTaskContext> {
           entLookup = await ensurePromptValue(
             task,
             'Choose enterprise:',
-            entLookup,
+            entLookup!,
             ents.map((ent) => {
               return {
                 message: `${ent.Name} (${color.blueBright(ent.Lookup)})`,
@@ -67,7 +72,7 @@ export default class Set extends FathymCommand<FathymTaskContext> {
             throw new Error(`There are changes against the EaC draft.`);
           } else {
             await withUserAuthConfig(this.config.configDir, async (cfg) => {
-              cfg.ActiveEnterpriseLookup = entLookup;
+              cfg.ActiveEnterpriseLookup = entLookup!;
 
               return cfg;
             });

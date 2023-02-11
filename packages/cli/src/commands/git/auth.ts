@@ -18,7 +18,7 @@ export default class Auth extends FathymCommand<any> {
     }),
   };
 
-  static args = [];
+  static args = {};
 
   static title = 'Git Authentication';
 

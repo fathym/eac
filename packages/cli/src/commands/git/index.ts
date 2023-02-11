@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
@@ -28,7 +28,11 @@ export default class Commit extends FathymCommand<any> {
     }),
   };
 
-  static args = [{ name: 'message' }];
+  static args = {
+    message: Args.string({
+      description: 'The commit message.',
+    }),
+  };
 
   static title = 'Git Commit';
 

@@ -11,7 +11,7 @@ export default class Processor extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Manage Processor Settings';
 

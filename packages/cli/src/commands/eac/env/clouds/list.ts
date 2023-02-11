@@ -22,7 +22,7 @@ export default class List extends FathymCommand<ListContext> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'List Clouds';
 

@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { ListrTask } from 'listr2';
 import { EnterpriseAsCode } from '@semanticjs/common';
@@ -33,9 +33,11 @@ export default class Delete extends FathymCommand<DeleteContext> {
 
   static flags = {};
 
-  static args = [
-    { name: 'cloudLookup', description: 'The cloud lookup to delete.' },
-  ];
+  static args = {
+    cloudLookup: Args.string({
+      description: 'The cloud lookup to delete.',
+    }),
+  };
 
   static title = 'Delete Cloud';
 

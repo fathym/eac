@@ -25,7 +25,7 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Fathym Sign In';
 

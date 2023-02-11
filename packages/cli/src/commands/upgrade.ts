@@ -10,7 +10,7 @@ export default class Upgrade extends FathymCommand<FathymTaskContext> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Upgrade';
 

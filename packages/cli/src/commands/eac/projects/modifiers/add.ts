@@ -11,7 +11,7 @@ export default class Add extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Add Project DFS Modifier';
 

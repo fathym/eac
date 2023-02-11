@@ -168,18 +168,19 @@ export async function ensurePromptValue<
 >(
   task: ListrTaskWrapper<Ctx, Renderer>,
   message: string,
-  value: string,
+  value?: string,
   choices?: string[] | { name: string | (() => string) }[],
-  createValue?: () => Promise<string>
+  createValue?: () => Promise<string>,
+  createText = '- Create new -'
 ): Promise<string> {
   if (!value) {
     if (createValue && choices) {
       if (typeof choices[0] === 'string') {
-        choices.unshift('- Create new -' as any);
+        choices.unshift(createText as any);
       } else {
         choices.unshift({
-          message: '- Create new -',
-          name: '- Create new -',
+          message: createText,
+          name: createText,
         } as any);
       }
     }
@@ -193,14 +194,14 @@ export async function ensurePromptValue<
       })
     ).trim();
 
-    value = value === '- Create new -' ? '' : value;
+    value = value === createText ? '' : value;
   }
 
   if (!value && createValue) {
     value = await createValue();
   }
 
-  return value;
+  return value || '';
 }
 
 export function commitDraftTask(
@@ -332,15 +333,15 @@ export async function listLicensesByEmail(
 ): Promise<EaCLicense[]> {
   const axios = await loadAxios(configDir);
 
-  if (licenseType == null) {
-    const response = await axios.get(`user/licenses`);
+  let config = {};
 
-    return response.data?.Model || [];
-  } else {
-    const response = await axios.get(`user/licenses`, {
+  if (licenseType !== undefined) {
+    config = {
       params: { licenseType: licenseType },
-    });
-
-    return response.data?.Model || [];
+    };
   }
+
+  const response = await axios.get(`user/licenses`, config);
+
+  return response.data?.Model || [];
 }

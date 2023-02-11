@@ -13,7 +13,7 @@ export default class Out extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Fathym Sign Out';
 

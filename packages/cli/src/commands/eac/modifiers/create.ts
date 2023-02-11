@@ -11,7 +11,7 @@ export default class Create extends FathymCommand<any> {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Create DFS Modifier';
 

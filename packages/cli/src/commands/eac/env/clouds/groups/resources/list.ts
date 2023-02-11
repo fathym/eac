@@ -40,7 +40,7 @@ export default class List extends FathymCommand<ListContext> {
     }),
   };
 
-  static args = [];
+  static args = {};
 
   static title = 'List Cloud Resource Group Resources';
 

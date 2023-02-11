@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../common/fathym-command';
 import {
@@ -34,38 +34,37 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
     }),
   };
 
-  static args = [
-    {
-      name: 'applicationLookup',
+  static args = {
+    appLookup: Args.string({
       description: 'The application lookup to use for upsert.',
-    },
-  ];
+    }),
+  };
 
   static title = 'Upsert Application';
 
   protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
     const { args, flags } = await this.parse(Upsert);
 
-    const { applicationLookup } = args;
+    const { appLookup } = args;
 
     const { name, description } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, applicationLookup, true, true),
-      await this.addApplicationToDraft(name, description),
+      ensureApplication(this.config.configDir, appLookup, true, true),
+      this.addApplicationToDraft(name, description),
     ];
   }
 
-  protected async addApplicationToDraft(
+  protected addApplicationToDraft(
     name?: string,
     description?: string
-  ): Promise<ListrTask<UpsertTaskContext>> {
+  ): ListrTask<UpsertTaskContext> {
     return {
       title: 'Create application',
       task: async (ctx, task) => {
-        const currentEaCProj =
+        const currentEaCApp =
           ctx.EaC.Applications && ctx.EaC.Applications[ctx.ApplicationLookup]
             ? ctx.EaC.Applications[ctx.ApplicationLookup] || {}
             : {};
@@ -74,27 +73,27 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC!.Applications) {
-              draft.EaC!.Applications = {};
+            if (!draft.EaC.Applications) {
+              draft.EaC.Applications = {};
             }
 
-            if (!draft.EaC!.Applications[ctx.ApplicationLookup]) {
-              draft.EaC!.Applications[ctx.ApplicationLookup] = {};
+            if (!draft.EaC.Applications[ctx.ApplicationLookup]) {
+              draft.EaC.Applications[ctx.ApplicationLookup] = {};
             }
 
             if (name || description) {
-              draft.EaC!.Applications[ctx.ApplicationLookup].Application = {
-                ...currentEaCProj.Application,
+              draft.EaC.Applications[ctx.ApplicationLookup].Application = {
+                ...currentEaCApp.Application,
                 Name:
                   name ||
-                  draft.EaC!.Applications[ctx.ApplicationLookup]?.Application
+                  draft.EaC.Applications[ctx.ApplicationLookup]?.Application
                     ?.Name ||
-                  currentEaCProj.Application?.Name,
+                  currentEaCApp.Application?.Name,
                 Description:
                   description ||
-                  draft.EaC!.Applications[ctx.ApplicationLookup]?.Application
+                  draft.EaC.Applications[ctx.ApplicationLookup]?.Application
                     ?.Description ||
-                  currentEaCProj.Application?.Description ||
+                  currentEaCApp.Application?.Description ||
                   name,
               };
             }
