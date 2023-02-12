@@ -73,40 +73,47 @@ export default class Upload extends FathymCommand<UploadTaskContext> {
       loadEaCTask(this.config.configDir),
     ];
 
-    if (projectFilter) {
-      tasks.push(
-        ensureProject(this.config.configDir, projectFilter, false, true)
-      );
-    }
+    // if (projectFilter) {
+    //   tasks.push(
+    //     ensureProject(this.config.configDir, projectFilter, false, true)
+    //   );
+    // }
 
     tasks.push(
       findApp
-        ? ensureApplication(this.config.configDir, appLookup)
+        ? ensureApplication(
+            this.config.configDir,
+            appLookup,
+            false,
+            false,
+            projectFilter
+          )
         : {
             title: 'Setting Application Lookup',
             task: async (ctx, task) => {
               ctx.ApplicationLookup = appLookup || '';
             },
-          },
-      {
-        title: `Upload DFS file`,
-        task: async (ctx, task) => {
-          file = await ensurePromptValue(
-            task,
-            Upload.args.file.description!,
-            file
-          );
-
-          filePath = await ensurePromptValue(
-            task,
-            Upload.args.filePath.description!,
-            filePath
-          );
-
-          await uploadFile(file, ctx.ActiveEnterpriseLookup, filePath);
-        },
-      }
+          }
     );
+
+    tasks.push({
+      title: `Upload DFS file`,
+      task: async (ctx, task) => {
+        file = await ensurePromptValue(
+          task,
+          Upload.args.file.description!,
+          file
+        );
+
+        filePath = await ensurePromptValue(
+          task,
+          Upload.args.filePath.description!,
+          filePath
+        );
+
+        await uploadFile(file, ctx.ActiveEnterpriseLookup, filePath);
+      },
+    });
 
     return tasks;
   }

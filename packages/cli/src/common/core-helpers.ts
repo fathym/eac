@@ -296,7 +296,8 @@ export function ensureApplication<
   configDir: string,
   appLookup?: string,
   create: boolean = false,
-  addFromDraft: boolean = false
+  addFromDraft: boolean = false,
+  projectFilter?: string
 ): ListrTask<TContext> {
   return {
     title: `Ensuring application set`,
@@ -306,10 +307,21 @@ export function ensureApplication<
           ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
           : ({} as EaCDraft);
 
-        const apps = Object.keys({
+        let apps = Object.keys({
           ...ctx.EaC?.Applications,
           ...draft.EaC?.Applications,
         });
+
+        if (projectFilter) {
+          const projectAppLookups = [
+            ...ctx.EaC?.Projects![projectFilter]?.ApplicationLookups!,
+            ...(ctx.EaC?.Projects
+              ? ctx.EaC?.Projects[projectFilter]?.ApplicationLookups!
+              : []),
+          ];
+
+          apps = apps.filter((app) => projectAppLookups.includes(app));
+        }
 
         appLookup = await ensurePromptValue(
           task,

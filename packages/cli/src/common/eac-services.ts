@@ -360,14 +360,4 @@ export async function uploadFile(
     responseType: 'json',
     data: inputStr,
   });
-
-  return new Promise((resolve, reject) => {
-    response.data.on('end', () => {
-      resolve();
-    });
-
-    response.data.on('error', (error: any) => {
-      reject(error);
-    });
-  });
 }
