@@ -20,7 +20,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.112 win32-x64 node-v18.12.1
+@fathym/cli/0.0.113 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -38,6 +38,7 @@ USAGE
 * [`fathym dev config open [CONFIG]`](#fathym-dev-config-open-config)
 * [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
+* [`fathym dfs upload [FILE] [FILEPATH]`](#fathym-dfs-upload-file-filepath)
 * [`fathym eac applications delete [APPLOOKUP]`](#fathym-eac-applications-delete-applookup)
 * [`fathym eac applications lcu TYPE [APPLOOKUP]`](#fathym-eac-applications-lcu-type-applookup)
 * [`fathym eac applications lookup [APPLOOKUP]`](#fathym-eac-applications-lookup-applookup)
@@ -110,7 +111,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.112/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.113/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -276,6 +277,33 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym dev lcu scaffold dev lcu scaffold --help
+```
+
+## `fathym dfs upload [FILE] [FILEPATH]`
+
+Used for downloading a file.
+
+```
+USAGE
+  $ fathym dfs upload [FILE] [FILEPATH] [--json] [-a <value>] [-f] [-p <value>]
+
+ARGUMENTS
+  FILE      Path to upload file
+  FILEPATH  The path within the DFS to upload the file.
+
+FLAGS
+  -a, --appLookup=<value>      The applookup to upload to.
+  -f, --findApp                Whether or not to prompt for an application when no app lookup provided.
+  -p, --projectFilter=<value>  The project lookup to filter applications by.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for downloading a file.
+
+EXAMPLES
+  $ fathym dfs upload {url} {outputFile}
 ```
 
 ## `fathym eac applications delete [APPLOOKUP]`
@@ -937,7 +965,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.112/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.113/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1143,7 +1171,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.112/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.113/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1436,5 +1464,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.112/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.113/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
