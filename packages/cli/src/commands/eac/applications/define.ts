@@ -12,13 +12,13 @@ import {
 } from '../../../common/core-helpers';
 import { withEaCDraft } from '../../../common/eac-services';
 
-interface UpsertTaskContext
+interface DefineTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
     EaCTaskContext,
     ApplicationTaskContext {}
 
-export default class Upsert extends FathymCommand<UpsertTaskContext> {
+export default class Define extends FathymCommand<DefineTaskContext> {
   static description = `Used for creating or updating an application.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -36,14 +36,14 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
 
   static args = {
     appLookup: Args.string({
-      description: 'The application lookup to use for upsert.',
+      description: 'The application lookup to use for define.',
     }),
   };
 
-  static title = 'Upsert Application';
+  static title = 'Define Application';
 
-  protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
-    const { args, flags } = await this.parse(Upsert);
+  protected async loadTasks(): Promise<ListrTask<DefineTaskContext>[]> {
+    const { args, flags } = await this.parse(Define);
 
     const { appLookup } = args;
 
@@ -60,7 +60,7 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
   protected addApplicationToDraft(
     name?: string,
     description?: string
-  ): ListrTask<UpsertTaskContext> {
+  ): ListrTask<DefineTaskContext> {
     return {
       title: 'Create application',
       task: async (ctx, task) => {

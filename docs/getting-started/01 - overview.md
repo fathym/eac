@@ -90,13 +90,13 @@ This will set the enterprise that you will work with and manage. If you are just
 With the CLI connected, we first need to create a project to house our new application. To do this, we will use Fathym's `eac` commands. Select `- Create New -` from the prompts.
 
 ```cli
-fathym eac projects upsert -n "My First Project"
+fathym eac projects define -n "My First Project"
 ```
 
 Now, using a similar command, we will create an application that we can add to our project.
 
 ```cli
-fathym eac applications upsert -n "My First Application"
+fathym eac applications define -n "My First Application"
 ```
 
 We need to configure how our application will be chosen to handle a request. There are a number of options here, we'll keep it simple with a basic path lookup.

@@ -1,5 +1,4 @@
-oclif-hello-world
-=================
+# oclif-hello-world
 
 oclif example Hello World CLI
 
@@ -10,11 +9,15 @@ oclif example Hello World CLI
 [![License](https://img.shields.io/npm/l/oclif-hello-world.svg)](https://github.com/oclif/hello-world/blob/main/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @fathym/cli
 $ fathym COMMAND
@@ -26,72 +29,76 @@ USAGE
   $ fathym COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`fathym auth`](#fathym-auth)
-* [`fathym auth config`](#fathym-auth-config)
-* [`fathym auth out`](#fathym-auth-out)
-* [`fathym dev api-root [ENV]`](#fathym-dev-api-root-env)
-* [`fathym dev azure cli-install`](#fathym-dev-azure-cli-install)
-* [`fathym dev azure sshkey create [RESOURCEGROUP]`](#fathym-dev-azure-sshkey-create-resourcegroup)
-* [`fathym dev config open [CONFIG]`](#fathym-dev-config-open-config)
-* [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
-* [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
-* [`fathym dfs upload [FILE] [FILEPATH]`](#fathym-dfs-upload-file-filepath)
-* [`fathym eac applications delete [APPLOOKUP]`](#fathym-eac-applications-delete-applookup)
-* [`fathym eac applications lcu TYPE [APPLOOKUP]`](#fathym-eac-applications-lcu-type-applookup)
-* [`fathym eac applications lookup [APPLOOKUP]`](#fathym-eac-applications-lookup-applookup)
-* [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
-* [`fathym eac applications processor TYPE [APPLOOKUP]`](#fathym-eac-applications-processor-type-applookup)
-* [`fathym eac applications set [APPLOOKUP]`](#fathym-eac-applications-set-applookup)
-* [`fathym eac applications upsert [APPLOOKUP]`](#fathym-eac-applications-upsert-applookup)
-* [`fathym eac clear`](#fathym-eac-clear)
-* [`fathym eac commit [MESSAGE]`](#fathym-eac-commit-message)
-* [`fathym eac draft`](#fathym-eac-draft)
-* [`fathym eac env clouds azure upsert`](#fathym-eac-env-clouds-azure-upsert)
-* [`fathym eac env clouds delete [CLOUDLOOKUP]`](#fathym-eac-env-clouds-delete-cloudlookup)
-* [`fathym eac env clouds groups list`](#fathym-eac-env-clouds-groups-list)
-* [`fathym eac env clouds groups resources list`](#fathym-eac-env-clouds-groups-resources-list)
-* [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
-* [`fathym eac env pipelines create`](#fathym-eac-env-pipelines-create)
-* [`fathym eac env sources create`](#fathym-eac-env-sources-create)
-* [`fathym eac env sources pipeline attach`](#fathym-eac-env-sources-pipeline-attach)
-* [`fathym eac export`](#fathym-eac-export)
-* [`fathym eac modifiers create`](#fathym-eac-modifiers-create)
-* [`fathym eac projects applications add [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-add-projectlookup-applookup)
-* [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
-* [`fathym eac projects delete [PROJECTLOOKUP]`](#fathym-eac-projects-delete-projectlookup)
-* [`fathym eac projects list`](#fathym-eac-projects-list)
-* [`fathym eac projects modifiers add`](#fathym-eac-projects-modifiers-add)
-* [`fathym eac projects set`](#fathym-eac-projects-set)
-* [`fathym eac projects upsert [PROJECTLOOKUP]`](#fathym-eac-projects-upsert-projectlookup)
-* [`fathym enterprises dashboard`](#fathym-enterprises-dashboard)
-* [`fathym enterprises get`](#fathym-enterprises-get)
-* [`fathym enterprises list`](#fathym-enterprises-list)
-* [`fathym enterprises set [ENTLOOKUP]`](#fathym-enterprises-set-entlookup)
-* [`fathym git [MESSAGE]`](#fathym-git-message)
-* [`fathym git auth`](#fathym-git-auth)
-* [`fathym git clone [ORGANIZATION] [REPOSITORY]`](#fathym-git-clone-organization-repository)
-* [`fathym git feature [NAME]`](#fathym-git-feature-name)
-* [`fathym git hotfix [NAME]`](#fathym-git-hotfix-name)
-* [`fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE]`](#fathym-git-import-organization-repository-remote)
-* [`fathym git init`](#fathym-git-init)
-* [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
-* [`fathym help [COMMANDS]`](#fathym-help-commands)
-* [`fathym lcu [LCU]`](#fathym-lcu-lcu)
-* [`fathym licenses get [LICENSETYPE]`](#fathym-licenses-get-licensetype)
-* [`fathym licenses list`](#fathym-licenses-list)
-* [`fathym plugins`](#fathym-plugins)
-* [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
-* [`fathym plugins:inspect PLUGIN...`](#fathym-pluginsinspect-plugin)
-* [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin-1)
-* [`fathym plugins:link PLUGIN`](#fathym-pluginslink-plugin)
-* [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin)
-* [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-1)
-* [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-2)
-* [`fathym plugins update`](#fathym-plugins-update)
-* [`fathym upgrade`](#fathym-upgrade)
+
+- [`fathym auth`](#fathym-auth)
+- [`fathym auth config`](#fathym-auth-config)
+- [`fathym auth out`](#fathym-auth-out)
+- [`fathym dev api-root [ENV]`](#fathym-dev-api-root-env)
+- [`fathym dev azure cli-install`](#fathym-dev-azure-cli-install)
+- [`fathym dev azure sshkey create [RESOURCEGROUP]`](#fathym-dev-azure-sshkey-create-resourcegroup)
+- [`fathym dev config open [CONFIG]`](#fathym-dev-config-open-config)
+- [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
+- [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
+- [`fathym dfs upload [FILE] [FILEPATH]`](#fathym-dfs-upload-file-filepath)
+- [`fathym eac applications delete [APPLOOKUP]`](#fathym-eac-applications-delete-applookup)
+- [`fathym eac applications lcu TYPE [APPLOOKUP]`](#fathym-eac-applications-lcu-type-applookup)
+- [`fathym eac applications lookup [APPLOOKUP]`](#fathym-eac-applications-lookup-applookup)
+- [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
+- [`fathym eac applications processor TYPE [APPLOOKUP]`](#fathym-eac-applications-processor-type-applookup)
+- [`fathym eac applications set [APPLOOKUP]`](#fathym-eac-applications-set-applookup)
+- [`fathym eac applications define [APPLOOKUP]`](#fathym-eac-applications-define-applookup)
+- [`fathym eac clear`](#fathym-eac-clear)
+- [`fathym eac commit [MESSAGE]`](#fathym-eac-commit-message)
+- [`fathym eac draft`](#fathym-eac-draft)
+- [`fathym eac env clouds azure define`](#fathym-eac-env-clouds-azure-define)
+- [`fathym eac env clouds delete [CLOUDLOOKUP]`](#fathym-eac-env-clouds-delete-cloudlookup)
+- [`fathym eac env clouds groups list`](#fathym-eac-env-clouds-groups-list)
+- [`fathym eac env clouds groups resources list`](#fathym-eac-env-clouds-groups-resources-list)
+- [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
+- [`fathym eac env pipelines create`](#fathym-eac-env-pipelines-create)
+- [`fathym eac env sources create`](#fathym-eac-env-sources-create)
+- [`fathym eac env sources pipeline attach`](#fathym-eac-env-sources-pipeline-attach)
+- [`fathym eac export`](#fathym-eac-export)
+- [`fathym eac modifiers create`](#fathym-eac-modifiers-create)
+- [`fathym eac projects applications add [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-add-projectlookup-applookup)
+- [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
+- [`fathym eac projects delete [PROJECTLOOKUP]`](#fathym-eac-projects-delete-projectlookup)
+- [`fathym eac projects list`](#fathym-eac-projects-list)
+- [`fathym eac projects modifiers add`](#fathym-eac-projects-modifiers-add)
+- [`fathym eac projects set`](#fathym-eac-projects-set)
+- [`fathym eac projects define [PROJECTLOOKUP]`](#fathym-eac-projects-define-projectlookup)
+- [`fathym enterprises dashboard`](#fathym-enterprises-dashboard)
+- [`fathym enterprises get`](#fathym-enterprises-get)
+- [`fathym enterprises list`](#fathym-enterprises-list)
+- [`fathym enterprises set [ENTLOOKUP]`](#fathym-enterprises-set-entlookup)
+- [`fathym git [MESSAGE]`](#fathym-git-message)
+- [`fathym git auth`](#fathym-git-auth)
+- [`fathym git clone [ORGANIZATION] [REPOSITORY]`](#fathym-git-clone-organization-repository)
+- [`fathym git feature [NAME]`](#fathym-git-feature-name)
+- [`fathym git hotfix [NAME]`](#fathym-git-hotfix-name)
+- [`fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE]`](#fathym-git-import-organization-repository-remote)
+- [`fathym git init`](#fathym-git-init)
+- [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
+- [`fathym help [COMMANDS]`](#fathym-help-commands)
+- [`fathym lcu [LCU]`](#fathym-lcu-lcu)
+- [`fathym licenses get [LICENSETYPE]`](#fathym-licenses-get-licensetype)
+- [`fathym licenses list`](#fathym-licenses-list)
+- [`fathym plugins`](#fathym-plugins)
+- [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
+- [`fathym plugins:inspect PLUGIN...`](#fathym-pluginsinspect-plugin)
+- [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin-1)
+- [`fathym plugins:link PLUGIN`](#fathym-pluginslink-plugin)
+- [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin)
+- [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-1)
+- [`fathym plugins:uninstall PLUGIN...`](#fathym-pluginsuninstall-plugin-2)
+- [`fathym plugins update`](#fathym-plugins-update)
+- [`fathym upgrade`](#fathym-upgrade)
 
 ## `fathym auth`
 
@@ -442,16 +449,16 @@ EXAMPLES
   $ fathym eac applications set
 ```
 
-## `fathym eac applications upsert [APPLOOKUP]`
+## `fathym eac applications define [APPLOOKUP]`
 
 Used for creating or updating an application.
 
 ```
 USAGE
-  $ fathym eac applications upsert [APPLOOKUP] [--json] [-d <value>] [-n <value>]
+  $ fathym eac applications define [APPLOOKUP] [--json] [-d <value>] [-n <value>]
 
 ARGUMENTS
-  APPLOOKUP  The application lookup to use for upsert.
+  APPLOOKUP  The application lookup to use for define.
 
 FLAGS
   -d, --description=<value>  The description of the pojrect.
@@ -464,7 +471,7 @@ DESCRIPTION
   Used for creating or updating an application.
 
 EXAMPLES
-  $ fathym eac applications upsert
+  $ fathym eac applications define
 ```
 
 ## `fathym eac clear`
@@ -524,16 +531,16 @@ EXAMPLES
   $ fathym eac draft
 ```
 
-## `fathym eac env clouds azure upsert`
+## `fathym eac env clouds azure define`
 
 Used for creating a new project.
 
 ```
 USAGE
-  $ fathym eac env clouds azure upsert [--json] [-g] [-c <value>]
+  $ fathym eac env clouds azure define [--json] [-g] [-c <value>]
 
 FLAGS
-  -c, --cloudLookup=<value>  The cloud lookup to use for upsert.
+  -c, --cloudLookup=<value>  The cloud lookup to use for define.
   -g, --[no-]generate        Determines if the CLI should help generate the cloud connection.
 
 GLOBAL FLAGS
@@ -543,7 +550,7 @@ DESCRIPTION
   Used for creating a new project.
 
 EXAMPLES
-  $ fathym eac env clouds azure upsert
+  $ fathym eac env clouds azure define
 ```
 
 ## `fathym eac env clouds delete [CLOUDLOOKUP]`
@@ -839,16 +846,16 @@ EXAMPLES
   $ fathym eac projects set
 ```
 
-## `fathym eac projects upsert [PROJECTLOOKUP]`
+## `fathym eac projects define [PROJECTLOOKUP]`
 
 Used for creating or updating a project.
 
 ```
 USAGE
-  $ fathym eac projects upsert [PROJECTLOOKUP] [--json] [-d <value>] [-n <value>]
+  $ fathym eac projects define [PROJECTLOOKUP] [--json] [-d <value>] [-n <value>]
 
 ARGUMENTS
-  PROJECTLOOKUP  The project lookup to use for upsert.
+  PROJECTLOOKUP  The project lookup to use for define.
 
 FLAGS
   -d, --description=<value>  The description of the pojrect.
@@ -861,7 +868,7 @@ DESCRIPTION
   Used for creating or updating a project.
 
 EXAMPLES
-  $ fathym eac projects upsert
+  $ fathym eac projects define
 ```
 
 ## `fathym enterprises dashboard`
@@ -1264,7 +1271,7 @@ ALIASES
   $ fathym plugins add
 
 EXAMPLES
-  $ fathym plugins:install myplugin 
+  $ fathym plugins:install myplugin
 
   $ fathym plugins:install https://github.com/someuser/someplugin
 
@@ -1327,7 +1334,7 @@ ALIASES
   $ fathym plugins add
 
 EXAMPLES
-  $ fathym plugins:install myplugin 
+  $ fathym plugins:install myplugin
 
   $ fathym plugins:install https://github.com/someuser/someplugin
 
@@ -1465,4 +1472,5 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.116/dist/commands/upgrade.ts)_
+
 <!-- commandsstop -->

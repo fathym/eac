@@ -20,14 +20,14 @@ import { downloadFile, withEaCDraft } from '../../../../../common/eac-services';
 import { EaCCloudDetails } from '@semanticjs/common';
 import loadAxios from '../../../../../common/axios';
 
-interface UpsertTaskContext
+interface DefineTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
     EaCTaskContext,
     AzureCLITaskContext,
     SubscriptionTaskContext {}
 
-export default class Upsert extends FathymCommand<UpsertTaskContext> {
+export default class Define extends FathymCommand<DefineTaskContext> {
   static description = `Used for creating a new project.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -41,16 +41,16 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
     }),
     cloudLookup: Flags.string({
       char: 'c',
-      description: 'The cloud lookup to use for upsert.',
+      description: 'The cloud lookup to use for define.',
     }),
   };
 
   static args = {};
 
-  static title = 'Upsert Azure Cloud';
+  static title = 'Define Azure Cloud';
 
-  protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
-    const { args, flags } = await this.parse(Upsert);
+  protected async loadTasks(): Promise<ListrTask<DefineTaskContext>[]> {
+    const { args, flags } = await this.parse(Define);
 
     let { cloudLookup } = flags;
 
@@ -70,7 +70,7 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
   protected createCloudConnection(
     generate: boolean,
     cloudLookup: string
-  ): ListrTask<UpsertTaskContext> {
+  ): ListrTask<DefineTaskContext> {
     return {
       title: 'Create cloud subscription connection',
       enabled: (ctx) => ctx.AzureCLIInstalled,

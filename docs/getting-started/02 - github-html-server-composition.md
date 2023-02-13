@@ -28,7 +28,7 @@ Now we can initialize a new repository in your EaC.
 fathym eac sources create my-new-repository
 ```
 
-> **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `fathym eac sources {organization} create ...`. This works for all `fathym eac sources` commands.
+> **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `fathym eac sources create {organization} ...`. This works for all `fathym eac sources` commands.
 
 Detail out which options were used and what they do.
 

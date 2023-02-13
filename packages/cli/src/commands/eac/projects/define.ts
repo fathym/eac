@@ -21,13 +21,13 @@ import { runProc } from '../../../common/task-helpers';
 import { downloadFile, withEaCDraft } from '../../../common/eac-services';
 import { EaCCloudDetails } from '@semanticjs/common';
 
-interface UpsertTaskContext
+interface DefineTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
     EaCTaskContext,
     ProjectTaskContext {}
 
-export default class Upsert extends FathymCommand<UpsertTaskContext> {
+export default class Define extends FathymCommand<DefineTaskContext> {
   static description = `Used for creating or updating a project.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -45,14 +45,14 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
 
   static args = {
     projectLookup: Args.string({
-      description: 'The project lookup to use for upsert.',
+      description: 'The project lookup to use for define.',
     }),
   };
 
-  static title = 'Upsert Project';
+  static title = 'Define Project';
 
-  protected async loadTasks(): Promise<ListrTask<UpsertTaskContext>[]> {
-    const { args, flags } = await this.parse(Upsert);
+  protected async loadTasks(): Promise<ListrTask<DefineTaskContext>[]> {
+    const { args, flags } = await this.parse(Define);
 
     const { projectLookup } = args;
 
@@ -69,7 +69,7 @@ export default class Upsert extends FathymCommand<UpsertTaskContext> {
   protected addProjectToDraft(
     name?: string,
     description?: string
-  ): ListrTask<UpsertTaskContext> {
+  ): ListrTask<DefineTaskContext> {
     return {
       title: 'Create project',
       task: async (ctx, task) => {
