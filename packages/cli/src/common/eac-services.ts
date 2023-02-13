@@ -20,14 +20,19 @@ import {
   FathymTaskContext,
   loadFileAsString,
 } from './core-helpers';
-import './prompts/eac-env-clouds-prompts';
-import './prompts/eac-env-cloud-resource-groups-prompts';
 import './prompts/az-sshkey-create-prompts';
+import './prompts/eac-env-cloud-resource-groups-prompts';
+import './prompts/eac-env-clouds-prompts';
+import './prompts/eac-env-sources-prompts';
 import { Config } from '@oclif/core';
 import { TcpNetConnectOpts } from 'node:net';
 
 export interface CloudTaskContext {
   CloudLookup: string;
+}
+
+export interface SourceTaskContext {
+  SourceLookup: string;
 }
 
 export interface CloudResourceGroupTaskContext {
@@ -79,32 +84,6 @@ export async function withEaCDraft(
   });
 }
 
-export function ensureCloudTask<
-  TContext extends EaCTaskContext & CloudTaskContext
->(configDir: string, cloudLookup?: string): ListrTask<TContext> {
-  return {
-    title: 'Select Cloud',
-    task: async (ctx, task) => {
-      ctx.CloudLookup = cloudLookup || '';
-
-      if (!ctx.CloudLookup) {
-        ctx.CloudLookup = await task.prompt([
-          {
-            type: 'eac:env:clouds|select',
-            eac: ctx.EaC,
-          } as any,
-        ]);
-      }
-
-      if (ctx.CloudLookup) {
-        task.title = `Cloud selected: ${ctx.CloudLookup}`;
-      } else {
-        throw new Error('Cloud lookup is required');
-      }
-    },
-  };
-}
-
 export function azSshKeyCreateTask<
   TContext extends SSHKeyTaskContext &
     EaCTaskContext &
@@ -132,77 +111,6 @@ export function azSshKeyCreateTask<
       }
     },
   };
-}
-
-export function ensureCloudResourceGroupTask<
-  TContext extends EaCTaskContext &
-    CloudTaskContext &
-    CloudResourceGroupTaskContext
->(configDir: string, cloudResGroupLookup?: string): ListrTask<TContext> {
-  return {
-    title: 'Select Cloud Resource Group',
-    task: async (ctx, task) => {
-      ctx.CloudResourceGroupLookup = cloudResGroupLookup || '';
-
-      if (!ctx.CloudResourceGroupLookup) {
-        ctx.CloudResourceGroupLookup = await task.prompt([
-          {
-            type: 'eac:env:clouds:groups|select',
-            eac: ctx.EaC,
-            cloudLookup: ctx.CloudLookup,
-          } as any,
-        ]);
-      }
-
-      if (ctx.CloudResourceGroupLookup) {
-        task.title = `Cloud Resource Group selected: ${ctx.CloudResourceGroupLookup}`;
-      } else {
-        throw new Error('Cloud Resource Group lookup is required');
-      }
-    },
-  };
-}
-
-export async function ensurePromptValue<
-  Ctx,
-  Renderer extends ListrRendererFactory
->(
-  task: ListrTaskWrapper<Ctx, Renderer>,
-  message: string,
-  value?: string,
-  choices?: string[] | { name: string | (() => string) }[],
-  createValue?: () => Promise<string>,
-  createText = '- Create new -'
-): Promise<string> {
-  if (!value) {
-    if (createValue && choices) {
-      if (typeof choices[0] === 'string') {
-        choices.unshift(createText as any);
-      } else {
-        choices.unshift({
-          message: createText,
-          name: createText,
-        } as any);
-      }
-    }
-
-    value = (
-      await task.prompt({
-        type: choices?.length! > 0 ? 'select' : 'input',
-        message: message,
-        validate: (v) => !!createValue || Boolean(v),
-        choices: choices,
-      })
-    ).trim();
-
-    value = value === createText ? '' : value;
-  }
-
-  if (!value && createValue) {
-    value = await createValue();
-  }
-
-  return value || '';
 }
 
 export function commitDraftTask(
@@ -298,6 +206,129 @@ export async function downloadFile(url: string, file: string): Promise<void> {
       reject(error);
     });
   });
+}
+
+export function ensureCloudTask<
+  TContext extends EaCTaskContext & CloudTaskContext
+>(cloudLookup?: string): ListrTask<TContext> {
+  return {
+    title: 'Select Cloud',
+    task: async (ctx, task) => {
+      ctx.CloudLookup = cloudLookup || '';
+
+      if (!ctx.CloudLookup) {
+        ctx.CloudLookup = await task.prompt([
+          {
+            type: 'eac:env:clouds|select',
+            eac: ctx.EaC,
+          } as any,
+        ]);
+      }
+
+      if (ctx.CloudLookup) {
+        task.title = `Cloud selected: ${ctx.CloudLookup}`;
+      } else {
+        throw new Error('Cloud lookup is required');
+      }
+    },
+  };
+}
+
+export function ensureCloudResourceGroupTask<
+  TContext extends EaCTaskContext &
+    CloudTaskContext &
+    CloudResourceGroupTaskContext
+>(configDir: string, cloudResGroupLookup?: string): ListrTask<TContext> {
+  return {
+    title: 'Select Cloud Resource Group',
+    task: async (ctx, task) => {
+      ctx.CloudResourceGroupLookup = cloudResGroupLookup || '';
+
+      if (!ctx.CloudResourceGroupLookup) {
+        ctx.CloudResourceGroupLookup = await task.prompt([
+          {
+            type: 'eac:env:clouds:groups|select',
+            eac: ctx.EaC,
+            cloudLookup: ctx.CloudLookup,
+          } as any,
+        ]);
+      }
+
+      if (ctx.CloudResourceGroupLookup) {
+        task.title = `Cloud Resource Group selected: ${ctx.CloudResourceGroupLookup}`;
+      } else {
+        throw new Error('Cloud Resource Group lookup is required');
+      }
+    },
+  };
+}
+
+export async function ensurePromptValue<
+  Ctx,
+  Renderer extends ListrRendererFactory
+>(
+  task: ListrTaskWrapper<Ctx, Renderer>,
+  message: string,
+  value?: string,
+  choices?: string[] | { name: string | (() => string) }[],
+  createValue?: () => Promise<string>,
+  createText = '- Create new -'
+): Promise<string> {
+  if (!value) {
+    if (createValue && choices) {
+      if (typeof choices[0] === 'string') {
+        choices.unshift(createText as any);
+      } else {
+        choices.unshift({
+          message: createText,
+          name: createText,
+        } as any);
+      }
+    }
+
+    value = (
+      await task.prompt({
+        type: choices?.length! > 0 ? 'select' : 'input',
+        message: message,
+        validate: (v) => !!createValue || Boolean(v),
+        choices: choices,
+      })
+    ).trim();
+
+    value = value === createText ? '' : value;
+  }
+
+  if (!value && createValue) {
+    value = await createValue();
+  }
+
+  return value || '';
+}
+
+export function ensureSourceTask<
+  TContext extends EaCTaskContext & SourceTaskContext
+>(sourceLookup?: string): ListrTask<TContext> {
+  return {
+    title: 'Select source',
+    task: async (ctx, task) => {
+      ctx.SourceLookup = sourceLookup || '';
+
+      if (!ctx.SourceLookup) {
+        ctx.SourceLookup = await task.prompt([
+          {
+            type: 'eac:env:sources|select',
+            eac: ctx.EaC,
+          } as any,
+        ]);
+      }
+
+      if (ctx.SourceLookup) {
+        task.title = `Source selected: ${ctx.SourceLookup}`;
+      } else {
+        throw new Error('Source lookup is required');
+      }
+    },
+  };
 }
 
 // export async function listEnterprises(

@@ -52,7 +52,7 @@ export default class List extends FathymCommand<ListContext> {
     return [
       ensureActiveEnterprise(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureCloudTask(this.config.configDir, cloudLookup),
+      ensureCloudTask(cloudLookup),
       ensureCloudResourceGroupTask(this.config.configDir, cloudResGroupLookup),
       {
         title: `Loading EaC primary environment cloud resources for active enterprise`,
@@ -74,11 +74,11 @@ export default class List extends FathymCommand<ListContext> {
             ),
           };
 
-          ctx.Fathym.Result = JSON.stringify(
-            resGroup?.Resources || {},
-            null,
-            2
-          );
+          // ctx.Fathym.Result = JSON.stringify(
+          //   resGroup?.Resources || {},
+          //   null,
+          //   2
+          // );
         },
       },
     ];

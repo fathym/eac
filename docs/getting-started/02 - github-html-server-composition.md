@@ -22,19 +22,19 @@ This will open a new window with GitHub authorization where you can determine wh
 
 > **NOTE** - You can run this command anytime you want to adjust the authorizations in GitHub for new or existing organizations.
 
-Now we can initialize a new repository in your EaC.
+Now let's create a new repository in one of our organizations for the code.
 
 ```cli
 fathym eac sources create my-new-repository
 ```
 
-> **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `fathym eac sources create {organization} ...`. This works for all `fathym eac sources` commands.
-
-Detail out which options were used and what they do.
+> **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `fathym eac sources create {organization} my-new-repository`. This works for all `fathym eac sources` commands.
 
 This will initialize a new repository with Fathym's best practices (what we use for our own internal repositories). Explore the other options available by adding `--help` to the command. The default create will include a simple `README.md` file and MIT `LICENSE` file.
 
-Under the hood, this will also create a source control entry in the EaC to use in CI/CD automation.
+In addition, this also queued up a source definition that we will need to commit later in this guide.
+
+Under the hood, this will also define a source control entry in the EaC to use in CI/CD automation, once committed.
 
 ## Configuring your build pipeline
 

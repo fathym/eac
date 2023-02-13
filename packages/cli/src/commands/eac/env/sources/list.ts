@@ -16,7 +16,7 @@ interface ListContext
     ActiveEnterpriseTaskContext {}
 
 export default class List extends FathymCommand<ListContext> {
-  static description = `Used for listing available clouds.`;
+  static description = `Used for listing available sources.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -24,7 +24,7 @@ export default class List extends FathymCommand<ListContext> {
 
   static args = {};
 
-  static title = 'List Clouds';
+  static title = 'List Sources';
 
   protected async loadTasks(): Promise<ListrTask<ListContext>[]> {
     // const { args } = await this.parse(List);
@@ -33,22 +33,20 @@ export default class List extends FathymCommand<ListContext> {
       ensureActiveEnterprise(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
       {
-        title: `Loading EaC primary environment clouds for active enterprise`,
+        title: `Loading EaC primary environment sources for active enterprise`,
         task: async (ctx, task) => {
           const env =
             ctx.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!];
 
-          const clouds = Object.keys(env?.Clouds || {});
+          const sources = Object.keys(env?.Sources || {});
 
           ctx.Fathym.Lookups = {
-            name: `Cloud (${color.blueBright('{cloudLookup}')})`,
-            lookups: clouds.map(
-              (cloud) =>
-                `${env.Clouds![cloud].Cloud!.Name} (${color.blueBright(cloud)})`
+            name: `Source (${color.blueBright('{sourceLookup}')})`,
+            lookups: sources.map(
+              (source) =>
+                `${env.Sources![source].Name} (${color.blueBright(source)})`
             ),
           };
-
-          // ctx.Fathym.Result = JSON.stringify(env?.Clouds || {}, null, 2);
         },
       },
     ];
