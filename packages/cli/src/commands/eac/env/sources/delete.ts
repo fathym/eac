@@ -59,11 +59,11 @@ export default class Delete extends FathymCommand<DeleteContext> {
           const source = env.Sources![ctx.SourceLookup];
 
           if (source) {
-            task.title = `Configure source removals for '${source.Source?.Name}'`;
+            task.title = `Configure source removals for '${source?.Name}'`;
 
             const remove: boolean = await task.prompt({
               type: 'Confirm',
-              message: `Are you sure you want to remove source '${source.Source?.Name}'?`,
+              message: `Are you sure you want to remove source '${source?.Name}'?`,
             });
 
             if (remove) {
