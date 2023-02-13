@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.117 win32-x64 node-v18.12.1
+@fathym/cli/0.0.118 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -46,6 +46,7 @@ USAGE
 * [`fathym eac applications define [APPLOOKUP]`](#fathym-eac-applications-define-applookup)
 * [`fathym eac applications delete [APPLOOKUP]`](#fathym-eac-applications-delete-applookup)
 * [`fathym eac applications lcu TYPE [APPLOOKUP]`](#fathym-eac-applications-lcu-type-applookup)
+* [`fathym eac applications list`](#fathym-eac-applications-list)
 * [`fathym eac applications lookup [APPLOOKUP]`](#fathym-eac-applications-lookup-applookup)
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
 * [`fathym eac applications processor TYPE [APPLOOKUP]`](#fathym-eac-applications-processor-type-applookup)
@@ -60,6 +61,8 @@ USAGE
 * [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
 * [`fathym eac env pipelines define`](#fathym-eac-env-pipelines-define)
 * [`fathym eac env sources define`](#fathym-eac-env-sources-define)
+* [`fathym eac env sources delete [SOURCELOOKUP]`](#fathym-eac-env-sources-delete-sourcelookup)
+* [`fathym eac env sources list`](#fathym-eac-env-sources-list)
 * [`fathym eac env sources pipeline attach`](#fathym-eac-env-sources-pipeline-attach)
 * [`fathym eac export`](#fathym-eac-export)
 * [`fathym eac modifiers define`](#fathym-eac-modifiers-define)
@@ -115,7 +118,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.117/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.118/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -380,6 +383,24 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac applications lcu
+```
+
+## `fathym eac applications list`
+
+Used for listing available applications.
+
+```
+USAGE
+  $ fathym eac applications list [--json]
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for listing available applications.
+
+EXAMPLES
+  $ fathym eac applications list
 ```
 
 ## `fathym eac applications lookup [APPLOOKUP]`
@@ -666,6 +687,45 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac env sources define
+```
+
+## `fathym eac env sources delete [SOURCELOOKUP]`
+
+Used for deleting a source.
+
+```
+USAGE
+  $ fathym eac env sources delete [SOURCELOOKUP] [--json]
+
+ARGUMENTS
+  SOURCELOOKUP  The source lookup to delete.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for deleting a source.
+
+EXAMPLES
+  $ fathym eac env sources delete
+```
+
+## `fathym eac env sources list`
+
+Used for listing available sources.
+
+```
+USAGE
+  $ fathym eac env sources list [--json]
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for listing available sources.
+
+EXAMPLES
+  $ fathym eac env sources list
 ```
 
 ## `fathym eac env sources pipeline attach`
@@ -969,7 +1029,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.117/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.118/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1175,7 +1235,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.117/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.118/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1468,5 +1528,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.117/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.118/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
