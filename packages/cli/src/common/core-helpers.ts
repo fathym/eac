@@ -176,7 +176,7 @@ export function setAzureSubTask<
           title: 'Select Azure Subscription',
           task: async (ctx, task) => {
             const subsList: AzureSubscription[] = JSON.parse(
-              (await runProc('az', ['account', 'list'])) || '[]'
+              (await runProc('az', ['account', 'list', '--refresh'])) || '[]'
             );
 
             subsList.unshift({
