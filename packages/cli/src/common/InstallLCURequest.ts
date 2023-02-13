@@ -7,7 +7,5 @@ export interface InstallLCURequest {
 
   Phase?: number;
 
-  ProjectCreate: boolean;
-
   Project: string;
 }

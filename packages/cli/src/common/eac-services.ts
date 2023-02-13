@@ -4,7 +4,7 @@ import {
   EnterpriseAsCode,
 } from '@semanticjs/common';
 import axios from 'axios';
-import { createWriteStream } from 'fs-extra';
+import { readFile, createWriteStream } from 'fs-extra';
 import {
   ListrRendererFactory,
   ListrTask,
@@ -352,12 +352,15 @@ export async function uploadFile(
   entLookup: string,
   filePath: string
 ): Promise<void> {
-  const inputStr = await loadFileAsString(inputFile, '');
+  const fileStream = await readFile(inputFile);
+
+  const form = new FormData();
+  form.append('file', new Blob([fileStream]), filePath);
 
   const response = await axios({
     method: 'post',
     url: `${entLookup}/dfs${filePath}`,
     responseType: 'json',
-    data: inputStr,
+    data: form,
   });
 }

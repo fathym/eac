@@ -148,7 +148,7 @@ export default class Install extends FathymCommand<InstallContext> {
         },
       },
       this.confirmAgreements(ci),
-      ensureProject(this.config.configDir, project),
+      ensureProject(this.config.configDir, project, true),
       ensureOrganization(this.config.configDir, organization, (ctx) =>
         ctx.LCUPackageConfig?.Package
           ? ctx.LCUPackageConfig.Package!.UsesGit
@@ -553,7 +553,6 @@ export default class Install extends FathymCommand<InstallContext> {
             Organization: ctx.GitHubOrganization,
             Parameters: ctx.LCUParamAnswers,
             Phase: phase,
-            ProjectCreate: !ctx.ProjectLookup,
             Project: ctx.ProjectLookup,
           }
         );
