@@ -23,12 +23,17 @@ import {
 import './prompts/az-sshkey-create-prompts';
 import './prompts/eac-env-cloud-resource-groups-prompts';
 import './prompts/eac-env-clouds-prompts';
+import './prompts/eac-env-pipelines-prompts';
 import './prompts/eac-env-sources-prompts';
 import { Config } from '@oclif/core';
 import { TcpNetConnectOpts } from 'node:net';
 
 export interface CloudTaskContext {
   CloudLookup: string;
+}
+
+export interface PipelineTaskContext {
+  PipelineLookup: string;
 }
 
 export interface SourceTaskContext {
@@ -303,6 +308,32 @@ export async function ensurePromptValue<
   }
 
   return value || '';
+}
+
+export function ensurePipelineTask<
+  TContext extends EaCTaskContext & PipelineTaskContext
+>(pipelineLookup?: string): ListrTask<TContext> {
+  return {
+    title: 'Select pipeline',
+    task: async (ctx, task) => {
+      ctx.PipelineLookup = pipelineLookup || '';
+
+      if (!ctx.PipelineLookup) {
+        ctx.PipelineLookup = await task.prompt([
+          {
+            type: 'eac:env:pipelines|select',
+            eac: ctx.EaC,
+          } as any,
+        ]);
+      }
+
+      if (ctx.PipelineLookup) {
+        task.title = `Pipeline selected: ${ctx.PipelineLookup}`;
+      } else {
+        throw new Error('Pipeline lookup is required');
+      }
+    },
+  };
 }
 
 export function ensureSourceTask<

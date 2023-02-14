@@ -4,21 +4,21 @@ const { Select } = require('enquirer');
 import { EaCSelectPrompt } from './EaCSelectPrompt';
 import { EaCSelectPromptOptions } from './EaCSelectPromptOptions';
 
-export class SourceSelect extends EaCSelectPrompt {
+export class PipelineSelect extends EaCSelectPrompt {
   constructor(options: EaCSelectPromptOptions & any = {}) {
     const env: EaCEnvironmentAsCode =
       options.eac.Environments[options.eac.Enterprise!.PrimaryEnvironment!];
 
-    const sources = Object.keys(env?.Sources || {});
+    const doas = Object.keys(env?.DevOpsActions || {});
 
     super(
       options,
-      'Select source connection',
-      () => sources,
+      'Select pipeline connection',
+      () => doas,
       (lookup) => {
-        const sourceName = env.Sources![lookup]?.Name || '';
+        const pipelineName = env.DevOpsActions![lookup]?.Name || '';
 
-        return `${sourceName} (${color.blueBright(lookup)})`;
+        return `${pipelineName} (${color.blueBright(lookup)})`;
       }
     );
   }
@@ -28,10 +28,10 @@ export class SourceSelect extends EaCSelectPrompt {
 
     const enquirer = new Enquirer();
 
-    enquirer.register(this.PromptKey, SourceSelect);
+    enquirer.register(this.PromptKey, PipelineSelect);
   }
 
-  static PromptKey = 'eac:env:sources|select';
+  static PromptKey = 'eac:env:pipelines|select';
 }
 
-SourceSelect.Register();
+PipelineSelect.Register();
