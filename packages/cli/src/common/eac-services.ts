@@ -27,6 +27,7 @@ import './prompts/eac-env-pipelines-prompts';
 import './prompts/eac-env-sources-prompts';
 import { Config } from '@oclif/core';
 import { TcpNetConnectOpts } from 'node:net';
+import FormData from 'form-data';
 
 export interface CloudTaskContext {
   CloudLookup: string;
@@ -417,8 +418,9 @@ export async function uploadFile(
   const fileStream = await readFile(inputFile);
 
   const form = new FormData();
-  form.append('file', new Blob([fileStream]), filePath);
-
+  
+  form.append('file', fileStream, filePath);
+  
   const response = await axios({
     method: 'post',
     url: `${entLookup}/dfs${filePath}`,
