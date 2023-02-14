@@ -39,8 +39,8 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
         title: 'Open GitHub in browser for authentication',
         task: async (ctx) => {
           open(
-            `https://www.fathym.com/.oauth/GitHubOAuth?entLookup=${ctx.ActiveEnterpriseLookup}`
-            // `https://localhost:44358/.oauth/GitHubOAuth?entLookup=${ctx.ActiveEnterpriseLookup}`
+            // `https://www.fathym.com/.oauth/GitHubOAuth?entLookup=${ctx.ActiveEnterpriseLookup}`
+            `https://localhost:44358/.oauth/GitHubOAuth?entLookup=${ctx.ActiveEnterpriseLookup}`
           );
         },
       },

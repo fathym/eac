@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.121 win32-x64 node-v18.12.1
+@fathym/cli/0.0.122 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -59,7 +59,7 @@ USAGE
 * [`fathym eac env clouds groups list`](#fathym-eac-env-clouds-groups-list)
 * [`fathym eac env clouds groups resources list`](#fathym-eac-env-clouds-groups-resources-list)
 * [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
-* [`fathym eac env pipelines define`](#fathym-eac-env-pipelines-define)
+* [`fathym eac env pipelines define [TYPE] [PIPELINELOOKUP]`](#fathym-eac-env-pipelines-define-type-pipelinelookup)
 * [`fathym eac env pipelines delete [PIPELINELOOKUP]`](#fathym-eac-env-pipelines-delete-pipelinelookup)
 * [`fathym eac env pipelines list`](#fathym-eac-env-pipelines-list)
 * [`fathym eac env sources define [SOURCELOOKUP]`](#fathym-eac-env-sources-define-sourcelookup)
@@ -120,7 +120,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.121/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.122/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -298,7 +298,7 @@ USAGE
 
 ARGUMENTS
   FILE      Path to upload file
-  FILEPATH  The path within the DFS to upload the file.
+  FILEPATH  The path within the DFS to upload the file to.
 
 FLAGS
   -a, --appLookup=<value>      The applookup to upload to.
@@ -657,19 +657,31 @@ EXAMPLES
   $ fathym eac env clouds list
 ```
 
-## `fathym eac env pipelines define`
+## `fathym eac env pipelines define [TYPE] [PIPELINELOOKUP]`
 
-Used for creating a new build pipeline.
+Used for creating a new pipeline control.
 
 ```
 USAGE
-  $ fathym eac env pipelines define [--json]
+  $ fathym eac env pipelines define [TYPE] [PIPELINELOOKUP] [--json] [--name <value>] [--path <value>] [--buildCommand
+    <value>] [--installCommand <value>] [--templates <value>]
+
+ARGUMENTS
+  TYPE            (GitHub|NPM) The pipeline lookup for the definition.
+  PIPELINELOOKUP  The pipeline lookup for the definition.
+
+FLAGS
+  --buildCommand=<value>    The build command of the generated action file.
+  --installCommand=<value>  The install command of the generated action file.
+  --name=<value>            The name of the build pipeline.
+  --path=<value>            The path of the generated action file.
+  --templates=<value>       The template(s) ('|' delimited for multiple) to use for generated action file.
 
 GLOBAL FLAGS
   --json  Format output as json.
 
 DESCRIPTION
-  Used for creating a new build pipeline.
+  Used for creating a new pipeline control.
 
 EXAMPLES
   $ fathym eac env pipelines define
@@ -724,7 +736,7 @@ USAGE
     <value>]
 
 ARGUMENTS
-  SOURCELOOKUP  The organization to define from.
+  SOURCELOOKUP  The source lookup for the definition.
 
 FLAGS
   --mainBranch=<value>    The branch to use as main.
@@ -1081,7 +1093,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.121/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.122/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1287,7 +1299,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.121/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.122/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1580,5 +1592,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.121/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.122/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
