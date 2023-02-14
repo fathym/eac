@@ -55,7 +55,7 @@ export default class Upload extends FathymCommand<UploadTaskContext> {
       description: 'Path to upload file',
     }),
     filePath: Args.string({
-      description: 'The path within the DFS to upload the file.',
+      description: 'The path within the DFS to upload the file to.',
     }),
   };
 

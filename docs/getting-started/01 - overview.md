@@ -114,16 +114,16 @@ fathym eac applications processor DFS -d index.html -b /
 The LCU for an application can be configured to manage security and server-side file modifications for the application. We'll configure a simple application for our zip files now.
 
 ```cli
-fathym eac applications lcu Zip -z "{{Host}}/deploy.zip"
+fathym eac applications lcu Zip -z "{{Host}}/deploys/deploy.zip"
 ```
 
-Not that we've used the `Host` token as a dynamic way of accessing where the `deploy.zip` is located for deployment. In order to make the zip file available we can use another dev command to push the zip file to our Fathym Distributed File System (DFS), at the Enterprise scope, making it available to all projects and applications that we build.
-
-> **NOTE** - You can host the zip file anywhere its publically available (private zip access is not currently available).
+Not that we've used the `Host` token as a dynamic way of accessing where the `deploy.zip` is located for deployment. In order to make the zip file available we can use another dev command to push the zip file to our Fathym Distributed File System (DFS), at the Enterprise scope, making it available to all projects and applications that we create.
 
 ```cli
-fathym eac applications lcu Zip -z "{{Project.Host}}/deploy.zip"
+fathym dfs upload ./deploy.zip /deploys/deploy.zip
 ```
+
+> **NOTE** - You can host the zip file anywhere its publically available, it does not have to be in our DFS. (private zip access is not currently available)
 
 Then, we can add the application to the project using the prompts and selecting our `draft` project and application.
 
