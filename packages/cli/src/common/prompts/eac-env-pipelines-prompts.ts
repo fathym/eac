@@ -18,7 +18,9 @@ export class PipelineSelect extends EaCSelectPrompt {
       (lookup) => {
         const pipelineName = env.DevOpsActions![lookup]?.Name || '';
 
-        return `${pipelineName} (${color.blueBright(lookup)})`;
+        return lookup === '$--empty--$'
+          ? '- Create New -'
+          : `${pipelineName} (${color.blueBright(lookup)})`;
       }
     );
   }

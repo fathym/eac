@@ -48,7 +48,7 @@ export default class Create extends FathymCommand<DefineTaskContext> {
 
   static args = {
     sourceLookup: Args.string({
-      description: 'The organization to define from.',
+      description: 'The source lookup for the definition.',
     }),
   };
 
@@ -73,7 +73,7 @@ export default class Create extends FathymCommand<DefineTaskContext> {
 
   protected defineSourceControl(): ListrTask<DefineTaskContext> {
     return {
-      title: 'Create cloud subscription connection',
+      title: 'Define source control location',
       task: async (ctx, task) => {
         const env =
           ctx.EaC.Environments![ctx.EaC.Enterprise?.PrimaryEnvironment!];
