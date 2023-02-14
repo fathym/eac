@@ -14,9 +14,11 @@ import {
   downloadFile,
   EaCDraft,
   ensurePromptValue,
+  SourceTaskContext,
   withEaCDraft,
 } from './eac-services';
 import { randomUUID } from 'node:crypto';
+import { GitHubTaskContext } from './git-helpers';
 // import { EnterpriseAsCode } from '@semanticjs/common';
 
 const tenant = 'fathymcloudprd';
@@ -357,8 +359,8 @@ export function ensureApplication<
 
 export function ensureProject<
   TContext extends ProjectTaskContext &
-    EaCTaskContext &
-    ActiveEnterpriseTaskContext
+    ActiveEnterpriseTaskContext &
+    EaCTaskContext
 >(
   configDir: string,
   projectLookup?: string,
@@ -405,6 +407,64 @@ export function ensureProject<
       task.title = `Selected project: ${
         ctx.EaC.Projects![ctx.ProjectLookup]?.Project?.Name || 'Creating New'
       }`; //  (${ctx.ProjectLookup})
+    },
+  };
+}
+
+export function ensureSourceControl<
+  TContext extends ActiveEnterpriseTaskContext &
+    EaCTaskContext &
+    GitHubTaskContext &
+    SourceTaskContext
+>(configDir: string): ListrTask<TContext> {
+  return {
+    title: 'Create cloud subscription connection',
+    task: async (ctx, task) => {
+      let sourceLookup = `github://${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
+
+      if (!sourceLookup) {
+        const draft: EaCDraft =
+          (await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)) ||
+          ({} as EaCDraft);
+
+        const env =
+          ctx.EaC.Environments![ctx.EaC.Enterprise?.PrimaryEnvironment!];
+
+        const draftEnv = draft.EaC.Environments
+          ? draft.EaC.Environments![ctx.EaC.Enterprise?.PrimaryEnvironment!]
+          : {};
+
+        const sourceLookups = Object.keys({
+          ...env?.Sources,
+          ...draftEnv?.Sources,
+        });
+
+        sourceLookup = await ensurePromptValue(
+          task,
+          'Choose source control',
+          sourceLookup,
+          sourceLookups.map((sl) => {
+            const drfatSource = (draftEnv?.Sources || {})[sl];
+
+            const sourceName = drfatSource?.Name || env.Sources![sl]?.Name;
+
+            const draftText = drfatSource ? color.yellow('draft') : '';
+
+            return {
+              message: `${sourceName} ${draftText}`,
+              name: sl,
+            };
+          }),
+          async () =>
+            `github://${ctx.GitHubOrganization}/${ctx.GitHubRepository}`
+        );
+      }
+
+      ctx.SourceLookup = sourceLookup || '';
+
+      task.title = `Selected source: ${
+        ctx.EaC.Projects![ctx.SourceLookup]?.Project?.Name || 'Creating New'
+      }`;
     },
   };
 }

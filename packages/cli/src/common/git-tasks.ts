@@ -7,7 +7,9 @@ import {
   hasCommittedChanges,
   hasGitHubConnection,
   hasNotCommittedChanges,
+  listGitHubBranches,
   listGitHubOrganizations,
+  listGitHubRepositories,
   loadGitUsername,
   remoteExists,
 } from './git-helpers';
@@ -58,6 +60,41 @@ export function commitGitChanges(message?: string): ListrTask {
   };
 }
 
+export function ensureBranch<TContext extends GitHubTaskContext>(
+  configDir: string,
+  mainBranch?: string,
+  enabled?: (ctx: TContext) => boolean
+): ListrTask<TContext> {
+  return {
+    title: `Ensuring branch set`,
+    enabled: enabled,
+    task: async (ctx, task) => {
+      if (!mainBranch) {
+        let branches = await listGitHubBranches(
+          configDir,
+          ctx.GitHubOrganization,
+          ctx.GitHubRepository
+        );
+
+        branches = branches || [];
+
+        if (branches.length > 0) {
+          mainBranch = await ensurePromptValue(
+            task,
+            'Choose GitHub branch:',
+            '',
+            branches.map((org) => org.Name)
+          );
+        }
+      }
+
+      ctx.GitHubMainBranch = mainBranch || '';
+
+      task.title = `GitHub branch set to ${ctx.GitHubMainBranch}`;
+    },
+  };
+}
+
 export function ensureOrganization<TContext extends GitHubTaskContext>(
   configDir: string,
   organization?: string,
@@ -90,6 +127,41 @@ export function ensureOrganization<TContext extends GitHubTaskContext>(
       ctx.GitHubOrganization = organization || '';
 
       task.title = `GitHub organization set to ${ctx.GitHubOrganization}`;
+    },
+  };
+}
+
+export function ensureRepository<TContext extends GitHubTaskContext>(
+  configDir: string,
+  repository?: string,
+  enabled?: (ctx: TContext) => boolean
+): ListrTask<TContext> {
+  return {
+    title: `Ensuring repository set`,
+    enabled: enabled,
+    // enabled: enabled,
+    task: async (ctx, task) => {
+      if (!repository) {
+        let repos = await listGitHubRepositories(
+          configDir,
+          ctx.GitHubOrganization
+        );
+
+        repos = repos || [];
+
+        if (repos.length > 0) {
+          repository = await ensurePromptValue(
+            task,
+            'Choose GitHub repository:',
+            '',
+            repos.map((org) => org.Name)
+          );
+        }
+      }
+
+      ctx.GitHubRepository = repository || '';
+
+      task.title = `GitHub repository set to ${ctx.GitHubRepository}`;
     },
   };
 }

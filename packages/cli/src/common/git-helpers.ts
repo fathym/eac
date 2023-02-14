@@ -6,7 +6,11 @@ import { InstallLCURequest } from './InstallLCURequest';
 import { ensurePromptValue } from './eac-services';
 
 export interface GitHubTaskContext {
+  GitHubBranches: string[];
+
   GitHubConnection: boolean;
+
+  GitHubMainBranch: string;
 
   GitHubOrganization: string;
 

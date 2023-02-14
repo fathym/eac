@@ -1,4 +1,4 @@
-import { Flags } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { ListrTask, PromptOptions } from 'listr2';
 import { randomUUID } from 'node:crypto';
@@ -39,20 +39,20 @@ export default class Define extends FathymCommand<DefineTaskContext> {
       description:
         'Determines if the CLI should help generate the cloud connection.',
     }),
-    cloudLookup: Flags.string({
-      char: 'c',
+  };
+
+  static args = {
+    cloudLookup: Args.string({
       description: 'The cloud lookup to use for define.',
     }),
   };
-
-  static args = {};
 
   static title = 'Define Azure Cloud';
 
   protected async loadTasks(): Promise<ListrTask<DefineTaskContext>[]> {
     const { args, flags } = await this.parse(Define);
 
-    let { cloudLookup } = flags;
+    let { cloudLookup } = args;
 
     const { generate } = flags;
 
