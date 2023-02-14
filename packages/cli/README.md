@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.122 win32-x64 node-v18.12.1
+@fathym/cli/0.0.123 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -69,11 +69,12 @@ USAGE
 * [`fathym eac export`](#fathym-eac-export)
 * [`fathym eac modifiers define`](#fathym-eac-modifiers-define)
 * [`fathym eac projects applications add [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-add-projectlookup-applookup)
-* [`fathym eac projects applications preview`](#fathym-eac-projects-applications-preview)
+* [`fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-preview-projectlookup-applookup)
 * [`fathym eac projects define [PROJECTLOOKUP]`](#fathym-eac-projects-define-projectlookup)
 * [`fathym eac projects delete [PROJECTLOOKUP]`](#fathym-eac-projects-delete-projectlookup)
 * [`fathym eac projects list`](#fathym-eac-projects-list)
 * [`fathym eac projects modifiers add`](#fathym-eac-projects-modifiers-add)
+* [`fathym eac projects preview [PROJECTLOOKUP]`](#fathym-eac-projects-preview-projectlookup)
 * [`fathym eac projects set`](#fathym-eac-projects-set)
 * [`fathym enterprises dashboard`](#fathym-enterprises-dashboard)
 * [`fathym enterprises get`](#fathym-enterprises-get)
@@ -120,7 +121,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.122/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.123/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -294,16 +295,16 @@ Used for downloading a file.
 
 ```
 USAGE
-  $ fathym dfs upload [FILE] [FILEPATH] [--json] [-a <value>] [-f] [-p <value>]
+  $ fathym dfs upload [FILE] [FILEPATH] [--json] [-a <value>] [-f] [-p]
 
 ARGUMENTS
   FILE      Path to upload file
   FILEPATH  The path within the DFS to upload the file to.
 
 FLAGS
-  -a, --appLookup=<value>      The applookup to upload to.
-  -f, --findApp                Whether or not to prompt for an application when no app lookup provided.
-  -p, --projectFilter=<value>  The project lookup to filter applications by.
+  -a, --appLookup=<value>  The applookup to upload to.
+  -f, --findApp            Whether or not to prompt for an application when no app lookup provided.
+  -p, --projectFilter      Whether to filter filter applications by project lookup.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -871,19 +872,23 @@ EXAMPLES
   $ fathym eac projects applications add
 ```
 
-## `fathym eac projects applications preview`
+## `fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP]`
 
-Used for getting a preview link to a project application.
+Used for preivewing a application.
 
 ```
 USAGE
-  $ fathym eac projects applications preview [--json]
+  $ fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP] [--json]
+
+ARGUMENTS
+  PROJECTLOOKUP  The project lookup to preview.
+  APPLOOKUP      The application lookup to preview.
 
 GLOBAL FLAGS
   --json  Format output as json.
 
 DESCRIPTION
-  Used for getting a preview link to a project application.
+  Used for preivewing a application.
 
 EXAMPLES
   $ fathym eac projects applications preview
@@ -972,6 +977,27 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac projects modifiers add
+```
+
+## `fathym eac projects preview [PROJECTLOOKUP]`
+
+Used for preivewing a project.
+
+```
+USAGE
+  $ fathym eac projects preview [PROJECTLOOKUP] [--json]
+
+ARGUMENTS
+  PROJECTLOOKUP  The project lookup to preview.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for preivewing a project.
+
+EXAMPLES
+  $ fathym eac projects preview
 ```
 
 ## `fathym eac projects set`
@@ -1093,7 +1119,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.122/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.123/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1299,7 +1325,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.122/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.123/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1592,5 +1618,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.122/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.123/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
