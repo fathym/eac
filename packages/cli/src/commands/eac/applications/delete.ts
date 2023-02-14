@@ -13,6 +13,7 @@ import {
   FathymTaskContext,
   loadEaCTask,
   ApplicationTaskContext,
+  ProjectTaskContext,
 } from '../../../common/core-helpers';
 import { deleteFromEaCTask } from '../../../common/eac-services';
 
@@ -21,6 +22,7 @@ interface DeleteContext
     EaCTaskContext,
     EaCRemovalsTaskContext,
     ActiveEnterpriseTaskContext,
+    ProjectTaskContext,
     ApplicationTaskContext {}
 
 export default class Delete extends FathymCommand<DeleteContext> {

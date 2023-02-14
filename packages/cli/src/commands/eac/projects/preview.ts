@@ -3,29 +3,26 @@ import { color } from '@oclif/color';
 import open from 'open';
 import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { FathymCommand } from '../../../../common/fathym-command';
-import { ClosureInstruction } from '../../../../common/ClosureInstruction';
+import { FathymCommand } from '../../../common/fathym-command';
+import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
   EaCTaskContext,
   ensureActiveEnterprise,
-  ensureApplication,
+  ensureProject,
   FathymTaskContext,
   loadEaCTask,
-  ApplicationTaskContext,
   ProjectTaskContext,
-  ensureProject,
-} from '../../../../common/core-helpers';
+} from '../../../common/core-helpers';
 
 interface PreivewContext
   extends FathymTaskContext,
     EaCTaskContext,
     ActiveEnterpriseTaskContext,
-    ProjectTaskContext,
-    ApplicationTaskContext {}
+    ProjectTaskContext {}
 
 export default class Preview extends FathymCommand<PreivewContext> {
-  static description = `Used for preivewing a application.`;
+  static description = `Used for preivewing a project.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -35,38 +32,27 @@ export default class Preview extends FathymCommand<PreivewContext> {
     projectLookup: Args.string({
       description: 'The project lookup to preview.',
     }),
-    appLookup: Args.string({
-      description: 'The application lookup to preview.',
-    }),
   };
 
-  static title = 'List Applications';
+  static title = 'List Projects';
 
   protected async loadTasks(): Promise<ListrTask<PreivewContext>[]> {
     const { args } = await this.parse(Preview);
 
-    const { appLookup, projectLookup } = args;
+    const { projectLookup } = args;
 
     return [
       ensureActiveEnterprise(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
       ensureProject(this.config.configDir, projectLookup),
-      ensureApplication(this.config.configDir, appLookup, false, false, true),
       {
-        title: `Open application preview`,
+        title: `Open project preview`,
         task: async (ctx, task) => {
           const project = ctx.EaC.Projects![ctx.ProjectLookup];
 
           const host = project.PrimaryHost;
 
-          const application = ctx.EaC.Applications![ctx.ApplicationLookup];
-
-          const appRoot = application.LookupConfig!.PathRegex!.replace(
-            '.*',
-            ''
-          );
-
-          const previewUrl = `https://${host}${appRoot}`;
+          const previewUrl = `https://${host}/`;
 
           open(previewUrl);
 

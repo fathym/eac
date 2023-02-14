@@ -11,6 +11,7 @@ import {
   ensureApplication,
   FathymTaskContext,
   loadEaCTask,
+  ProjectTaskContext,
 } from '../../../common/core-helpers';
 import { ensurePromptValue, withEaCDraft } from '../../../common/eac-services';
 
@@ -18,6 +19,7 @@ interface LCUTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
     EaCTaskContext,
+    ProjectTaskContext,
     ApplicationTaskContext {}
 
 export default class Lookup extends FathymCommand<LCUTaskContext> {

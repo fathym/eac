@@ -293,13 +293,14 @@ export function ensureActiveEnterprise<
 export function ensureApplication<
   TContext extends ActiveEnterpriseTaskContext &
     EaCTaskContext &
+    ProjectTaskContext &
     ApplicationTaskContext
 >(
   configDir: string,
   appLookup?: string,
   create: boolean = false,
   addFromDraft: boolean = false,
-  projectFilter?: string
+  projectFilter: boolean = false
 ): ListrTask<TContext> {
   return {
     title: `Ensuring application set`,
@@ -316,9 +317,9 @@ export function ensureApplication<
 
         if (projectFilter) {
           const projectAppLookups = [
-            ...ctx.EaC?.Projects![projectFilter]?.ApplicationLookups!,
+            ...ctx.EaC?.Projects![ctx.ProjectLookup]?.ApplicationLookups!,
             ...(ctx.EaC?.Projects
-              ? ctx.EaC?.Projects[projectFilter]?.ApplicationLookups!
+              ? ctx.EaC?.Projects[ctx.ProjectLookup]?.ApplicationLookups!
               : []),
           ];
 

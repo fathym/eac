@@ -9,6 +9,7 @@ import {
   ensureApplication,
   FathymTaskContext,
   loadEaCTask,
+  ProjectTaskContext,
 } from '../../../common/core-helpers';
 import { withEaCDraft } from '../../../common/eac-services';
 
@@ -16,6 +17,7 @@ interface DefineTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
     EaCTaskContext,
+    ProjectTaskContext,
     ApplicationTaskContext {}
 
 export default class Define extends FathymCommand<DefineTaskContext> {

@@ -44,9 +44,9 @@ export default class Upload extends FathymCommand<UploadTaskContext> {
       description:
         'Whether or not to prompt for an application when no app lookup provided.',
     }),
-    projectFilter: Flags.string({
+    projectFilter: Flags.boolean({
       char: 'p',
-      description: 'The project lookup to filter applications by.',
+      description: 'Whether to filter filter applications by project lookup.',
     }),
   };
 
@@ -73,11 +73,9 @@ export default class Upload extends FathymCommand<UploadTaskContext> {
       loadEaCTask(this.config.configDir),
     ];
 
-    // if (projectFilter) {
-    //   tasks.push(
-    //     ensureProject(this.config.configDir, projectFilter, false, true)
-    //   );
-    // }
+    if (projectFilter) {
+      tasks.push(ensureProject(this.config.configDir, '', false, true));
+    }
 
     tasks.push(
       findApp
@@ -85,7 +83,7 @@ export default class Upload extends FathymCommand<UploadTaskContext> {
             this.config.configDir,
             appLookup,
             false,
-            false,
+            true,
             projectFilter
           )
         : {
