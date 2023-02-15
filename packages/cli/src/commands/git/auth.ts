@@ -26,6 +26,10 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
       char: 'e',
       description: 'Open page to manage git authorization.',
     }),
+    parent: Flags.boolean({
+      char: 'p',
+      description: 'Whether to capture auth for self or parent enterprise.',
+    }),
   };
 
   static args = {};
@@ -35,7 +39,7 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
   protected async loadTasks(): Promise<ListrTask<AuthTaskContext>[]> {
     const { flags } = await this.parse(Auth);
 
-    const { edit } = flags;
+    const { edit, parent } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
@@ -45,7 +49,11 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
         task: async (ctx) => {
           const query = edit
             ? 'oauth-force-edit=true'
-            : `entLookup=${ctx.EaC.Enterprise!.ParentEnterpriseLookup}`;
+            : `entLookup=${
+                parent
+                  ? ctx.EaC.Enterprise!.ParentEnterpriseLookup
+                  : ctx.ActiveEnterpriseLookup
+              }`;
 
           open(
             `https://www.fathym.com/.oauth/GitHubOAuth?${query}`
