@@ -29,9 +29,11 @@ To start, create a new README.md file with the following command:
 
 ```cli
 npx touch README.md
+
+npx open-cli README.md
 ```
 
-Open the README.md file and add some basic markdown:
+With the README.md file open, add some basic markdown:
 
 ```markdown
 # Welcome to our Blog
@@ -137,7 +139,7 @@ At this point, we haven't actually made any updates to our EaC. The commands we 
 fathym eac draft
 ```
 
-If your happy with the draft, we can commit all of our changes to the EaC at once.
+Like code, we should keep our commits to a a small related set of updates. This ensures a clean history and understanding of changes applied to your enterprise. If your happy with the draft, we can commit all of our changes to the EaC at once.
 
 ```cli
 fathym eac commit "Added my first project and it's first application"

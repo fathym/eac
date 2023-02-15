@@ -4,7 +4,7 @@ import {
   EnterpriseAsCode,
 } from '@semanticjs/common';
 import axios from 'axios';
-import { readFile, createWriteStream } from 'fs-extra';
+import { readFile, createWriteStream, createReadStream } from 'fs-extra';
 import {
   ListrRendererFactory,
   ListrTask,
@@ -28,7 +28,6 @@ import './prompts/eac-env-sources-prompts';
 import { Config } from '@oclif/core';
 import { TcpNetConnectOpts } from 'node:net';
 import FormData from 'form-data';
-import * as fs from 'fs';
 
 export interface CloudTaskContext {
   CloudLookup: string;
@@ -416,8 +415,8 @@ export async function uploadFile(
   entLookup: string,
   filePath: string
 ): Promise<void> {
-  const fileStream = await fs.createReadStream(inputFile);
-  
+  const fileStream = await createReadStream(inputFile);
+
   const response = await axios({
     method: 'post',
     url: `${entLookup}/dfs${filePath}`,
