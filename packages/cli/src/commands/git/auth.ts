@@ -49,18 +49,6 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
           );
         },
       },
-      {
-        title: `${flags.force ? 'Forcing' : 'Waiting for'} user to auth git`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = 'User has authenticated Git';
-
-              resolve(true);
-            }, 3000);
-          });
-        },
-      },
     ];
   }
 }
