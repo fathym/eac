@@ -39,7 +39,7 @@ export default class List extends FathymCommand<ListContext> {
           const applications = Object.keys(ctx.EaC?.Applications || {});
 
           ctx.Fathym.Lookups = {
-            name: `Application (${color.blueBright('{projLookup}')})`,
+            name: `Application (${color.blueBright('{appLookup}')})`,
             lookups: applications.map(
               (proj) =>
                 `${

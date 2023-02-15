@@ -19,10 +19,9 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {
-    force: Flags.boolean({
-      char: 'f',
-      description:
-        'Force authentication process to present git rights, even if the user is already authenticated.',
+    edit: Flags.boolean({
+      char: 'e',
+      description: 'Open page to manage git authorization.',
     }),
   };
 
@@ -33,13 +32,19 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
   protected async loadTasks(): Promise<ListrTask<AuthTaskContext>[]> {
     const { flags } = await this.parse(Auth);
 
+    const { edit } = flags;
+
     return [
       ensureActiveEnterprise(this.config.configDir),
       {
         title: 'Open GitHub in browser for authentication',
         task: async (ctx) => {
+          const query = edit
+            ? 'oauth-force-edit=true'
+            : `entLookup=${ctx.ActiveEnterpriseLookup}`;
+
           open(
-            `https://www.fathym.com/.oauth/GitHubOAuth?entLookup=${ctx.ActiveEnterpriseLookup}`
+            `https://www.fathym.com/.oauth/GitHubOAuth?${query}`
             // `https://localhost:44358/.oauth/GitHubOAuth?entLookup=${ctx.ActiveEnterpriseLookup}`
           );
         },
