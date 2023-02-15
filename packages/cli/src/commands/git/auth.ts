@@ -6,13 +6,16 @@ import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
+  EaCTaskContext,
   ensureActiveEnterprise,
   FathymTaskContext,
+  loadEaCTask,
 } from '../../common/core-helpers';
 
 interface AuthTaskContext
   extends FathymTaskContext,
-    ActiveEnterpriseTaskContext {}
+    ActiveEnterpriseTaskContext,
+    EaCTaskContext {}
 export default class Auth extends FathymCommand<AuthTaskContext> {
   static description = `Used for authenticating the user with Git.`;
 
@@ -36,12 +39,13 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
 
     return [
       ensureActiveEnterprise(this.config.configDir),
+      loadEaCTask(this.config.configDir),
       {
         title: 'Open GitHub in browser for authentication',
         task: async (ctx) => {
           const query = edit
             ? 'oauth-force-edit=true'
-            : `entLookup=${ctx.ActiveEnterpriseLookup}`;
+            : `entLookup=${ctx.EaC.Enterprise!.ParentEnterpriseLookup}`;
 
           open(
             `https://www.fathym.com/.oauth/GitHubOAuth?${query}`
