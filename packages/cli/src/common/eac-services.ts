@@ -62,10 +62,11 @@ export interface EaCDraft {
 export async function withEaCDraft(
   configDir: string,
   activeEntLookup?: string,
-  action?: (config: EaCDraft) => Promise<EaCDraft>
+  action?: (config: EaCDraft) => Promise<EaCDraft>,
+  ensureDepth?: string[]
 ): Promise<EaCDraft> {
   return withConfig<EaCDraft>('eac.draft.json', configDir, async (draft) => {
-    let workDraft = draft;
+    let workDraft = { ...draft };
 
     if (
       activeEntLookup &&
@@ -79,6 +80,10 @@ export async function withEaCDraft(
 
     const workCheck = JSON.stringify(workDraft);
 
+    if (ensureDepth) {
+      ensureDepthInitialized(workDraft.EaC, ensureDepth);
+    }
+
     let newDraft = { ...(action ? await action(workDraft) : workDraft) };
 
     const hasChanges =
@@ -88,6 +93,19 @@ export async function withEaCDraft(
 
     return newDraft;
   });
+}
+
+export function ensureDepthInitialized(
+  obj: any,
+  path: Array<string | number>
+): void {
+  if (path?.length > 0) {
+    const [head, ...tail] = path;
+
+    obj[head] = obj[head] || {};
+
+    ensureDepthInitialized(obj[head], tail);
+  }
 }
 
 export function azSshKeyCreateTask<

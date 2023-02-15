@@ -49,6 +49,8 @@ export abstract class FathymCommand<
       ];
     }
 
+    tasks = tasks?.filter((t) => Boolean(t)) || [];
+
     const listr = new Listr<TContext>(tasks);
 
     try {

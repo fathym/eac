@@ -75,25 +75,17 @@ export default class Define extends FathymCommand<DefineTaskContext> {
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC.Applications) {
-              draft.EaC.Applications = {};
-            }
-
-            if (!draft.EaC.Applications[ctx.ApplicationLookup]) {
-              draft.EaC.Applications[ctx.ApplicationLookup] = {};
-            }
-
             if (name || description) {
-              draft.EaC.Applications[ctx.ApplicationLookup].Application = {
+              draft.EaC.Applications![ctx.ApplicationLookup].Application = {
                 ...currentEaCApp.Application,
                 Name:
                   name ||
-                  draft.EaC.Applications[ctx.ApplicationLookup]?.Application
+                  draft.EaC.Applications![ctx.ApplicationLookup]?.Application
                     ?.Name ||
                   currentEaCApp.Application?.Name,
                 Description:
                   description ||
-                  draft.EaC.Applications[ctx.ApplicationLookup]?.Application
+                  draft.EaC.Applications![ctx.ApplicationLookup]?.Application
                     ?.Description ||
                   currentEaCApp.Application?.Description ||
                   name,
@@ -101,7 +93,8 @@ export default class Define extends FathymCommand<DefineTaskContext> {
             }
 
             return draft;
-          }
+          },
+          ['Applications', ctx.ApplicationLookup]
         );
       },
     };

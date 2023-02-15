@@ -104,22 +104,15 @@ export default class LCU extends FathymCommand<LCUTaskContext> {
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC.Applications) {
-              draft.EaC.Applications = {};
-            }
-
-            if (!draft.EaC.Applications[ctx.ApplicationLookup]) {
-              draft.EaC.Applications[ctx.ApplicationLookup] = {};
-            }
-
-            draft.EaC.Applications[ctx.ApplicationLookup].LowCodeUnit = {
+            draft.EaC.Applications![ctx.ApplicationLookup].LowCodeUnit = {
               ...(currentEaCAppLCU.Type === type ? currentEaCAppLCU : {}),
               Type: type,
               ...zipDets,
             };
 
             return draft;
-          }
+          },
+          ['Applications', ctx.ApplicationLookup]
         );
       },
     };

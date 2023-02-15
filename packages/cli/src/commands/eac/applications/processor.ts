@@ -97,15 +97,7 @@ export default class Processor extends FathymCommand<LCUTaskContext> {
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC.Applications) {
-              draft.EaC.Applications = {};
-            }
-
-            if (!draft.EaC.Applications[ctx.ApplicationLookup]) {
-              draft.EaC.Applications[ctx.ApplicationLookup] = {};
-            }
-
-            draft.EaC.Applications[ctx.ApplicationLookup].Processor = {
+            draft.EaC.Applications![ctx.ApplicationLookup].Processor = {
               ...(currentEaCAppProcessor.Type === type
                 ? currentEaCAppProcessor
                 : {}),
@@ -114,7 +106,8 @@ export default class Processor extends FathymCommand<LCUTaskContext> {
             };
 
             return draft;
-          }
+          },
+          ['Applications', ctx.ApplicationLookup]
         );
       },
     };
