@@ -26,8 +26,8 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
       char: 'e',
       description: 'Open page to manage git authorization.',
     }),
-    parent: Flags.boolean({
-      char: 'p',
+    self: Flags.boolean({
+      char: 's',
       description: 'Whether to capture auth for self or parent enterprise.',
     }),
   };
@@ -50,9 +50,9 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
           const query = edit
             ? 'oauth-force-edit=true'
             : `entLookup=${
-                parent
-                  ? ctx.EaC.Enterprise!.ParentEnterpriseLookup
-                  : ctx.ActiveEnterpriseLookup
+                self
+                  ? ctx.ActiveEnterpriseLookup
+                  : ctx.EaC.Enterprise!.ParentEnterpriseLookup
               }`;
 
           open(
