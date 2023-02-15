@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.126 win32-x64 node-v18.12.1
+@fathym/cli/0.0.127 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -51,6 +51,7 @@ USAGE
 * [`fathym eac applications modifiers add`](#fathym-eac-applications-modifiers-add)
 * [`fathym eac applications processor TYPE [APPLOOKUP]`](#fathym-eac-applications-processor-type-applookup)
 * [`fathym eac applications set [APPLOOKUP]`](#fathym-eac-applications-set-applookup)
+* [`fathym eac applications unpack [APPLOOKUP]`](#fathym-eac-applications-unpack-applookup)
 * [`fathym eac clear`](#fathym-eac-clear)
 * [`fathym eac commit [MESSAGE]`](#fathym-eac-commit-message)
 * [`fathym eac draft`](#fathym-eac-draft)
@@ -121,7 +122,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.126/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.127/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -493,6 +494,27 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac applications set
+```
+
+## `fathym eac applications unpack [APPLOOKUP]`
+
+Used for queuing an application unpack for existing configuration in the EaC.
+
+```
+USAGE
+  $ fathym eac applications unpack [APPLOOKUP] [--json]
+
+ARGUMENTS
+  APPLOOKUP  The application lookup.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for queuing an application unpack for existing configuration in the EaC.
+
+EXAMPLES
+  $ fathym eac applications unpack
 ```
 
 ## `fathym eac clear`
@@ -1119,7 +1141,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.126/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.127/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1325,7 +1347,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.126/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.127/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1618,5 +1640,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.126/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.127/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
