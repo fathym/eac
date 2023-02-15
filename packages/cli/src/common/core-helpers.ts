@@ -316,14 +316,14 @@ export function ensureApplication<
         });
 
         if (projectFilter) {
-          const projectAppLookups = [
-            ...ctx.EaC?.Projects![ctx.ProjectLookup]?.ApplicationLookups!,
-            ...(ctx.EaC?.Projects
-              ? ctx.EaC?.Projects[ctx.ProjectLookup]?.ApplicationLookups!
+          const projectAppLookups = new Set([
+            ...ctx.EaC.Projects![ctx.ProjectLookup].ApplicationLookups!,
+            ...(ctx.EaC.Projects
+              ? ctx.EaC.Projects[ctx.ProjectLookup].ApplicationLookups!
               : []),
-          ];
+          ]);
 
-          apps = apps.filter((app) => projectAppLookups.includes(app));
+          apps = apps.filter((app) => projectAppLookups.has(app));
         }
 
         appLookup = await ensurePromptValue(
