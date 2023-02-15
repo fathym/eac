@@ -39,7 +39,7 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
   protected async loadTasks(): Promise<ListrTask<AuthTaskContext>[]> {
     const { flags } = await this.parse(Auth);
 
-    const { edit, parent } = flags;
+    const { edit, self } = flags;
 
     return [
       ensureActiveEnterprise(this.config.configDir),
