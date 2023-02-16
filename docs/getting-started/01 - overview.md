@@ -20,16 +20,19 @@ Next, open a command prompt and navigate to a folder of your choosing (VS Code h
 
 ```cli
 npx make-dir-cli test
+```
+```cli
 cd test
 ```
 
 > **NOTE** - We used `npx make-dir-cli` and will use `npx touch` in a moment. We do this to support cross platform instructions (since we assume node.js is installed). You will need node.js installed to complete other aspects of these docs. Users that know their system commands can use those.
 
-To start, create a new README.md file with the following command:
+To start, create a new README.md file with the following commands:
 
 ```cli
 npx touch README.md
-
+```
+```cli
 npx open-cli README.md
 ```
 
@@ -89,7 +92,7 @@ This will set the enterprise that you will work with and manage. If you are just
 
 ## Project Setup
 
-With the CLI connected, we first need to create a project to house our new application. To do this, we will use Fathym's `eac` commands. Select `- Create New -` from the prompts.
+With the CLI connected, we first need to create a project to house our new application. To do this, we will use Fathym's `eac` commands. Select `- Create New -` from the prompts. After the project and application have been drafted, you will select them from the prompts when required. 
 
 ```cli
 fathym eac projects define -n "My First Project"
@@ -149,6 +152,8 @@ Finally we can get the application details to get the URL it's running on. (The 
 
 ```cli
 fathym eac projects applications preview
+```
+```cli
 fathym eac projects preview
 ```
 
