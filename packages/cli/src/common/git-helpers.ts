@@ -26,6 +26,26 @@ export async function getCurrentBranch(): Promise<string> {
   return currentBranch;
 }
 
+export async function loadCurrentGitOrgRepo(
+  separator: string = '/'
+): Promise<string> {
+  const remoteUrl = await runProc('git', ['remote', 'get-url', 'origin']);
+
+  const match = remoteUrl.match(/http.*:\/\/.*\/(?<org>.*)\/(?<repo>.*)\.git/);
+
+  const name = `${match![1]}${separator}${match![2]}`;
+
+  return name;
+}
+
+export async function loadCurrentGitPackageName(): Promise<string> {
+  const orgRepo = loadCurrentGitOrgRepo();
+
+  const name = `@${orgRepo}`;
+
+  return name;
+}
+
 export async function loadGitUsername(): Promise<string> {
   const username = await runProc('git', ['config', '--get user.name']);
 
@@ -50,6 +70,18 @@ export async function hasGitHubConnection(configDir: string): Promise<boolean> {
   const response = await axios.get(`github/connection/valid`);
 
   return response.data?.Status?.Code === 0 || false;
+}
+
+export async function isGitRepo<T>(): Promise<boolean> {
+  try {
+    await runProc('git', ['rev-parse', '--is-inside-git-dir']);
+    // await runProc('git', ['rev-parse', '--git-dir']);
+    // await runProc('git', ['rev-parse', '--is-inside-work-tree']);
+
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function listGitHubBranches(

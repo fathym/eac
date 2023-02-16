@@ -3,7 +3,11 @@ import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
 import { ClosureInstruction } from '../../common/ClosureInstruction';
-import { confirmGitRepo, ensureOrganization } from '../../common/git-tasks';
+import {
+  confirmGitRepo,
+  ensureOrganization,
+  ensureRepository,
+} from '../../common/git-tasks';
 import { runProc } from '../../common/task-helpers';
 import path from 'node:path';
 import { GitHubTaskContext, loadGitUsername } from '../../common/git-helpers';
@@ -48,6 +52,14 @@ export default class Clone extends FathymCommand<any> {
 
     return [
       confirmGitRepo(),
+      ensureOrganization(this.config.configDir, organization, undefined, true),
+      ensureRepository(
+        this.config.configDir,
+        repository,
+        undefined,
+        false,
+        true
+      ),
       {
         title: `Cloning repository`,
         task: async (ctx, task) => {

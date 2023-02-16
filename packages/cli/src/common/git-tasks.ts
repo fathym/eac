@@ -7,9 +7,11 @@ import {
   hasCommittedChanges,
   hasGitHubConnection,
   hasNotCommittedChanges,
+  isGitRepo,
   listGitHubBranches,
   listGitHubOrganizations,
   listGitHubRepositories,
+  loadCurrentGitOrgRepo,
   loadGitUsername,
   remoteExists,
 } from './git-helpers';
@@ -29,11 +31,9 @@ export function confirmGitRepo<T>(): ListrTask<T> {
   return {
     title: 'Check valid Git repository',
     task: async () => {
-      try {
-        await runProc('git', ['rev-parse', '--is-inside-git-dir']);
-        // await runProc('git', ['rev-parse', '--git-dir']);
-        // await runProc('git', ['rev-parse', '--is-inside-work-tree']);
-      } catch {
+      const gitRepo = await isGitRepo();
+
+      if (!gitRepo) {
         throw new Error('Not a Git repository');
       }
     },
@@ -98,7 +98,8 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
 export function ensureOrganization<TContext extends GitHubTaskContext>(
   configDir: string,
   organization?: string,
-  enabled?: (ctx: TContext) => boolean
+  enabled?: (ctx: TContext) => boolean,
+  skipLocal?: boolean
 ): ListrTask<TContext> {
   return {
     title: `Ensuring organization set`,
@@ -114,13 +115,25 @@ export function ensureOrganization<TContext extends GitHubTaskContext>(
           organization = await ensurePromptValue(
             task,
             'Choose GitHub organization:',
-            '',
-            orgs.map((org) => org.Name)
-          );
-        } else {
-          const user = await loadGitUsername();
+            organization,
+            orgs.map((org) => org.Name),
+            skipLocal
+              ? undefined
+              : async () => {
+                  if (await isGitRepo()) {
+                    const orgRepo = await (
+                      await loadCurrentGitOrgRepo('|')
+                    ).split('|');
 
-          organization = user;
+                    return orgRepo[0];
+                  }
+
+                  const user = await loadGitUsername();
+
+                  return user;
+                },
+            '- Use Local -'
+          );
         }
       }
 
@@ -134,7 +147,9 @@ export function ensureOrganization<TContext extends GitHubTaskContext>(
 export function ensureRepository<TContext extends GitHubTaskContext>(
   configDir: string,
   repository?: string,
-  enabled?: (ctx: TContext) => boolean
+  enabled?: (ctx: TContext) => boolean,
+  allowCreate?: boolean,
+  skipLocal?: boolean
 ): ListrTask<TContext> {
   return {
     title: `Ensuring repository set`,
@@ -150,11 +165,35 @@ export function ensureRepository<TContext extends GitHubTaskContext>(
         repos = repos || [];
 
         if (repos.length > 0) {
+          const gitRepo = await isGitRepo();
+
           repository = await ensurePromptValue(
             task,
             'Choose GitHub repository:',
-            '',
-            repos.map((org) => org.Name)
+            repository,
+            repos.map((org) => org.Name),
+            allowCreate || (gitRepo && !skipLocal)
+              ? async () => {
+                  if (!skipLocal && gitRepo) {
+                    const orgRepo = await (
+                      await loadCurrentGitOrgRepo('|')
+                    ).split('|');
+
+                    return orgRepo[1];
+                  }
+
+                  if (allowCreate) {
+                    return ensurePromptValue(
+                      task,
+                      'Name of the new repository',
+                      repository
+                    );
+                  }
+
+                  return repository || '';
+                }
+              : undefined,
+            gitRepo && !skipLocal ? '- Use Local -' : '- Create New -'
           );
         }
       }
@@ -198,6 +237,59 @@ export function hasGitHubConnectionTask(
   Use the 'fathym git auth' command.`
         );
       }
+    },
+  };
+}
+
+export function initializeRepository<TContext extends GitHubTaskContext>(
+  configDir: string,
+  license?: string
+): ListrTask<TContext> {
+  return {
+    title: 'Initialize Repository',
+    task: async (ctx, task) => {
+      task.title = `Initialize Repository: @${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
+
+      license = await ensurePromptValue(
+        task,
+        'Select the license type to initialize with',
+        license,
+        [
+          {
+            message: 'MIT License',
+            name: 'mit',
+          },
+          {
+            message: 'Apache License 2.0',
+            name: 'apache',
+          },
+          {
+            message: 'GNU General Public License v3.0',
+            name: 'gpl3',
+          },
+        ],
+        () => {
+          return ensurePromptValue(
+            task,
+            'Enter custom license template name',
+            '',
+            undefined,
+            async () => {
+              return '';
+            },
+            '- No Template -'
+          );
+        }
+      );
+
+      const axios = await loadAxios(configDir);
+
+      const response = await axios.post(
+        `github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/configure`,
+        {
+          License: license,
+        }
+      );
     },
   };
 }

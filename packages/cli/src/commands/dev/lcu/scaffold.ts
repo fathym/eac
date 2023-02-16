@@ -3,6 +3,7 @@ import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../common/fathym-command';
 import { runProc } from '../../../common/task-helpers';
 import { FathymTaskContext } from '../../../common/core-helpers';
+import { loadCurrentGitPackageName } from '../../../common/git-helpers';
 
 export default class Scaffold extends FathymCommand<FathymTaskContext> {
   static description = 'Used to scaffold a new LCU.';
@@ -40,17 +41,7 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
         title: `Ensuring package name`,
         task: async (ctx, task) => {
           if (!name) {
-            const remoteUrl = await runProc('git', [
-              'remote',
-              'get-url',
-              'origin',
-            ]);
-
-            const match = remoteUrl.match(
-              /http.*:\/\/.*\/(?<org>.*)\/(?<repo>.*)\.git/
-            );
-
-            name = `@${match![1]}/${match![2]}`;
+            name = await loadCurrentGitPackageName();
           }
         },
       },
