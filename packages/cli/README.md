@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.140 win32-x64 node-v18.12.1
+@fathym/cli/0.0.141 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -84,10 +84,10 @@ USAGE
 * [`fathym git [MESSAGE]`](#fathym-git-message)
 * [`fathym git auth`](#fathym-git-auth)
 * [`fathym git clone [ORGANIZATION] [REPOSITORY]`](#fathym-git-clone-organization-repository)
+* [`fathym git configure [ORGANIZATION] [REPOSITORY]`](#fathym-git-configure-organization-repository)
 * [`fathym git feature [NAME]`](#fathym-git-feature-name)
 * [`fathym git hotfix [NAME]`](#fathym-git-hotfix-name)
 * [`fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE]`](#fathym-git-import-organization-repository-remote)
-* [`fathym git init [ORGANIZATION] [REPOSITORY]`](#fathym-git-init-organization-repository)
 * [`fathym git open [PATH]`](#fathym-git-open-path)
 * [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
 * [`fathym help [COMMANDS]`](#fathym-help-commands)
@@ -123,7 +123,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.140/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.141/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -1142,7 +1142,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.140/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.141/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1190,6 +1190,32 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym git clone
+```
+
+## `fathym git configure [ORGANIZATION] [REPOSITORY]`
+
+Used for configuring a repository with best practices.
+
+```
+USAGE
+  $ fathym git configure [ORGANIZATION] [REPOSITORY] [--json] [-l <value>] [-s]
+
+ARGUMENTS
+  ORGANIZATION  The organization to configure.
+  REPOSITORY    The repository to init.
+
+FLAGS
+  -l, --license=<value>  The license to initialize the repo with.
+  -s, --skipLocal        Whether or not to skip using the local git information.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for configuring a repository with best practices.
+
+EXAMPLES
+  $ fathym git configure
 ```
 
 ## `fathym git feature [NAME]`
@@ -1259,32 +1285,6 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym git import import organization repository "https://github.com/fathym-it/smart-building-demo
-```
-
-## `fathym git init [ORGANIZATION] [REPOSITORY]`
-
-Used for configuring a repository with best practices.
-
-```
-USAGE
-  $ fathym git init [ORGANIZATION] [REPOSITORY] [--json] [-l <value>] [-s]
-
-ARGUMENTS
-  ORGANIZATION  The organization to init from.
-  REPOSITORY    The repository to init.
-
-FLAGS
-  -l, --license=<value>  The license to initialize the repo with on.
-  -s, --skipLocal        Whether or not to skip using the local git information.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Used for configuring a repository with best practices.
-
-EXAMPLES
-  $ fathym git init
 ```
 
 ## `fathym git open [PATH]`
@@ -1381,7 +1381,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.140/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.141/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1674,5 +1674,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.140/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.141/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
