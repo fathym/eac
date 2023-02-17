@@ -73,7 +73,6 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
     enabled: enabled,
     task: async (ctx, task) => {
       const branchFilter = (branch = '') => {
-        throw new Error(JSON.stringify(branch));
         return !filter || branch.indexOf(`${filter}`) === 0;
       };
 
@@ -86,7 +85,7 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
 
         branches = branches || [];
 
-        branches = branches.filter((branch) => branchFilter(branch));
+        branches = branches.filter((branch) => branchFilter(branch?.Name));
 
         if (branches.length > 0) {
           const gitRepo = await isGitRepo();
@@ -95,7 +94,7 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
             task,
             'Choose GitHub branch:',
             '',
-            branches.map((b) => b.Name),
+            branches.map((org) => org.Name),
             gitRepo && !skipLocal
               ? async () => {
                   if (!skipLocal && gitRepo) {
