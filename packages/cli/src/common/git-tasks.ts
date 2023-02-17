@@ -73,6 +73,7 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
     enabled: enabled,
     task: async (ctx, task) => {
       const branchFilter = (branch = '') => {
+        throw new Error(JSON.stringify(branch));
         return !filter || branch.indexOf(`${filter}`) === 0;
       };
 
