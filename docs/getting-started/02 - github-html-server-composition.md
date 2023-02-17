@@ -10,7 +10,7 @@ GitHub is a web-based platform used for version control, collaboration, and code
 
 Fathym helps to configure the repository for automated builds and deployments for testing on main/master, integration, feature, and hotfix branches. In addition to setting up the code and build phases, Fathym provides the necessary automation for release and deployment to streamline the code-to-deploy workflow. This allows teams to efficiently develop and deploy software, resulting in faster delivery of new features and updates to users.
 
-## Get your code to GitHub
+## Configuring your Source Code
 
 For the reason mentioned above, we are going to move our code off of the file system. The first thing you'll need to do is authorize with GitHub. Head back into VS Code and into a terminal where we will auth the user of the CLI with GitHub (in the user's global GitHub auth for the active EaC).
 
@@ -22,10 +22,20 @@ This will open a new window with GitHub authorization where you can determine wh
 
 > **NOTE** - You can run this command anytime you want to adjust the authorizations in GitHub for new or existing organizations.
 
-Now let's create a new repository in one of our organizations for the code.
+Now let's create a new repository in one of the organizations you authorized Fathym for.
 
 ```cli
-fathym eac sources create my-new-repository
+ftm git configure -s
+```
+
+This does a number of things for you to setup your repository, including branch setup and configurations to support the default Git workflow.
+
+> **NOTE** - You may have noticed the use of `ftm` here. The Fathym CLI can be accessed in two ways, `fathym` or the shorthand `ftm`. Both can be used interchangeably for any of the commands. The previous command could have been replaced with `fathym git init -s` with the same outcome.
+
+Now we need to define the source control location in our EaC. Follow the promptes and select the organization and repository you just initialized.
+
+```cli
+fathym eac env sources define
 ```
 
 > **NOTE** - If you want to target a specific organization add the `{organization}` to the command: `fathym eac sources create {organization} my-new-repository`. This works for all `fathym eac sources` commands.

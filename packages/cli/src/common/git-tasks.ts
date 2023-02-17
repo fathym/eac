@@ -241,7 +241,7 @@ export function hasGitHubConnectionTask(
   };
 }
 
-export function initializeRepository<TContext extends GitHubTaskContext>(
+export function configureRepository<TContext extends GitHubTaskContext>(
   configDir: string,
   license?: string
 ): ListrTask<TContext> {

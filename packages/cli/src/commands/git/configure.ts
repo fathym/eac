@@ -9,7 +9,7 @@ import {
   ensureOrganization,
   ensureRepository,
   fetchPrune,
-  initializeRepository,
+  configureRepository,
   pull,
   pushOrigin,
 } from '../../common/git-tasks';
@@ -32,7 +32,7 @@ export default class Init extends FathymCommand<InitTaskcontext> {
   static flags = {
     license: Flags.string({
       char: 'l',
-      description: 'The license to initialize the repo with on.',
+      description: 'The license to initialize the repo with.',
     }),
     skipLocal: Flags.boolean({
       char: 's',
@@ -42,14 +42,14 @@ export default class Init extends FathymCommand<InitTaskcontext> {
 
   static args = {
     organization: Args.string({
-      description: 'The organization to init from.',
+      description: 'The organization to configure.',
     }),
     repository: Args.string({
       description: 'The repository to init.',
     }),
   };
 
-  static title = 'Initialize Repository';
+  static title = 'Configure Repository';
 
   protected async loadTasks(): Promise<ListrTask<InitTaskcontext>[]> {
     const { args, flags } = await this.parse(Init);
@@ -72,7 +72,7 @@ export default class Init extends FathymCommand<InitTaskcontext> {
         true,
         skipLocal
       ),
-      initializeRepository(this.config.configDir, license),
+      configureRepository(this.config.configDir, license),
     ];
   }
 }
