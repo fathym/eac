@@ -99,6 +99,10 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
               ? async () => {
                   if (!skipLocal && gitRepo) {
                     branch = await await getCurrentBranch();
+
+                    if (filter && branch.indexOf(filter) === 0) {
+                      branch = '';
+                    }
                   }
 
                   return branch || '';

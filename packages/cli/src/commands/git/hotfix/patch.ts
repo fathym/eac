@@ -10,13 +10,18 @@ import {
   ensureOrganization,
   ensureRepository,
   fetchPrune,
+  pull,
   pushOrigin,
 } from '../../../common/git-tasks';
 import { runProc } from '../../../common/task-helpers';
 import { ensurePromptValue } from '../../../common/eac-services';
 import loadAxios from '../../../common/axios';
+import { FathymTaskContext } from '../../../common/core-helpers';
+import { GitHubTaskContext } from '../../../common/git-helpers';
 
-export default class Patch extends FathymCommand<any> {
+interface PatchTaskContext extends FathymTaskContext, GitHubTaskContext {}
+
+export default class Patch extends FathymCommand<PatchTaskContext> {
   static description = `Used for creating a hotfix branch from 'main' in git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -35,9 +40,9 @@ export default class Patch extends FathymCommand<any> {
     }),
   };
 
-  static title = 'Create Hotfix Branch';
+  static title = 'Patch Hotfix Branch';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<PatchTaskContext>[]> {
     const { args, flags } = await this.parse(Patch);
 
     const { branch, organization, repository } = args;
@@ -60,28 +65,26 @@ export default class Patch extends FathymCommand<any> {
         'hotfix'
       ),
       {
-        title: 'Create patch request',
+        title: 'Patch hotfix',
+        skip: this.hotFixSkipCheck,
         task: async (ctx, task) => {
           const axios = await loadAxios(this.config.configDir);
+
+          task.title = `Patch ${ctx.GitHubMainBranch}`;
 
           await axios.post(``, {
             Organization: ctx.GitHubOrganization,
             Repository: ctx.GitHubRepository,
-            Branch: ctx.GitHubBranch,
+            Branch: ctx.GitHubMainBranch,
           });
-
-          await runProc(`git checkout`, [`-b hotfix/${name}`, 'origin/main']);
         },
       },
-      {
-        title: 'Setting upstream for hotfix branch',
-        task: async () => {
-          await runProc(`git push`, [
-            '--set-upstream origin',
-            `hotfix/${name}`,
-          ]);
-        },
-      },
+      pull(),
+      fetchPrune(),
     ];
+  }
+
+  protected hotFixSkipCheck(ctx: PatchTaskContext): string | boolean {
+    return ctx.GitHubMainBranch ? false : 'A hotfix/* branch is required';
   }
 }

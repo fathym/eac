@@ -11,8 +11,9 @@ import {
 } from '../../../common/git-tasks';
 import { runProc } from '../../../common/task-helpers';
 import { ensurePromptValue } from '../../../common/eac-services';
+import { FathymTaskContext } from '../../../common/core-helpers';
 
-export default class Hotfix extends FathymCommand<any> {
+export default class Hotfix extends FathymCommand<FathymTaskContext> {
   static description = `Used for creating a hotfix branch from 'main' in git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -27,7 +28,7 @@ export default class Hotfix extends FathymCommand<any> {
 
   static title = 'Create Hotfix Branch';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args, flags } = await this.parse(Hotfix);
 
     let { name } = args;

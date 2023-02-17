@@ -6,13 +6,22 @@ import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   commitGitChanges,
   confirmGitRepo,
+  ensureBranch,
+  ensureOrganization,
+  ensureRepository,
   fetchPrune,
+  pull,
   pushOrigin,
 } from '../../../common/git-tasks';
 import { runProc } from '../../../common/task-helpers';
 import { ensurePromptValue } from '../../../common/eac-services';
+import { FathymTaskContext } from '../../../common/core-helpers';
+import { GitHubTaskContext } from '../../../common/git-helpers';
+import loadAxios from '../../../common/axios';
 
-export default class Feature extends FathymCommand<any> {
+interface IntegrateTaskContext extends FathymTaskContext, GitHubTaskContext {}
+
+export default class Integrate extends FathymCommand<IntegrateTaskContext> {
   static description = `Used for creating a feature branch from 'integration' in git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -20,49 +29,60 @@ export default class Feature extends FathymCommand<any> {
   static flags = {};
 
   static args = {
-    name: Args.string({
-      description: 'Name for the new feature branch.',
+    organization: Args.string({
+      description: 'The organization to patch from.',
+    }),
+    repository: Args.string({
+      description: 'The repository to patch from.',
+    }),
+    branch: Args.string({
+      description: 'The branch to patch from.',
     }),
   };
 
-  static title = 'Create Feature Branch';
+  static title = 'Integrate Feature Branch';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
-    const { args, flags } = await this.parse(Feature);
+  protected async loadTasks(): Promise<ListrTask<IntegrateTaskContext>[]> {
+    const { args, flags } = await this.parse(Integrate);
 
-    let { name } = args;
-
-    const { ci } = flags;
+    const { branch, organization, repository } = args;
 
     return [
       confirmGitRepo(),
-      commitGitChanges(''),
+      commitGitChanges(),
+      ensureOrganization(this.config.configDir, organization),
+      ensureRepository(this.config.configDir, repository),
+      ensureBranch(
+        this.config.configDir,
+        (ctx, value) => {
+          ctx.GitHubMainBranch = value || '';
+        },
+        branch,
+        undefined,
+        false,
+        'feature'
+      ),
       {
-        title: 'Create new feature branch',
+        title: 'Integrate feature',
+        skip: this.featureSkipCheck,
         task: async (ctx, task) => {
-          name = await ensurePromptValue(
-            task,
-            'What is the name of the feature branch?',
-            name
-          );
+          const axios = await loadAxios(this.config.configDir);
 
-          await runProc(`git checkout`, [
-            `-b feature/${name}`,
-            'origin/integration',
-          ]);
+          task.title = `Integrate ${ctx.GitHubMainBranch}`;
+
+          await axios.post(``, {
+            Organization: ctx.GitHubOrganization,
+            Repository: ctx.GitHubRepository,
+            Branch: ctx.GitHubMainBranch,
+          });
         },
       },
-      {
-        title: 'Setting upstream for feature branch',
-        task: async () => {
-          await runProc(`git push`, [
-            '--set-upstream origin',
-            `feature/${name}`,
-          ]);
-        },
-      },
-      pushOrigin(),
+      pull(),
       fetchPrune(),
     ];
+  }
+
+  protected featureSkipCheck(ctx: IntegrateTaskContext): string | boolean {
+    return ctx.GitHubMainBranch ? false : 'A feature/* branch is required';
   }
 }

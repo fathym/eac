@@ -11,8 +11,9 @@ import {
 } from '../../../common/git-tasks';
 import { runProc } from '../../../common/task-helpers';
 import { ensurePromptValue } from '../../../common/eac-services';
+import { FathymTaskContext } from '../../../common/core-helpers';
 
-export default class Feature extends FathymCommand<any> {
+export default class Feature extends FathymCommand<FathymTaskContext> {
   static description = `Used for creating a feature branch from 'integration' in git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -27,7 +28,7 @@ export default class Feature extends FathymCommand<any> {
 
   static title = 'Create Feature Branch';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args, flags } = await this.parse(Feature);
 
     let { name } = args;
