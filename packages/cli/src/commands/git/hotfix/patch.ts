@@ -52,6 +52,7 @@ export default class Patch extends FathymCommand<PatchTaskContext> {
     return [
       confirmGitRepo(),
       commitGitChanges(),
+      pushOrigin(),
       ensureOrganization(this.config.configDir, organization),
       ensureRepository(this.config.configDir, repository),
       ensureBranch(

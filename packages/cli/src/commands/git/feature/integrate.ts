@@ -50,6 +50,7 @@ export default class Integrate extends FathymCommand<IntegrateTaskContext> {
     return [
       confirmGitRepo(),
       commitGitChanges(),
+      pushOrigin(),
       ensureOrganization(this.config.configDir, organization),
       ensureRepository(this.config.configDir, repository),
       ensureBranch(
