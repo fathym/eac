@@ -3,7 +3,7 @@ export interface InstallLCURequest {
 
   Organization: string;
 
-  Parameters: { [key: string]: string };
+  Parameters: { [key: string]: any };
 
   Phase?: number;
 

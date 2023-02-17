@@ -27,6 +27,60 @@ export function addChanges<T>(): ListrTask<T> {
   };
 }
 
+export function configureRepository<TContext extends GitHubTaskContext>(
+  configDir: string,
+  license?: string
+): ListrTask<TContext> {
+  return {
+    title: 'Initialize Repository',
+    task: async (ctx, task) => {
+      task.title = `Initialize Repository: @${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
+
+      license = await ensurePromptValue(
+        task,
+        'Select the license type to initialize with',
+        license,
+        [
+          {
+            message: 'MIT License',
+            name: 'mit',
+          },
+          {
+            message: 'Apache License 2.0',
+            name: 'apache',
+          },
+          {
+            message: 'GNU General Public License v3.0',
+            name: 'gpl3',
+          },
+        ],
+        () => {
+          return ensurePromptValue(
+            task,
+            'Enter custom license template name',
+            '',
+            undefined,
+            async () => {
+              return '';
+            },
+            '- No Template -'
+          );
+        },
+        '- Custom Entry -'
+      );
+
+      const axios = await loadAxios(configDir);
+
+      const response = await axios.post(
+        `github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/configure`,
+        {
+          License: license,
+        }
+      );
+    },
+  };
+}
+
 export function confirmGitRepo<T>(): ListrTask<T> {
   return {
     title: 'Check valid Git repository',
@@ -268,60 +322,6 @@ export function hasGitHubConnectionTask(
   };
 }
 
-export function configureRepository<TContext extends GitHubTaskContext>(
-  configDir: string,
-  license?: string
-): ListrTask<TContext> {
-  return {
-    title: 'Initialize Repository',
-    task: async (ctx, task) => {
-      task.title = `Initialize Repository: @${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
-
-      license = await ensurePromptValue(
-        task,
-        'Select the license type to initialize with',
-        license,
-        [
-          {
-            message: 'MIT License',
-            name: 'mit',
-          },
-          {
-            message: 'Apache License 2.0',
-            name: 'apache',
-          },
-          {
-            message: 'GNU General Public License v3.0',
-            name: 'gpl3',
-          },
-        ],
-        () => {
-          return ensurePromptValue(
-            task,
-            'Enter custom license template name',
-            '',
-            undefined,
-            async () => {
-              return '';
-            },
-            '- No Template -'
-          );
-        },
-        '- Custom Entry -'
-      );
-
-      const axios = await loadAxios(configDir);
-
-      const response = await axios.post(
-        `github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/configure`,
-        {
-          License: license,
-        }
-      );
-    },
-  };
-}
-
 export function mergeIntegration<T>(): ListrTask<T> {
   return {
     title: 'Merge changes from integration',
@@ -419,7 +419,7 @@ export function pullRequest<TContext extends GitHubTaskContext>(
     task: async (ctx, task) => {
       const axios = await loadAxios(configDir);
 
-      task.title = `${action} ${type} ${ctx.GitHubBranch}`;
+      task.title = `${action} ${ctx.GitHubBranch}`;
 
       const path = `/github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/${action}/${ctx.GitHubBranch}`;
 

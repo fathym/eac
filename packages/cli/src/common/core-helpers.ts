@@ -298,12 +298,14 @@ export function ensureApplication<
 >(
   configDir: string,
   appLookup?: string,
-  create: boolean = false,
-  addFromDraft: boolean = false,
-  projectFilter: boolean = false
+  create?: boolean,
+  addFromDraft?: boolean,
+  projectFilter?: boolean,
+  enabled?: (ctx: TContext) => boolean
 ): ListrTask<TContext> {
   return {
     title: `Ensuring application set`,
+    enabled: enabled,
     task: async (ctx, task) => {
       if (!appLookup) {
         const draft: EaCDraft = addFromDraft
@@ -365,11 +367,13 @@ export function ensureProject<
 >(
   configDir: string,
   projectLookup?: string,
-  create: boolean = false,
-  addFromDraft: boolean = false
+  create?: boolean,
+  addFromDraft?: boolean,
+  enabled?: (ctx: TContext) => boolean
 ): ListrTask<TContext> {
   return {
     title: `Ensuring project set`,
+    enabled: enabled,
     task: async (ctx, task) => {
       if (!projectLookup) {
         const draft: EaCDraft = addFromDraft

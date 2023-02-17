@@ -7,5 +7,7 @@ export class LcuPackageDetails {
 
   public PreviewImage?: string;
 
+  public SkipProject!: boolean;
+
   public UsesGit!: boolean;
 }
