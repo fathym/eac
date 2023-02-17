@@ -64,13 +64,9 @@ export default class Integrate extends FathymCommand<IntegrateTaskContext> {
         false,
         'feature'
       ),
-      pullRequest(this.config.configDir, 'feature', this.featureSkipCheck),
+      pullRequest(this.config.configDir, 'feature'),
       pull(),
       fetchPrune(),
     ];
-  }
-
-  protected featureSkipCheck(ctx: IntegrateTaskContext): string | boolean {
-    return ctx.GitHubBranch ? false : 'A feature/* branch is required';
   }
 }

@@ -66,13 +66,9 @@ export default class Patch extends FathymCommand<PatchTaskContext> {
         false,
         'hotfix'
       ),
-      pullRequest(this.config.configDir, 'hotfix', this.hotFixSkipCheck),
+      pullRequest(this.config.configDir, 'hotfix'),
       pull(),
       fetchPrune(),
     ];
-  }
-
-  protected hotFixSkipCheck(ctx: PatchTaskContext): string | boolean {
-    return ctx.GitHubBranch ? false : 'A hotfix/* branch is required';
   }
 }

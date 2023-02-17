@@ -75,7 +75,7 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
       const branchFilter = (branch) => {
         const branchName = branch?.Name || '';
 
-        return !filter || branchName.indexOf(`${filter}/`) === 0;
+        return !filter || branchName.indexOf(`${filter}`) === 0;
       };
 
       if (!branch) {
@@ -377,8 +377,7 @@ export function pull<T>(): ListrTask<T> {
 
 export function pullRequest<TContext extends GitHubTaskContext>(
   configDir: string,
-  type?: 'feature' | 'hotfix' | 'qa' | 'release',
-  skipCheck?: (ctx: TContext) => string | boolean
+  type?: 'feature' | 'hotfix' | 'qa' | 'release'
 ): ListrTask<TContext> {
   let action = '';
 
@@ -412,7 +411,13 @@ export function pullRequest<TContext extends GitHubTaskContext>(
 
   return {
     title: `${action} ${type}`,
-    skip: skipCheck,
+    skip: (ctx) => {
+      const skipType = type === 'feature' || type === 'hotfix';
+
+      return !skipType || ctx.GitHubBranch
+        ? false
+        : `A ${type}/* branch is required`;
+    },
     task: async (ctx, task) => {
       const axios = await loadAxios(configDir);
 
