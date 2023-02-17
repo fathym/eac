@@ -279,7 +279,8 @@ export function configureRepository<TContext extends GitHubTaskContext>(
             },
             '- No Template -'
           );
-        }
+        },
+        '- Custom Entry -'
       );
 
       const axios = await loadAxios(configDir);
