@@ -307,16 +307,16 @@ export function ensureApplication<
     title: `Ensuring application set`,
     enabled: enabled,
     task: async (ctx, task) => {
+      const draft: EaCDraft = addFromDraft
+        ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
+        : ({} as EaCDraft);
+
+      let apps = Object.keys({
+        ...ctx.EaC?.Applications,
+        ...draft.EaC?.Applications,
+      });
+
       if (!appLookup) {
-        const draft: EaCDraft = addFromDraft
-          ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
-          : ({} as EaCDraft);
-
-        let apps = Object.keys({
-          ...ctx.EaC?.Applications,
-          ...draft.EaC?.Applications,
-        });
-
         if (projectFilter) {
           const projectAppLookups = new Set([
             ...ctx.EaC.Projects![ctx.ProjectLookup].ApplicationLookups!,
@@ -353,8 +353,7 @@ export function ensureApplication<
       ctx.ApplicationLookup = appLookup || '';
 
       task.title = `Selected application: ${
-        ctx.EaC.Applications![ctx.ApplicationLookup]?.Application?.Name ||
-        'Creating New'
+        apps[ctx.ApplicationLookup]?.Application?.Name || 'Creating New'
       }`; //  (${ctx.ProjectLookup})
     },
   };
@@ -375,16 +374,16 @@ export function ensureProject<
     title: `Ensuring project set`,
     enabled: enabled,
     task: async (ctx, task) => {
+      const draft: EaCDraft = addFromDraft
+        ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
+        : ({} as EaCDraft);
+
+      const projects = Object.keys({
+        ...ctx.EaC?.Projects,
+        ...draft.EaC?.Projects,
+      });
+
       if (!projectLookup) {
-        const draft: EaCDraft = addFromDraft
-          ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
-          : ({} as EaCDraft);
-
-        const projects = Object.keys({
-          ...ctx.EaC?.Projects,
-          ...draft.EaC?.Projects,
-        });
-
         projectLookup = await ensurePromptValue(
           task,
           'Choose EaC Project:',
@@ -410,7 +409,7 @@ export function ensureProject<
       ctx.ProjectLookup = projectLookup || '';
 
       task.title = `Selected project: ${
-        ctx.EaC.Projects![ctx.ProjectLookup]?.Project?.Name || 'Creating New'
+        projects[ctx.ProjectLookup]?.Project?.Name || 'Creating New'
       }`; //  (${ctx.ProjectLookup})
     },
   };
