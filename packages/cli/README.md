@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.142 win32-x64 node-v18.12.1
+@fathym/cli/0.0.143 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -88,12 +88,12 @@ USAGE
 * [`fathym git feature [NAME]`](#fathym-git-feature-name)
 * [`fathym git hotfix [NAME]`](#fathym-git-hotfix-name)
 * [`fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE]`](#fathym-git-import-organization-repository-remote)
-* [`fathym git open [PATH]`](#fathym-git-open-path)
 * [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
 * [`fathym help [COMMANDS]`](#fathym-help-commands)
 * [`fathym lcu [LCU]`](#fathym-lcu-lcu)
 * [`fathym licenses get [LICENSETYPE]`](#fathym-licenses-get-licensetype)
 * [`fathym licenses list`](#fathym-licenses-list)
+* [`fathym open [PATH]`](#fathym-open-path)
 * [`fathym plugins`](#fathym-plugins)
 * [`fathym plugins:install PLUGIN...`](#fathym-pluginsinstall-plugin)
 * [`fathym plugins:inspect PLUGIN...`](#fathym-pluginsinspect-plugin)
@@ -123,7 +123,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.142/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.143/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -1142,7 +1142,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.142/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.143/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1287,30 +1287,6 @@ EXAMPLES
   $ fathym git import import organization repository "https://github.com/fathym-it/smart-building-demo
 ```
 
-## `fathym git open [PATH]`
-
-Used to open the current directory or a file within it.
-
-```
-USAGE
-  $ fathym git open [PATH] [--json] [-c]
-
-ARGUMENTS
-  PATH  [default: ./] The path to open.
-
-FLAGS
-  -c, --code  If activated, opens in VS Code. Default: true
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Used to open the current directory or a file within it.
-
-EXAMPLES
-  $ fathym git open
-```
-
 ## `fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`
 
 Used for retrieving information about repositories including organizations, their repos and related branch information.
@@ -1381,7 +1357,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.142/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.143/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1422,6 +1398,32 @@ DESCRIPTION
 EXAMPLES
   $ fathym licenses list
 ```
+
+## `fathym open [PATH]`
+
+Used to open the current directory or a file within it.
+
+```
+USAGE
+  $ fathym open [PATH] [--json] [-c]
+
+ARGUMENTS
+  PATH  [default: ./] The path to open.
+
+FLAGS
+  -c, --code  If activated, opens in VS Code. Default: true
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to open the current directory or a file within it.
+
+EXAMPLES
+  $ fathym open
+```
+
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.143/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -1674,5 +1676,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.142/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.143/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
