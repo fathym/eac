@@ -1,10 +1,10 @@
 import { ListrTask } from 'listr2';
-import { FathymCommand } from '../../common/fathym-command';
-import { FathymTaskContext, setApiRoot } from '../../common/core-helpers';
+import { FathymCommand } from '../common/fathym-command';
+import { FathymTaskContext, setApiRoot } from '../common/core-helpers';
 import path from 'node:path';
 import open from 'open';
 import { Args, Flags } from '@oclif/core';
-import { runProc } from '../../common/task-helpers';
+import { runProc } from '../common/task-helpers';
 
 export default class Open extends FathymCommand<FathymTaskContext> {
   static description =
@@ -27,7 +27,7 @@ export default class Open extends FathymCommand<FathymTaskContext> {
     }),
   };
 
-  static title = 'Open Git';
+  static title = 'Open';
 
   static forceRefresh = false;
 
