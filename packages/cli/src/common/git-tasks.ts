@@ -421,9 +421,7 @@ export function pullRequest<TContext extends GitHubTaskContext>(
 
       task.title = `${action} ${type} ${ctx.GitHubBranch}`;
 
-      const path = `/github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/${action}/${type}/${ctx.GitHubBranch}`;
-
-      throw new Error(path);
+      const path = `/github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/${action}/${ctx.GitHubBranch}`;
 
       await axios.post(path, {});
     },
