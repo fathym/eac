@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.144 win32-x64 node-v18.12.1
+@fathym/cli/0.0.145 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -86,7 +86,11 @@ USAGE
 * [`fathym git clone [ORGANIZATION] [REPOSITORY]`](#fathym-git-clone-organization-repository)
 * [`fathym git configure [ORGANIZATION] [REPOSITORY]`](#fathym-git-configure-organization-repository)
 * [`fathym git feature [NAME]`](#fathym-git-feature-name)
+* [`fathym git feature integrate [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-feature-integrate-organization-repository-branch)
+* [`fathym git feature merge [NAME]`](#fathym-git-feature-merge-name)
+* [`fathym git home [ORGANIZATION] [REPOSITORY]`](#fathym-git-home-organization-repository)
 * [`fathym git hotfix [NAME]`](#fathym-git-hotfix-name)
+* [`fathym git hotfix patch [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-hotfix-patch-organization-repository-branch)
 * [`fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE]`](#fathym-git-import-organization-repository-remote)
 * [`fathym git repos [ORGANIZATION] [REPOSITORY] [BRANCH]`](#fathym-git-repos-organization-repository-branch)
 * [`fathym help [COMMANDS]`](#fathym-help-commands)
@@ -123,7 +127,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.144/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.145/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -1142,7 +1146,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.144/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.145/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1239,6 +1243,75 @@ EXAMPLES
   $ fathym git feature
 ```
 
+## `fathym git feature integrate [ORGANIZATION] [REPOSITORY] [BRANCH]`
+
+Used for creating a feature branch from 'integration' in git.
+
+```
+USAGE
+  $ fathym git feature integrate [ORGANIZATION] [REPOSITORY] [BRANCH] [--json]
+
+ARGUMENTS
+  ORGANIZATION  The organization to patch from.
+  REPOSITORY    The repository to patch from.
+  BRANCH        The branch to patch from.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for creating a feature branch from 'integration' in git.
+
+EXAMPLES
+  $ fathym git feature integrate
+```
+
+## `fathym git feature merge [NAME]`
+
+Used for merging 2 feature branches where 1 is merged into the other.
+
+```
+USAGE
+  $ fathym git feature merge [NAME] [--json]
+
+ARGUMENTS
+  NAME  Name for the new feature branch.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for merging 2 feature branches where 1 is merged into the other.
+
+EXAMPLES
+  $ fathym git feature merge
+```
+
+## `fathym git home [ORGANIZATION] [REPOSITORY]`
+
+Used to open the repo home.
+
+```
+USAGE
+  $ fathym git home [ORGANIZATION] [REPOSITORY] [--json] [-s <value>]
+
+ARGUMENTS
+  ORGANIZATION  The organization to open.
+  REPOSITORY    The repository to open.
+
+FLAGS
+  -s, --section=<value>  The section to open.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to open the repo home.
+
+EXAMPLES
+  $ fathym git home
+```
+
 ## `fathym git hotfix [NAME]`
 
 Used for creating a hotfix branch from 'main' in git.
@@ -1258,6 +1331,29 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym git hotfix
+```
+
+## `fathym git hotfix patch [ORGANIZATION] [REPOSITORY] [BRANCH]`
+
+Used for creating a hotfix branch from 'main' in git.
+
+```
+USAGE
+  $ fathym git hotfix patch [ORGANIZATION] [REPOSITORY] [BRANCH] [--json]
+
+ARGUMENTS
+  ORGANIZATION  The organization to patch from.
+  REPOSITORY    The repository to patch from.
+  BRANCH        The branch to patch from.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for creating a hotfix branch from 'main' in git.
+
+EXAMPLES
+  $ fathym git hotfix patch
 ```
 
 ## `fathym git import [ORGANIZATION] [REPOSITORY] [REMOTE]`
@@ -1357,7 +1453,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.144/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.145/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1423,7 +1519,7 @@ EXAMPLES
   $ fathym open
 ```
 
-_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.144/dist/commands/open.ts)_
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.145/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -1676,5 +1772,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.144/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.145/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
