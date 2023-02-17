@@ -11,10 +11,14 @@ import {
 import { runProc } from '../../common/task-helpers';
 import path from 'node:path';
 import { GitHubTaskContext, loadGitUsername } from '../../common/git-helpers';
-import { AccessTokenTaskContext } from '../../common/core-helpers';
-import { ensurePromptValue } from '../../common/eac-services';
+import {
+  AccessTokenTaskContext,
+  FathymTaskContext,
+} from '../../common/core-helpers';
 
-export default class Clone extends FathymCommand<any> {
+interface CloneTaskContext extends FathymTaskContext, GitHubTaskContext {}
+
+export default class Clone extends FathymCommand<CloneTaskContext> {
   static description = `Used for cloning the source control for Git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -41,10 +45,10 @@ export default class Clone extends FathymCommand<any> {
 
   static title = 'Git Clone';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<CloneTaskContext>[]> {
     const { args, flags } = await this.parse(Clone);
 
-    let { organization, repository } = args;
+    const { organization, repository } = args;
 
     const depth = flags.depth ? `--depth ${flags.depth}` : '';
 
@@ -62,27 +66,15 @@ export default class Clone extends FathymCommand<any> {
       {
         title: `Cloning repository`,
         task: async (ctx, task) => {
-          organization = await ensurePromptValue(
-            task,
-            'Set the organization to clone',
-            organization
-          );
+          task.title = `Cloning repository ${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
 
-          repository = await ensurePromptValue(
-            task,
-            'Set the organization to clone',
-            repository
-          );
+          const destination = path.join(process.cwd(), ctx.GitHubRepository);
 
-          task.title = `Cloning repository ${organization}/${repository}`;
-
-          const destination = path.join(process.cwd(), repository);
-
-          const gitPath = `https://github.com/${organization}/${repository}.git`;
+          const gitPath = `https://github.com/${ctx.GitHubOrganization}/${ctx.GitHubRepository}.git`;
 
           await runProc(`git clone ${gitPath} ${destination}`, [depth, branch]);
 
-          task.title = `Repository ${organization}/${repository} cloned`;
+          task.title = `Repository ${ctx.GitHubOrganization}/${ctx.GitHubRepository} cloned`;
         },
       },
     ];
