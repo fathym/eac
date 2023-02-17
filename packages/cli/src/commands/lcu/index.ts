@@ -149,7 +149,7 @@ export default class Install extends FathymCommand<InstallContext> {
       this.confirmAgreements(ci),
       ensureProject(this.config.configDir, project, true, false, (ctx) =>
         ctx.LCUPackageConfig?.Package
-          ? ctx.LCUPackageConfig.Package!.SkipProject
+          ? !ctx.LCUPackageConfig.Package!.SkipProject
           : true
       ),
       ensureOrganization(this.config.configDir, organization, (ctx) =>
