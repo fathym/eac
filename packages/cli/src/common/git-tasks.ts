@@ -72,10 +72,8 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
     title: `Ensuring branch set`,
     enabled: enabled,
     task: async (ctx, task) => {
-      const branchFilter = (branch) => {
-        const branchName = branch?.Name || '';
-
-        return !filter || branchName.indexOf(`${filter}`) === 0;
+      const branchFilter = (branch = '') => {
+        return !filter || branch.indexOf(`${filter}`) === 0;
       };
 
       if (!branch) {
@@ -96,7 +94,7 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
             task,
             'Choose GitHub branch:',
             '',
-            branches.map((org) => org.Name),
+            branches.map((b) => b.Name),
             gitRepo && !skipLocal
               ? async () => {
                   if (!skipLocal && gitRepo) {
