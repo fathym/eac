@@ -46,7 +46,7 @@ export default class Hotfix extends FathymCommand<any> {
             name
           );
 
-          await runProc(`git checkout`, [`-b hotfix/${name}`, 'main']);
+          await runProc(`git checkout`, [`-b hotfix/${name}`, 'origin/main']);
         },
       },
       {

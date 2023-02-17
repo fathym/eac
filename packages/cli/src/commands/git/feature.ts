@@ -46,7 +46,10 @@ export default class Feature extends FathymCommand<any> {
             name
           );
 
-          await runProc(`git checkout`, [`-b feature/${name}`, 'integration']);
+          await runProc(`git checkout`, [
+            `-b feature/${name}`,
+            'origin/integration',
+          ]);
         },
       },
       {

@@ -47,9 +47,7 @@ export default class Open extends FathymCommand<FathymTaskContext> {
           try {
             await (code ? runProc('code', [path]) : open(path));
           } catch {
-            throw new Error(
-              'Ensure that VS Code is installed and that `code` is installed to the system path.'
-            );
+            await open(path);
           }
         },
       },
