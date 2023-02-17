@@ -1,16 +1,16 @@
 import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import {} from '@semanticjs/common';
-import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
+import { FathymCommand } from '../../../common/fathym-command';
+import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   commitGitChanges,
   confirmGitRepo,
   fetchPrune,
   pushOrigin,
-} from '../../common/git-tasks';
-import { runProc } from '../../common/task-helpers';
-import { ensurePromptValue } from '../../common/eac-services';
+} from '../../../common/git-tasks';
+import { runProc } from '../../../common/task-helpers';
+import { ensurePromptValue } from '../../../common/eac-services';
 
 export default class Hotfix extends FathymCommand<any> {
   static description = `Used for creating a hotfix branch from 'main' in git.`;
@@ -36,7 +36,7 @@ export default class Hotfix extends FathymCommand<any> {
 
     return [
       confirmGitRepo(),
-      commitGitChanges(''),
+      commitGitChanges(),
       {
         title: 'Create new hotfix branch',
         task: async (ctx, task) => {

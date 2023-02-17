@@ -66,7 +66,13 @@ export default class Create extends FathymCommand<DefineTaskContext> {
       loadEaCTask(this.config.configDir),
       ensureOrganization(this.config.configDir, organization),
       ensureRepository(this.config.configDir, repository),
-      ensureBranch(this.config.configDir, mainBranch),
+      ensureBranch(
+        this.config.configDir,
+        (ctx, value) => {
+          ctx.GitHubMainBranch = value || '';
+        },
+        mainBranch
+      ),
       this.defineSourceControl(),
     ];
   }

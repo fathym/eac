@@ -62,14 +62,17 @@ export function commitGitChanges(message?: string): ListrTask {
 
 export function ensureBranch<TContext extends GitHubTaskContext>(
   configDir: string,
-  mainBranch?: string,
-  enabled?: (ctx: TContext) => boolean
+  ctxSet: (ctx: TContext, value?: string) => void,
+  branch?: string,
+  enabled?: (ctx: TContext) => boolean,
+  skipLocal?: boolean,
+  filter?: 'feature' | 'hotfix'
 ): ListrTask<TContext> {
   return {
     title: `Ensuring branch set`,
     enabled: enabled,
     task: async (ctx, task) => {
-      if (!mainBranch) {
+      if (!branch) {
         let branches = await listGitHubBranches(
           configDir,
           ctx.GitHubOrganization,
@@ -78,19 +81,37 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
 
         branches = branches || [];
 
+        if (filter) {
+          branches = branches.filter(
+            (branch) => branch.Name.indexOf(filter) === 0
+          );
+        }
+
         if (branches.length > 0) {
-          mainBranch = await ensurePromptValue(
+          const gitRepo = await isGitRepo();
+
+          branch = await ensurePromptValue(
             task,
             'Choose GitHub branch:',
             '',
-            branches.map((org) => org.Name)
+            branches.map((org) => org.Name),
+            gitRepo && !skipLocal
+              ? async () => {
+                  if (!skipLocal && gitRepo) {
+                    branch = await await getCurrentBranch();
+                  }
+
+                  return branch || '';
+                }
+              : undefined,
+            '- Use Local -'
           );
         }
       }
 
-      ctx.GitHubMainBranch = mainBranch || '';
+      ctxSet(ctx, branch);
 
-      task.title = `GitHub branch set to ${ctx.GitHubMainBranch}`;
+      task.title = `GitHub branch set to ${branch}`;
     },
   };
 }

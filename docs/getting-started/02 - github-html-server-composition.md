@@ -32,7 +32,13 @@ This does a number of things for you to setup your repository, including branch 
 
 > **NOTE** - You may have noticed the use of `ftm` here. The Fathym CLI can be accessed in two ways, `fathym` or the shorthand `ftm`. Both can be used interchangeably for any of the commands. The previous command could have been replaced with `fathym git init -s` with the same outcome.
 
-Now we need to define the source control location in our EaC. Follow the promptes and select the organization and repository you just initialized.
+Let's clone our new repository and we'll continue to work on it. Follow the promptes and select the organization and repository you just initialized. Make sure to navigate into a folder where you would like to [organize your repositories](../git/organize-your-repositories.md).
+
+```cli
+fathym git clone
+```
+
+Now we need to define the source control location in our EaC.
 
 ```cli
 fathym eac env sources define
