@@ -51,7 +51,6 @@ export default class Clone extends FathymCommand<any> {
     const branch = flags.branch ? `--branch ${flags.branch}` : '';
 
     return [
-      confirmGitRepo(),
       ensureOrganization(this.config.configDir, organization, undefined, true),
       ensureRepository(
         this.config.configDir,
