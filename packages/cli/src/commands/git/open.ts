@@ -29,6 +29,8 @@ export default class Open extends FathymCommand<FathymTaskContext> {
 
   static title = 'Open Git';
 
+  static forceRefresh = false;
+
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args, flags } = await this.parse(Open);
 
