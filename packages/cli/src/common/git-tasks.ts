@@ -111,7 +111,7 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
         }
       }
 
-      if (filter && !branchFilter(branch)) {
+      if (!branchFilter(branch)) {
         throw new Error(
           `A ${filter}/* branch is required. Provided branch: ${branch}`
         );
