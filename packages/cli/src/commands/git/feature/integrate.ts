@@ -64,7 +64,7 @@ export default class Integrate extends FathymCommand<IntegrateTaskContext> {
       ),
       {
         title: 'Integrate feature',
-        // skip: this.featureSkipCheck,
+        skip: this.featureSkipCheck,
         task: async (ctx, task) => {
           const axios = await loadAxios(this.config.configDir);
 

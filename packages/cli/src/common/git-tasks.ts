@@ -107,12 +107,12 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
             '- Use Local -'
           );
         }
+      }
 
-        if (filter && (branch || '').indexOf(filter) === 0) {
-          throw new Error(
-            `A ${filter}/* branch is required. Provided branch: ${branch}`
-          );
-        }
+      if (filter && (branch || '').indexOf(filter) !== 0) {
+        throw new Error(
+          `A ${filter}/* branch is required. Provided branch: ${branch}`
+        );
       }
 
       ctxSet(ctx, branch);
