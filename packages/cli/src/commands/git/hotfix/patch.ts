@@ -66,7 +66,7 @@ export default class Patch extends FathymCommand<PatchTaskContext> {
       ),
       {
         title: 'Patch hotfix',
-        skip: this.hotFixSkipCheck,
+        // skip: this.hotFixSkipCheck,
         task: async (ctx, task) => {
           const axios = await loadAxios(this.config.configDir);
 
