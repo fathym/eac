@@ -11,6 +11,7 @@ import {
   ensureRepository,
   fetchPrune,
   pull,
+  pullRequest,
   pushOrigin,
 } from '../../../common/git-tasks';
 import { runProc } from '../../../common/task-helpers';
@@ -58,34 +59,20 @@ export default class Patch extends FathymCommand<PatchTaskContext> {
       ensureBranch(
         this.config.configDir,
         (ctx, value) => {
-          ctx.GitHubMainBranch = value || '';
+          ctx.GitHubBranch = value || '';
         },
         branch,
         undefined,
         false,
         'hotfix'
       ),
-      {
-        title: 'Patch hotfix',
-        skip: this.hotFixSkipCheck,
-        task: async (ctx, task) => {
-          const axios = await loadAxios(this.config.configDir);
-
-          task.title = `Patch ${ctx.GitHubMainBranch}`;
-
-          await axios.post(``, {
-            Organization: ctx.GitHubOrganization,
-            Repository: ctx.GitHubRepository,
-            Branch: ctx.GitHubMainBranch,
-          });
-        },
-      },
+      pullRequest(this.config.configDir, 'hotfix', this.hotFixSkipCheck),
       pull(),
       fetchPrune(),
     ];
   }
 
   protected hotFixSkipCheck(ctx: PatchTaskContext): string | boolean {
-    return ctx.GitHubMainBranch ? false : 'A hotfix/* branch is required';
+    return ctx.GitHubBranch ? false : 'A hotfix/* branch is required';
   }
 }

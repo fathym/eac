@@ -10,7 +10,7 @@ export interface GitHubTaskContext {
 
   GitHubConnection: boolean;
 
-  GitHubMainBranch: string;
+  GitHubBranch: string;
 
   GitHubOrganization: string;
 

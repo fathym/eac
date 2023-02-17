@@ -69,7 +69,7 @@ export default class Create extends FathymCommand<DefineTaskContext> {
       ensureBranch(
         this.config.configDir,
         (ctx, value) => {
-          ctx.GitHubMainBranch = value || '';
+          ctx.GitHubBranch = value || '';
         },
         mainBranch
       ),
@@ -118,8 +118,8 @@ export default class Create extends FathymCommand<DefineTaskContext> {
               Name: `@${ctx.GitHubOrganization}/${ctx.GitHubRepository}`,
               Organization: ctx.GitHubOrganization,
               Repository: ctx.GitHubRepository,
-              Branches: ctx.GitHubBranches || [ctx.GitHubMainBranch],
-              MainBranch: ctx.GitHubMainBranch,
+              Branches: ctx.GitHubBranches || [ctx.GitHubBranch],
+              MainBranch: ctx.GitHubBranch,
             };
 
             return draft;

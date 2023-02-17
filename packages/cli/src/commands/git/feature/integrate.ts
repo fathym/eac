@@ -11,6 +11,7 @@ import {
   ensureRepository,
   fetchPrune,
   pull,
+  pullRequest,
   pushOrigin,
 } from '../../../common/git-tasks';
 import { runProc } from '../../../common/task-helpers';
@@ -56,34 +57,20 @@ export default class Integrate extends FathymCommand<IntegrateTaskContext> {
       ensureBranch(
         this.config.configDir,
         (ctx, value) => {
-          ctx.GitHubMainBranch = value || '';
+          ctx.GitHubBranch = value || '';
         },
         branch,
         undefined,
         false,
         'feature'
       ),
-      {
-        title: 'Integrate feature',
-        skip: this.featureSkipCheck,
-        task: async (ctx, task) => {
-          const axios = await loadAxios(this.config.configDir);
-
-          task.title = `Integrate ${ctx.GitHubMainBranch}`;
-
-          await axios.post(``, {
-            Organization: ctx.GitHubOrganization,
-            Repository: ctx.GitHubRepository,
-            Branch: ctx.GitHubMainBranch,
-          });
-        },
-      },
+      pullRequest(this.config.configDir, 'feature', this.featureSkipCheck),
       pull(),
       fetchPrune(),
     ];
   }
 
   protected featureSkipCheck(ctx: IntegrateTaskContext): string | boolean {
-    return ctx.GitHubMainBranch ? false : 'A feature/* branch is required';
+    return ctx.GitHubBranch ? false : 'A feature/* branch is required';
   }
 }

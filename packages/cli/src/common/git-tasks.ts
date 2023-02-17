@@ -72,6 +72,12 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
     title: `Ensuring branch set`,
     enabled: enabled,
     task: async (ctx, task) => {
+      const branchFilter = (branch) => {
+        const branchName = branch?.Name || '';
+
+        return !filter || branchName.indexOf(`${filter}/`) === 0;
+      };
+
       if (!branch) {
         let branches = await listGitHubBranches(
           configDir,
@@ -81,11 +87,7 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
 
         branches = branches || [];
 
-        if (filter) {
-          branches = branches.filter(
-            (branch) => branch.Name.indexOf(filter) === 0
-          );
-        }
+        branches = branches.filter((branch) => branchFilter(branch));
 
         if (branches.length > 0) {
           const gitRepo = await isGitRepo();
@@ -109,7 +111,7 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
         }
       }
 
-      if (filter && (branch || '').indexOf(filter) !== 0) {
+      if (filter && !branchFilter(branch)) {
         throw new Error(
           `A ${filter}/* branch is required. Provided branch: ${branch}`
         );
@@ -369,6 +371,57 @@ export function pull<T>(): ListrTask<T> {
       }
 
       await runProc('git', ['pull']);
+    },
+  };
+}
+
+export function pullRequest<TContext extends GitHubTaskContext>(
+  configDir: string,
+  type?: 'feature' | 'hotfix' | 'qa' | 'release',
+  skipCheck?: (ctx: TContext) => string | boolean
+): ListrTask<TContext> {
+  let action = '';
+
+  switch (type) {
+    case 'feature': {
+      action = 'integrate';
+
+      break;
+    }
+
+    case 'hotfix': {
+      action = 'integrate';
+
+      break;
+    }
+
+    case 'qa': {
+      action = 'stage';
+
+      break;
+    }
+
+    case 'release': {
+      action = 'release';
+
+      break;
+    }
+
+    // No default
+  }
+
+  return {
+    title: `${action} ${type}`,
+    skip: skipCheck,
+    task: async (ctx, task) => {
+      const axios = await loadAxios(configDir);
+
+      task.title = `${action} ${type} ${ctx.GitHubBranch}`;
+
+      await axios.post(
+        `/github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/${action}/${type}/${ctx.GitHubBranch}`,
+        {}
+      );
     },
   };
 }
