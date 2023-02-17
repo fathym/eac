@@ -421,10 +421,11 @@ export function pullRequest<TContext extends GitHubTaskContext>(
 
       task.title = `${action} ${type} ${ctx.GitHubBranch}`;
 
-      await axios.post(
-        `/github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/${action}/${type}/${ctx.GitHubBranch}`,
-        {}
-      );
+      const path = `/github/organizations/${ctx.GitHubOrganization}/repositories/${ctx.GitHubRepository}/${action}/${type}/${ctx.GitHubBranch}`;
+
+      throw new Error(path);
+
+      await axios.post(path, {});
     },
   };
 }
