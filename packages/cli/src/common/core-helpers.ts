@@ -379,8 +379,6 @@ export function ensureApplication<
 
 export function ensureModifier<
   TContext extends DFSModifierTaskContext &
-    ApplicationTaskContext &
-    ProjectTaskContext &
     ActiveEnterpriseTaskContext &
     EaCTaskContext
 >(
@@ -426,8 +424,8 @@ export function ensureModifier<
 
       ctx.DFSModifierLookup = modifierLookup || '';
 
-      task.title = `Selected project: ${
-        modifiers[ctx.ProjectLookup]?.Project?.Name || 'Creating New'
+      task.title = `Selected modifier: ${
+        modifiers[ctx.DFSModifierLookup]?.Name || 'Creating New'
       }`; //  (${ctx.ProjectLookup})
     },
   };

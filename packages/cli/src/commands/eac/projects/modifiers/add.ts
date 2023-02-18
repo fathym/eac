@@ -5,6 +5,7 @@ import { FathymCommand } from '../../../../common/fathym-command';
 import { ClosureInstruction } from '../../../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
+  ApplicationTaskContext,
   DFSModifierTaskContext,
   EaCTaskContext,
   ensureActiveEnterprise,
@@ -23,7 +24,7 @@ interface AddTaskContext
     ProjectTaskContext,
     DFSModifierTaskContext {}
 
-export default class Add extends FathymCommand<any> {
+export default class Add extends FathymCommand<AddTaskContext> {
   static description = `Used for adding a DFS modifier to a project.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -38,7 +39,7 @@ export default class Add extends FathymCommand<any> {
 
   static title = 'Add Project DFS Modifier';
 
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<AddTaskContext>[]> {
     const { args } = await this.parse(Add);
 
     const { projectLookup } = args;
