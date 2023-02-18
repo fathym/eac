@@ -176,7 +176,11 @@ fathym eac projects modifiers add
 fathym eac commit "Added markdown modifier to project"
 ```
 
-This will automatically open a browser to preview the application.
+Let's use another preview command, this time at the projects level, to open up our preview.
+
+```cli
+fathym eac projects preview
+```
 
 # Wrapping Up
 
