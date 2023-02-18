@@ -107,7 +107,7 @@ export default class Processor extends FathymCommand<LCUTaskContext> {
 
             return draft;
           },
-          ['Applications', ctx.ApplicationLookup]
+          [['Applications', ctx.ApplicationLookup]]
         );
       },
     };

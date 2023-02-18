@@ -21,6 +21,7 @@ Next, open a command prompt and navigate to a folder of your choosing (VS Code h
 ```cli
 npx make-dir-cli test
 ```
+
 ```cli
 cd test
 ```
@@ -32,6 +33,7 @@ To start, create a new README.md file with the following commands:
 ```cli
 npx touch README.md
 ```
+
 ```cli
 npx open-cli README.md
 ```
@@ -92,7 +94,7 @@ This will set the enterprise that you will work with and manage. If you are just
 
 ## Project Setup
 
-With the CLI connected, we first need to create a project to house our new application. To do this, we will use Fathym's `eac` commands. Select `- Create New -` from the prompts. After the project and application have been drafted, you will select them from the prompts when required. 
+With the CLI connected, we first need to create a project to house our new application. To do this, we will use Fathym's `eac` commands. Select `- Create New -` from the prompts. After the project and application have been drafted, you will select them from the prompts when required.
 
 ```cli
 fathym eac projects define -n "My First Project"
@@ -148,13 +150,30 @@ Like code, we should keep our commits to a a small related set of updates. This 
 fathym eac commit "Added my first project and it's first application"
 ```
 
-Finally we can get the application details to get the URL it's running on. (The same can be done for projects by dropping the `applications`).
+This will commit all of the changes, creating the project, the application, and deploying the zip. To preview the application, you can run the following command:
 
 ```cli
 fathym eac projects applications preview
 ```
+
+If your using chrome, you'll see the raw markdown on the web page. If your using Firefox, or other browsers that don't support rendering markdown, you'll be prompted to download the file. This isn't ideal, and isn't where we want to leave it.
+
+Let's look at two last features of the Fathym EaC for this guide, we'll see them both in action in this next command.
+
 ```cli
-fathym eac projects preview
+fathym lcu @fathym-it/lcu-eac-modifier-markdown-to-html
+```
+
+We are seeing two features here, the first is our LCU Packages, this are building blocks for composing your solutions. The second is a DFS Modifier, specifically for converting markdwon into HTML.
+
+Before we can see our new installed modifier in action, we have to added it to a project (modifiers can also be added to individual applications).
+
+```cli
+fathym eac projects modifiers add
+```
+
+```cli
+fathym eac commit "Added markdown modifier to project"
 ```
 
 This will automatically open a browser to preview the application.

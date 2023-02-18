@@ -12,7 +12,7 @@ import {
   loadEaCTask,
   ProjectTaskContext,
 } from '../../../../common/core-helpers';
-import { withEaCDraft } from '../../../../common/eac-services';
+import { DepthOption, withEaCDraft } from '../../../../common/eac-services';
 
 interface AddTaskContext
   extends FathymTaskContext,
@@ -68,26 +68,13 @@ export default class Add extends FathymCommand<AddTaskContext> {
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC.Projects) {
-              draft.EaC.Projects = {};
-            }
-
-            if (!draft.EaC.Projects[ctx.ProjectLookup]) {
-              draft.EaC.Projects[ctx.ProjectLookup] = {};
-            }
-
-            if (!draft.EaC.Projects[ctx.ProjectLookup].ApplicationLookups) {
-              draft.EaC.Projects[ctx.ProjectLookup].ApplicationLookups = [];
-            }
-
-            draft.EaC.Projects[ctx.ProjectLookup].ApplicationLookups = [
-              ...(draft.EaC.Projects[ctx.ProjectLookup].ApplicationLookups ||
-                []),
-              ctx.ApplicationLookup,
-            ];
+            draft.EaC.Projects![ctx.ProjectLookup].ApplicationLookups?.push(
+              ctx.ApplicationLookup
+            );
 
             return draft;
-          }
+          },
+          [['Projects', ctx.ProjectLookup, ['ApplicationLookups', []]]]
         );
       },
     };

@@ -94,7 +94,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
 
             return draft;
           },
-          ['Applications', ctx.ApplicationLookup]
+          [['Applications', ctx.ApplicationLookup]]
         );
       },
     };

@@ -29,6 +29,8 @@ import { Config } from '@oclif/core';
 import { TcpNetConnectOpts } from 'node:net';
 import FormData from 'form-data';
 
+export type DepthOption = string | (string | Record<string, unknown> | [])[];
+
 export interface CloudTaskContext {
   CloudLookup: string;
 }
@@ -63,7 +65,7 @@ export async function withEaCDraft(
   configDir: string,
   activeEntLookup?: string,
   action?: (config: EaCDraft) => Promise<EaCDraft>,
-  ensureDepth?: string[]
+  ensureDepths?: DepthOption[][]
 ): Promise<EaCDraft> {
   return withConfig<EaCDraft>('eac.draft.json', configDir, async (draft) => {
     let workDraft = { ...draft };
@@ -80,9 +82,11 @@ export async function withEaCDraft(
 
     const workCheck = JSON.stringify(workDraft);
 
-    if (ensureDepth) {
-      ensureDepthInitialized(workDraft.EaC, ensureDepth);
-    }
+    ensureDepths?.forEach((ensureDepth) => {
+      if (ensureDepth) {
+        ensureDepthInitialized(workDraft.EaC, ensureDepth);
+      }
+    });
 
     let newDraft = { ...(action ? await action(workDraft) : workDraft) };
 
@@ -95,16 +99,21 @@ export async function withEaCDraft(
   });
 }
 
-export function ensureDepthInitialized(
-  obj: any,
-  path: Array<string | number>
-): void {
+export function ensureDepthInitialized(obj: any, path: DepthOption[]): void {
   if (path?.length > 0) {
-    const [head, ...tail] = path;
+    const [lead, ...tail] = path;
 
-    obj[head] = obj[head] || {};
+    let headOpts = lead;
 
-    ensureDepthInitialized(obj[head], tail);
+    if (typeof lead === 'string') {
+      headOpts = [lead as string, {}];
+    }
+
+    const [head, init] = headOpts;
+
+    obj[head as string] = obj[head as string] || init || {};
+
+    ensureDepthInitialized(obj[head as string], tail);
   }
 }
 

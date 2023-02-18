@@ -60,7 +60,7 @@ export default class Unpack extends FathymCommand<UnpackTaskContext> {
           async (draft) => {
             return draft;
           },
-          ['Applications', ctx.ApplicationLookup]
+          [['Applications', ctx.ApplicationLookup]]
         );
       },
     };

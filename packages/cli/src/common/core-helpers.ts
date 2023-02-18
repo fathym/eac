@@ -53,6 +53,10 @@ export interface ApplicationTaskContext {
   ApplicationLookup: string;
 }
 
+export interface DFSModifierTaskContext {
+  DFSModifierLookup: string;
+}
+
 export interface ProjectTaskContext {
   ProjectLookup: string;
 }
@@ -271,6 +275,20 @@ export function delay(ms: number): Promise<void> {
   });
 }
 
+type LookupItem = {
+  message: string;
+  name: string;
+};
+
+type EnsureParams<TContext> = {
+  title: string;
+  lookupName: string;
+  itemsKey: string;
+  nameGetter: (item: any) => string;
+  contextKey: keyof TContext;
+  enabled?: (ctx: TContext) => boolean;
+};
+
 export function ensureActiveEnterprise<
   TContext extends ActiveEnterpriseTaskContext
 >(configDir: string): ListrTask<TContext> {
@@ -354,6 +372,62 @@ export function ensureApplication<
 
       task.title = `Selected application: ${
         apps[ctx.ApplicationLookup]?.Application?.Name || 'Creating New'
+      }`; //  (${ctx.ProjectLookup})
+    },
+  };
+}
+
+export function ensureModifier<
+  TContext extends DFSModifierTaskContext &
+    ApplicationTaskContext &
+    ProjectTaskContext &
+    ActiveEnterpriseTaskContext &
+    EaCTaskContext
+>(
+  configDir: string,
+  modifierLookup?: string,
+  create?: boolean,
+  addFromDraft?: boolean,
+  enabled?: (ctx: TContext) => boolean
+): ListrTask<TContext> {
+  return {
+    title: `Ensuring modifier set`,
+    enabled: enabled,
+    task: async (ctx, task) => {
+      const draft: EaCDraft = addFromDraft
+        ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
+        : ({} as EaCDraft);
+
+      const modifiers = Object.keys({
+        ...ctx.EaC?.Modifiers,
+        ...draft.EaC?.Modifiers,
+      });
+
+      if (!modifierLookup) {
+        modifierLookup = await ensurePromptValue(
+          task,
+          'Choose EaC Modifier:',
+          modifierLookup!,
+          modifiers.map((mod) => {
+            const drfatMod = (draft.EaC?.Modifiers || {})[mod];
+
+            const modName = drfatMod?.Name || ctx.EaC?.Modifiers![mod]?.Name;
+
+            const draftText = drfatMod ? color.yellow('draft') : '';
+
+            return {
+              message: `${modName} ${draftText}`,
+              name: mod,
+            };
+          }),
+          create ? async () => randomUUID() : undefined
+        );
+      }
+
+      ctx.DFSModifierLookup = modifierLookup || '';
+
+      task.title = `Selected project: ${
+        modifiers[ctx.ProjectLookup]?.Project?.Name || 'Creating New'
       }`; //  (${ctx.ProjectLookup})
     },
   };
