@@ -156,6 +156,8 @@ This will commit all of the changes, creating the project, the application, and 
 fathym eac projects applications preview
 ```
 
+> **NOTE** - It can take up to a minute for your new application preview to be ready.
+
 If your using chrome, you'll see the raw markdown on the web page. If your using Firefox, or other browsers that don't support rendering markdown, you'll be prompted to download the file. This isn't ideal, and isn't where we want to leave it.
 
 Let's look at two last features of the Fathym EaC for this guide, we'll see them both in action in this next command.
@@ -181,6 +183,10 @@ Let's use another preview command, this time at the projects level, to open up o
 ```cli
 fathym eac projects preview
 ```
+
+You should now see that your raw markdown is formatted as HTML.
+
+> **NOTE** - It can take up to a minute for your new application preview to be ready. In addition, your frontend cache may be holding a version of the site, so do a hard reload in the browser to see changes.
 
 # Wrapping Up
 
