@@ -90,26 +90,6 @@ export default class Create extends FathymCommand<DefineTaskContext> {
           async (draft) => {
             const sourceLookup = `github://${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
 
-            if (!draft.EaC.Environments) {
-              draft.EaC.Environments = {};
-            }
-
-            if (
-              !draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
-            ) {
-              draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!] =
-                {};
-            }
-
-            if (
-              !draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
-                .Sources
-            ) {
-              draft.EaC.Environments![
-                ctx.EaC.Enterprise!.PrimaryEnvironment!
-              ].Sources = {};
-            }
-
             draft.EaC.Environments![
               ctx.EaC.Enterprise!.PrimaryEnvironment!
             ].Sources![sourceLookup!] = {
@@ -123,7 +103,8 @@ export default class Create extends FathymCommand<DefineTaskContext> {
             };
 
             return draft;
-          }
+          },
+          [['Environments', ctx.EaC.Enterprise!.PrimaryEnvironment!, 'Sources']]
         );
       },
     };
