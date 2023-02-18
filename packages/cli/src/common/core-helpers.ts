@@ -2,7 +2,7 @@ import { color } from '@oclif/color';
 import express from 'express';
 import oauth2 from 'simple-oauth2';
 // import keytar from 'keytar';
-import { ListrTask, PromptOptions } from 'listr2';
+import { ListrTask, ListrTaskWrapper, PromptOptions } from 'listr2';
 import { withConfig } from './config-helpers';
 import { ClosureInstruction } from './ClosureInstruction';
 import path from 'node:path';
@@ -275,19 +275,88 @@ export function delay(ms: number): Promise<void> {
   });
 }
 
-type LookupItem = {
-  message: string;
-  name: string;
-};
+interface EnsureSelectionOptions<TContext> {
+  addFromDraft?: boolean;
 
-type EnsureParams<TContext> = {
-  title: string;
-  lookupName: string;
-  itemsKey: string;
-  nameGetter: (item: any) => string;
-  contextKey: keyof TContext;
+  create?: boolean;
+
   enabled?: (ctx: TContext) => boolean;
-};
+
+  name: string;
+
+  loadOptionsFromEaC: (eac: EnterpriseAsCode) => PromptOptions<true>[];
+
+  filter?: (ctx: TContext, options: PromptOptions<true>[]) => boolean;
+}
+
+// export function ensureSelection<
+//   TContext extends ActiveEnterpriseTaskContext &
+//     EaCTaskContext &
+//     ProjectTaskContext &
+//     ApplicationTaskContext
+// >(
+//   configDir: string,
+//   lookup?: string,
+//   options?: EnsureSelectionOptions<TContext>
+// ): ListrTask<TContext> {
+//   const { addFromDraft, create, enabled, name, loadOptionsFromEaC, filter } =
+//     options || {};
+
+//   return {
+//     title: `Ensuring ${name} set`,
+//     enabled: enabled,
+//     task: async (ctx, task) => {
+//       const draft: EaCDraft = addFromDraft
+//         ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
+//         : ({} as EaCDraft);
+
+//       let apps = Object.keys({
+//         ...ctx.EaC?.Applications,
+//         ...draft.EaC?.Applications,
+//       });
+
+//       if (!lookup) {
+//         if (projectFilter) {
+//           const projectAppLookups = new Set([
+//             ...ctx.EaC.Projects![ctx.ProjectLookup].ApplicationLookups!,
+//             ...(ctx.EaC.Projects
+//               ? ctx.EaC.Projects[ctx.ProjectLookup].ApplicationLookups!
+//               : []),
+//           ]);
+
+//           apps = apps.filter((app) => projectAppLookups.has(app));
+//         }
+
+//         lookup = await ensurePromptValue(
+//           task,
+//           'Choose EaC Application:',
+//           lookup!,
+//           apps.map((app) => {
+//             const draftApp = (draft.EaC?.Applications || {})[app];
+
+//             const appName =
+//               draftApp?.Application?.Name ||
+//               ctx.EaC?.Applications![app]?.Application?.Name;
+
+//             const draftText = draftApp ? color.yellow('draft') : '';
+
+//             return {
+//               message: `${appName} ${draftText}`,
+//               name: app,
+//             };
+//           }),
+//           create ? async () => randomUUID() : undefined
+//         );
+//       }
+
+//       ctx.ApplicationLookup = lookup || '';
+
+//       task.title = `Selected application: ${
+//         apps[ctx.ApplicationLookup]?.Application?.Name || 'Creating New'
+//       }`; //  (${ctx.ProjectLookup})
+//     },
+//   };
+// }
 
 export function ensureActiveEnterprise<
   TContext extends ActiveEnterpriseTaskContext

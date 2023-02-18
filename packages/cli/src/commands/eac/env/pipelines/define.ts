@@ -181,34 +181,6 @@ export default class Define extends FathymCommand<DefineTaskContext> {
           this.config.configDir,
           ctx.ActiveEnterpriseLookup,
           async (draft) => {
-            if (!draft.EaC.Environments) {
-              draft.EaC.Environments = {};
-            }
-
-            if (
-              !draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
-            ) {
-              draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!] =
-                {};
-            }
-
-            if (
-              !draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
-                .DevOpsActions
-            ) {
-              draft.EaC.Environments![
-                ctx.EaC.Enterprise!.PrimaryEnvironment!
-              ].DevOpsActions = {};
-            }
-
-            if (
-              !draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
-                .Artifacts
-            ) {
-              draft.EaC.Environments![
-                ctx.EaC.Enterprise!.PrimaryEnvironment!
-              ].Artifacts = {};
-            }
             const buildDeployKey =
               type === 'GitHub' ? 'BuildCommand' : 'DeployCommand';
 
@@ -235,7 +207,19 @@ export default class Define extends FathymCommand<DefineTaskContext> {
             };
 
             return draft;
-          }
+          },
+          [
+            [
+              'Environments',
+              ctx.EaC.Enterprise!.PrimaryEnvironment!,
+              'DevOpsActions',
+            ],
+            [
+              'Environments',
+              ctx.EaC.Enterprise!.PrimaryEnvironment!,
+              'Artifacts',
+            ],
+          ]
         );
       },
     };
