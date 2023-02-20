@@ -38,7 +38,7 @@ npx touch README.md
 npx open-cli README.md
 ```
 
-With the README.md file open, add some basic markdown and then save `Ctrl+S` your file changes :
+With the README.md file open, add some basic markdown and then save `Ctrl+S` your file changes:
 
 ```markdown
 # Welcome to our Blog
