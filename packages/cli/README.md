@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.159 win32-x64 node-v18.12.1
+@fathym/cli/0.0.160 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -69,6 +69,7 @@ USAGE
 * [`fathym eac env sources pipeline attach [SOURCELOOKUP] [PIPELINELOOKUP]`](#fathym-eac-env-sources-pipeline-attach-sourcelookup-pipelinelookup)
 * [`fathym eac export`](#fathym-eac-export)
 * [`fathym eac modifiers define`](#fathym-eac-modifiers-define)
+* [`fathym eac modifiers delete [MODIFIERLOOKUP]`](#fathym-eac-modifiers-delete-modifierlookup)
 * [`fathym eac projects applications add [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-add-projectlookup-applookup)
 * [`fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-preview-projectlookup-applookup)
 * [`fathym eac projects define [PROJECTLOOKUP]`](#fathym-eac-projects-define-projectlookup)
@@ -127,7 +128,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.159/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.160/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -887,6 +888,27 @@ EXAMPLES
   $ fathym eac modifiers define
 ```
 
+## `fathym eac modifiers delete [MODIFIERLOOKUP]`
+
+Used for deleting a DFS Modifier.
+
+```
+USAGE
+  $ fathym eac modifiers delete [MODIFIERLOOKUP] [--json]
+
+ARGUMENTS
+  MODIFIERLOOKUP  The modifier lookup to delete.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for deleting a DFS Modifier.
+
+EXAMPLES
+  $ fathym eac modifiers delete
+```
+
 ## `fathym eac projects applications add [PROJECTLOOKUP] [APPLOOKUP]`
 
 Used for adding an application to a project.
@@ -1165,7 +1187,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.159/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.160/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1472,7 +1494,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.159/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.160/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1538,7 +1560,7 @@ EXAMPLES
   $ fathym open
 ```
 
-_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.159/dist/commands/open.ts)_
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.160/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -1791,5 +1813,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.159/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.160/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
