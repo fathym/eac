@@ -236,6 +236,22 @@ fathym eac commit "Configured second application in project"
 fathym eac projects applications preview
 ```
 
+## Finalizing our feature development
+
+As we finish our feature development, and it passes [feature testing](../devops/testing/overview.md), we will need to make sure that we open a pull request to integration to have our changes incoporated. We can do this using the following command.
+
+```cli
+fathym git feature integrate
+```
+
+This pull request will be opened following the configuration that we used at the beginning of this guide. To approve and view your pull request, run:
+
+```cli
+fathym git home -s pulls
+```
+
+Also, if you go look at your builds again (either in the [enterprise feed](https://www.fathym.com/dashboard) or on GitHub) you'll see that builds have been executing for all of your branches.
+
 ## What's Next?
 
 There is a lot that you have set up over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through code-to-deploy. Next, you'll expand what you've been doing with this blog to bring in some interactivity and bring in TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM. This enables additional team workflows
