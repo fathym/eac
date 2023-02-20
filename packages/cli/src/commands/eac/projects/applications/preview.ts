@@ -1,4 +1,4 @@
-import { Args } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import open from 'open';
 import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../../common/fathym-command';
@@ -26,7 +26,12 @@ export default class Preview extends FathymCommand<PreivewContext> {
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    path: Flags.string({
+      char: 'p',
+      description: 'The path to preview.',
+    }),
+  };
 
   static args = {
     projectLookup: Args.string({
@@ -40,9 +45,11 @@ export default class Preview extends FathymCommand<PreivewContext> {
   static title = 'Preivew Project Application';
 
   protected async loadTasks(): Promise<ListrTask<PreivewContext>[]> {
-    const { args } = await this.parse(Preview);
+    const { args, flags } = await this.parse(Preview);
 
     const { appLookup, projectLookup } = args;
+
+    let { path } = flags;
 
     return [
       ensureActiveEnterpriseTask(this.config.configDir) as ListrTask,
@@ -69,7 +76,11 @@ export default class Preview extends FathymCommand<PreivewContext> {
             ''
           );
 
-          const previewUrl = `https://${host}${appRoot}`;
+          if (!path?.startsWith('/')) {
+            path = `/${path}`;
+          }
+
+          const previewUrl = `https://${host}${appRoot}${path || ''}`;
 
           open(previewUrl);
 

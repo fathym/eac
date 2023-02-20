@@ -177,16 +177,15 @@ We'll use another LCU Package here to quickly install our GitHub application.
 fathym lcu @fathym-it/lcu-eac-applications-lcu-github
 ```
 
+Follow the prompts and select your existing project and select the GitHub source control created earlier. Finally input something like `/github-app` for the path. Once completed, a new application, lookup, lcu, and processor will have been configured as we did in the [zip example](./01%20-%20overview.md), except this time interactively with the LCU package.
+
+> **NOTE** - Notice the source control being attached to the application, this sets the application up to recieve automatic deployments and will alter the GitHub Action for this purpose.
+
+Let's preview our new application:
+
 ```cli
-fathym eac applications lcu GitHub -p /second
-fathym eac projects applications add {project-lookup} {app-lookup}
-fathym eac commit "Configured second application in project"
-fathym eac projects applications preview {project-lookup} {app-lookup}
+fathym eac projects applications preview
 ```
-
-Notice the source control being attached to the application, this sets the application up to recieve automatic deployments and will alter the action for this purpose.
-
-That's it. Use the printed preview URL once available and you should see the contents of your index.html file. You might be wondering where the markdown is, but don't worry, we're about to configure the system to render the markdown.
 
 ## Exploring the Distributed File System (DFS) and Modifiers
 
@@ -197,6 +196,8 @@ Once a file is chosen for a request it will pass through any configured modifier
 > **NOTE** - You can head in to the [DFS and Modifiers](./dfs/overview.md) to learn more.
 
 ## Configuring the markdown composition
+
+In the first guide we demonstrated
 
 In order to enable markdown composition with your index.html file, you'll need to setup a couple of different modifiers. One will convert any markdown to HTML using the Markdown to Html Modifier. The other one, the HTML Inject Modifier, will format it into the defined template.
 
@@ -233,8 +234,8 @@ fathym eac projects applications preview {project-lookup} {app-lookup}
 
 ## What's Next?
 
-There is a lot that you have set up over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through code-to-deploy. Next, you'll expand what you've been doing with this blog to bring in some interactivity and bring in TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM.
+There is a lot that you have set up over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through code-to-deploy. Next, you'll expand what you've been doing with this blog to bring in some interactivity and bring in TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM. This enables additional team workflows
 
-## Bonus - Global Edge CDN
+<!-- ## Bonus - Global Edge CDN
 
-When deploying with Fathym, your solutions are delivered via Azure Global Edge CDN – bringing your information closer to all your users.
+When deploying with Fathym shared cloud, your solutions are delivered via Azure Global Edge CDN – bringing your information closer to your users. -->
