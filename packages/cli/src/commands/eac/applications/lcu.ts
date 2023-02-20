@@ -1,47 +1,115 @@
-import {} from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
+import { Args, Flags } from '@oclif/core';
+import { ListrTask } from 'listr2';
+import { EaCLowCodeUnit } from '@semanticjs/common';
+import { FathymCommand } from '../../../common/fathym-command';
 import {
-  ClosureInstruction,
-  FathymCommand,
-} from '../../../common/fathym-command';
+  ActiveEnterpriseTaskContext,
+  ApplicationTaskContext,
+  EaCTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
+  loadEaCTask,
+  ProjectTaskContext,
+  withEaCDraftEditTask,
+} from '../../../common/eac-services';
+import {
+  FathymTaskContext,
+  ensurePromptValue,
+} from '../../../common/core-helpers';
 
-export default class LCU extends FathymCommand {
-  static description = `Used for creating a managing application LCU settings.`;
+interface LCUTaskContext
+  extends FathymTaskContext,
+    ActiveEnterpriseTaskContext,
+    EaCTaskContext,
+    ProjectTaskContext,
+    ApplicationTaskContext {}
+
+export default class LCU extends FathymCommand<LCUTaskContext> {
+  static description = `Used for managing application LCU settings.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    zipFile: Flags.string({
+      char: 'z',
+      description: 'The path to the zip file containing your site.',
+      // relationships: [
+      //   {
+      //     type: 'all',
+      //     flags: [
+      //       {
+      //         name: 'zipFile',
+      //         when: async (flags) => flags.type === 'Zip',
+      //       },
+      //     ],
+      //   },
+      // ],
+    }),
+  };
 
-  static args = [];
+  static args = {
+    type: Args.string({
+      description: 'The type of the LCU settings to configure.',
+      required: true,
+      options: [
+        'API',
+        'ApplicationPointer',
+        'GitHub',
+        'GitHubOAuth',
+        'SPA',
+        'NPM',
+        'WordPress',
+        'Zip',
+      ],
+    }),
+    appLookup: Args.string({
+      description: 'The application lookup to manage LCU settings for.',
+    }),
+  };
 
   static title = 'Manage LCU Settings';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadTasks(): Promise<ListrTask<LCUTaskContext>[]> {
+    const { args, flags } = await this.parse(LCU);
+
+    const { appLookup, type } = args;
+
+    const { zipFile } = flags;
+
     return [
-      {
-        Instruction: 'fathym eac applications security --help',
-        Description: `You can manage more about your application.`,
-      },
+      ensureActiveEnterpriseTask(this.config.configDir),
+      loadEaCTask(this.config.configDir),
+      ensureApplicationTask(this.config.configDir, appLookup, false, true),
+      this.addApplicationZipLCUToDraft(type, { ZipFile: zipFile }),
     ];
   }
 
-  protected async loadTasks(): Promise<ListrTask[]> {
-    // const { args } = await this.parse(LCU);
-
-    return [
+  protected addApplicationZipLCUToDraft(
+    type: string,
+    zipDets: Partial<{ ZipFile: string }>
+  ): ListrTask<LCUTaskContext> {
+    return withEaCDraftEditTask<LCUTaskContext, EaCLowCodeUnit>(
+      'Add application view package Zip LowCodeUnit',
+      this.config.configDir,
+      (ctx) => [['Applications', ctx.ApplicationLookup, 'LowCodeUnit']],
       {
-        title: `Updating application LCU settings`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Updated application LCU settings`;
-
-              resolve(true);
-            }, 3000);
-          });
+        enabled: (ctx) => type === 'Zip',
+        prompt: async (ctx, task) => {
+          zipDets.ZipFile = await ensurePromptValue(
+            task,
+            'Location of zip file',
+            zipDets.ZipFile
+          );
         },
-      },
-    ];
+        draftPatch: (ctx) => {
+          const patch = {
+            Type: type,
+            ...zipDets,
+          };
+
+          return patch;
+        },
+      }
+    );
   }
 }

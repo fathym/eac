@@ -1,44 +1,34 @@
-import {} from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { Args } from '@oclif/core';
+import { ListrTask } from 'listr2';
+import { FathymCommand } from '../../common/fathym-command';
+import {
+  commitDraftTask,
+  ensureActiveEnterpriseTask,
+} from '../../common/eac-services';
 
-export default class Commit extends FathymCommand {
+export default class Commit extends FathymCommand<any> {
   static description = `Used for commiting changes to the EaC.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {};
 
-  static args = [{ name: 'message', required: true }];
+  static args = {
+    message: Args.string({
+      description: 'The commit message.',
+    }),
+  };
 
   static title = 'EaC Commit';
-
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac projects applications preview --help',
-        Description: `Load previews for any of your deployed applications.`,
-      },
-    ];
-  }
 
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args } = await this.parse(Commit);
 
-    return [
-      {
-        title: `Committing EaC: ${args.message}`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `EaC committed`;
+    const { message } = args;
 
-              resolve(true);
-            }, 3000);
-          });
-        },
-      },
+    return [
+      ensureActiveEnterpriseTask(this.config.configDir),
+      commitDraftTask(this.config.cacheDir, message!),
     ];
   }
 }

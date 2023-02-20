@@ -1,46 +1,81 @@
-import {} from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
+import { Args } from '@oclif/core';
+import open from 'open';
+import { ListrTask } from 'listr2';
+import { FathymCommand } from '../../../../common/fathym-command';
+import { FathymTaskContext } from '../../../../common/core-helpers';
 import {
-  ClosureInstruction,
-  FathymCommand,
-} from '../../../../common/fathym-command';
+  EaCTaskContext,
+  ActiveEnterpriseTaskContext,
+  ProjectTaskContext,
+  ApplicationTaskContext,
+  ensureActiveEnterpriseTask,
+  loadEaCTask,
+  ensureProjectTask,
+  ensureApplicationTask,
+} from '../../../../common/eac-services';
 
-export default class Preview extends FathymCommand {
-  static description = `Used for getting a preview link to a project application.`;
+interface PreivewContext
+  extends FathymTaskContext,
+    EaCTaskContext,
+    ActiveEnterpriseTaskContext,
+    ProjectTaskContext,
+    ApplicationTaskContext {}
+
+export default class Preview extends FathymCommand<PreivewContext> {
+  static description = `Used for preivewing a application.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   static flags = {};
 
-  static args = [];
+  static args = {
+    projectLookup: Args.string({
+      description: 'The project lookup to preview.',
+    }),
+    appLookup: Args.string({
+      description: 'The application lookup to preview.',
+    }),
+  };
 
-  static title = 'Project Application Preview';
+  static title = 'Preivew Project Application';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadTasks(): Promise<ListrTask<PreivewContext>[]> {
+    const { args } = await this.parse(Preview);
+
+    const { appLookup, projectLookup } = args;
+
     return [
+      ensureActiveEnterpriseTask(this.config.configDir) as ListrTask,
+      loadEaCTask(this.config.configDir),
+      ensureProjectTask(this.config.configDir, projectLookup),
+      ensureApplicationTask(
+        this.config.configDir,
+        appLookup,
+        false,
+        false,
+        true
+      ),
       {
-        Instruction: 'fathym eac projects --help',
-        Description: `You can now manage more about your project.`,
-      },
-    ];
-  }
+        title: `Open application preview`,
+        task: async (ctx, task) => {
+          const project = ctx.EaC.Projects![ctx.ProjectLookup];
 
-  protected async loadTasks(): Promise<ListrTask[]> {
-    // const { args } = await this.parse(Preview);
+          const host = project.PrimaryHost;
 
-    return [
-      {
-        title: `Loading preview URL for project application`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Project application preview URL loaded successfully`;
+          const application = ctx.EaC.Applications![ctx.ApplicationLookup];
 
-              resolve(true);
-            }, 3000);
-          });
+          const appRoot = application.LookupConfig!.PathRegex!.replace(
+            '.*',
+            ''
+          );
+
+          const previewUrl = `https://${host}${appRoot}`;
+
+          open(previewUrl);
+
+          task.output = previewUrl;
         },
+        options: { persistentOutput: true },
       },
     ];
   }

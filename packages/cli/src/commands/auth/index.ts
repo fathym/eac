@@ -1,15 +1,22 @@
-import {} from '@oclif/core';
-import Listr from 'listr';
+import { ListrTask } from 'listr2';
 import open from 'open';
-import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
+  FathymTaskContext,
   getAccessToken,
   getAuthorizationCode,
   getAuthorizationUrl,
-} from '../../common/auth-helpers';
+} from '../../common/core-helpers';
 
-export default class Auth extends FathymCommand {
+interface AuthTaskContext extends FathymTaskContext {
+  AuthorizationCode: string;
+
+  AuthorizationURL: string;
+}
+
+export default class Auth extends FathymCommand<AuthTaskContext> {
   static description =
     'Used to start the authentication process with Fathym, so your CLI can work with the EaC and other features.';
 
@@ -17,7 +24,7 @@ export default class Auth extends FathymCommand {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Fathym Sign In';
 
@@ -39,25 +46,25 @@ with GitHub and be ready to go.`,
     ];
   }
 
-  protected async loadTasks(): Promise<Listr.ListrTask<any>[]> {
+  protected async loadTasks(): Promise<ListrTask<AuthTaskContext>[]> {
     return [
       {
         title: 'Get authorization URL',
         task: async (ctx) => {
-          ctx.authorizationUrl = await getAuthorizationUrl();
+          ctx.AuthorizationURL = await getAuthorizationUrl();
         },
       },
       {
         title: 'Open browser for user sign in',
         task: async (ctx) => {
-          open(ctx.authorizationUrl);
+          open(ctx.AuthorizationURL);
         },
       },
       {
         title: `Waiting for user to sign in`,
         task: async (ctx, task) => {
           // get the authorization code from th "e helper service
-          ctx.authorizationCode = await getAuthorizationCode();
+          ctx.AuthorizationCode = await getAuthorizationCode();
 
           task.title = 'User signed in successfully, auth code is available.';
         },
@@ -65,7 +72,9 @@ with GitHub and be ready to go.`,
       {
         title: `Load access token`,
         task: async (ctx) => {
-          await getAccessToken(this.config.configDir, ctx.authorizationCode);
+          await getAccessToken(this.config.configDir, ctx.AuthorizationCode);
+
+          ctx.Fathym.Instructions = await this.loadInstructions();
         },
       },
     ];

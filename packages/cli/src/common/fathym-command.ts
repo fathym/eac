@@ -1,29 +1,26 @@
 import { Command, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
-import Listr from 'listr';
-import { refreshAccessTokenTask } from './auth-helpers';
-// import { indent } from '@semanticjs/common';
+import { Listr, ListrTask } from 'listr2';
+import {
+  AccessTokenTaskContext,
+  FathymTaskContext,
+  refreshAccessTokenTask,
+} from './core-helpers';
+import { ClosureInstruction } from './ClosureInstruction';
+import path from 'node:path';
+import { readFile, readJson } from 'fs-extra';
 
-export class ClosureInstruction {
-  public Description?: string;
-
-  public Instruction!: string;
-}
-
-export class DisplayLookup {
-  public Lookup!: string;
-
-  public Name!: string;
-}
-
-export abstract class FathymCommand extends Command {
+export abstract class FathymCommand<
+  TContext extends FathymTaskContext
+> extends Command {
   static globalFlags = {
-    interactive: Flags.boolean({
-      char: 'i',
+    ci: Flags.boolean({
       description:
-        'Run command in interactive mode, allowing prompts for missing required args and flags.',
+        'Run command in yield mode for automation, to prevent prompts.',
     }),
   };
+
+  static enableJsonFlag = true;
 
   static title: string;
 
@@ -31,12 +28,14 @@ export abstract class FathymCommand extends Command {
 
   static authPort = 8119;
 
-  public async run(): Promise<void> {
-    await this.runCommandCycle();
+  public async run(): Promise<any> {
+    const result = await this.runCommandCycle();
+
+    return result;
   }
 
   //#region Command Cycle
-  protected async runCommandCycle(): Promise<void> {
+  protected async runCommandCycle(): Promise<any> {
     const CurCmd = <typeof FathymCommand>this.constructor;
 
     this.title(`Executing ${CurCmd.title}`);
@@ -44,33 +43,35 @@ export abstract class FathymCommand extends Command {
     let tasks = await this.loadTasks();
 
     if (CurCmd.forceRefresh) {
-      tasks = [await refreshAccessTokenTask(this.config.configDir), ...tasks];
+      tasks = [
+        await refreshAccessTokenTask<TContext>(this.config.configDir),
+        ...tasks,
+      ];
     }
 
-    const listr = new Listr(tasks);
+    tasks = tasks?.filter((t) => Boolean(t)) || [];
 
-    listr
-      .run()
-      .then(async () => {
-        const lookups = await this.loadLookups();
+    const listr = new Listr<TContext>(tasks);
 
-        const instructions = await this.loadInstructions();
+    try {
+      let ctx: TContext = {
+        Fathym: {},
+      } as TContext;
 
-        const result = await this.loadResult();
+      ctx = await listr.run(ctx);
 
-        if (lookups) {
-          this.lookups(lookups.name, lookups.lookups);
-        }
+      if (ctx?.Fathym?.Lookups) {
+        this.lookups(ctx?.Fathym?.Lookups.name, ctx?.Fathym?.Lookups.lookups);
+      }
 
-        if (result) {
-          this.result(result);
-        }
+      if (ctx?.Fathym?.Result) {
+        this.result(ctx?.Fathym?.Result);
+      }
 
-        this.closure(`${CurCmd.title} Executed`, instructions);
-      })
-      .catch((error) => {
-        this.debug(error);
-      });
+      this.closure(`${CurCmd.title} Executed`, ctx?.Fathym?.Instructions);
+    } catch (error: any) {
+      this.error(error);
+    }
   }
   //#endregion
 
@@ -79,8 +80,6 @@ export abstract class FathymCommand extends Command {
     this.log();
 
     this.log(color.blue(title));
-
-    // this.log();
 
     instructions?.forEach((instruction) => {
       let instruct = color.green(instruction.Instruction);
@@ -121,31 +120,15 @@ export abstract class FathymCommand extends Command {
     return indentedStr;
   }
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
+  protected abstract loadTasks(): Promise<ListrTask<TContext>[]>;
 
-  protected async loadLookups(): Promise<
-    { name: string; lookups: DisplayLookup[] } | undefined
-  > {
-    return undefined;
-  }
-
-  protected async loadResult(): Promise<string | undefined> {
-    return undefined;
-  }
-
-  protected abstract loadTasks(): Promise<Listr.ListrTask<any>[]>;
-
-  protected lookups(name: string, lookups: DisplayLookup[]): void {
+  protected lookups(name: string, displays: string[]): void {
     this.log();
 
-    this.log(
-      this.indent(color.underline(`{Name} ({${color.blueBright(name)}})`))
-    );
+    this.log(this.indent(color.underline(`${name}`)));
 
-    lookups.forEach((ent) => {
-      this.log(this.indent(`${ent.Name} (${color.blueBright(ent.Lookup)})`));
+    displays.forEach((display) => {
+      this.log(this.indent(display));
     });
   }
 

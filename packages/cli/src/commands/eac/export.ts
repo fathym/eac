@@ -1,39 +1,63 @@
-import {} from '@oclif/core';
-import { ListrTask } from 'listr';
-import { EnterpriseAsCode } from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { Flags } from '@oclif/core';
+import { ListrTask } from 'listr2';
+import { FathymCommand } from '../../common/fathym-command';
+import { mkdir, pathExists, writeJson } from 'fs-extra';
+import path from 'node:path';
+import { FathymTaskContext } from '../../common/core-helpers';
+import {
+  ActiveEnterpriseTaskContext,
+  EaCTaskContext,
+  ensureActiveEnterpriseTask,
+  loadEaCTask,
+} from '../../common/eac-services';
 
-export default class Export extends FathymCommand {
+interface ExportTaskContext
+  extends FathymTaskContext,
+    ActiveEnterpriseTaskContext,
+    EaCTaskContext {}
+
+export default class Export extends FathymCommand<ExportTaskContext> {
   static description = `Used for exporting the EaC.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    file: Flags.string({
+      char: 'f',
+      description: 'File path where the export should be written',
+    }),
+  };
 
-  static args = [];
+  static args = {};
 
   static title = 'EaC Export';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
+  protected async loadTasks(): Promise<ListrTask<ExportTaskContext>[]> {
+    const { flags } = await this.parse(Export);
 
-  protected async loadResult(): Promise<string | undefined> {
-    return JSON.stringify({} as EnterpriseAsCode);
-  }
+    const { file } = flags;
 
-  protected async loadTasks(): Promise<ListrTask[]> {
     return [
+      ensureActiveEnterpriseTask(this.config.configDir),
+      loadEaCTask(this.config.configDir),
       {
         title: `Exporting EaC`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `EaC exported`;
+        task: async (ctx, task) => {
+          if (file) {
+            const dir = path.dirname(file);
 
-              resolve(true);
-            }, 3000);
-          });
+            const exists = await pathExists(dir);
+
+            if (!exists) {
+              await mkdir(dir, { recursive: true });
+            }
+
+            await writeJson(file, ctx.EaC, { spaces: 2 });
+
+            task.title = `Exported EaC to ${file}`;
+          } else {
+            ctx.Fathym.Result = JSON.stringify(ctx.EaC, undefined, 2);
+          }
         },
       },
     ];

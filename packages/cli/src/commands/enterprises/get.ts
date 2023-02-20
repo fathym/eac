@@ -1,9 +1,14 @@
-import {} from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { ListrTask } from 'listr2';
+import { FathymCommand } from '../../common/fathym-command';
+import { FathymTaskContext } from '../../common/core-helpers';
+import {
+  ActiveEnterpriseTaskContext,
+  ensureActiveEnterpriseTask,
+} from '../../common/eac-services';
 
-export default class Get extends FathymCommand {
+interface GetContext extends FathymTaskContext, ActiveEnterpriseTaskContext {}
+
+export default class Get extends FathymCommand<GetContext> {
   static description = `Get's the current user's active enterprise for the CLI. Determines
   which enterprise commands are executed against.`;
 
@@ -11,36 +16,13 @@ export default class Get extends FathymCommand {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Get Active Enterprise';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac --help',
-        Description: `You can now access the EaC via CLI,
-to manage your enterprie setup.`,
-      },
-    ];
-  }
-
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<GetContext>[]> {
     const { args } = await this.parse(Get);
 
-    return [
-      {
-        title: `Getting the user's active enterprise to '${args.entLookup}'`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Active enterprise '${args.entLookup}' retrieved for the user`;
-
-              resolve(true);
-            }, 3000);
-          });
-        },
-      },
-    ];
+    return [ensureActiveEnterpriseTask(this.config.configDir)];
   }
 }

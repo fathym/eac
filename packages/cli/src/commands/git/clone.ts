@@ -1,12 +1,24 @@
-import { Flags } from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
-import { confirmGitRepo, ensureOrganization } from '../../common/git-tasks';
-import { execa } from '../../common/task-helpers';
-import path from 'node:path';
+import { Args, Flags } from '@oclif/core';
+import { ListrTask } from 'listr2';
 
-export default class Clone extends FathymCommand {
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
+import {
+  confirmGitRepo,
+  ensureOrganization,
+  ensureRepository,
+} from '../../common/git-tasks';
+import { runProc } from '../../common/task-helpers';
+import path from 'node:path';
+import { GitHubTaskContext, loadGitUsername } from '../../common/git-helpers';
+import {
+  AccessTokenTaskContext,
+  FathymTaskContext,
+} from '../../common/core-helpers';
+
+interface CloneTaskContext extends FathymTaskContext, GitHubTaskContext {}
+
+export default class Clone extends FathymCommand<CloneTaskContext> {
   static description = `Used for cloning the source control for Git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -22,18 +34,18 @@ export default class Clone extends FathymCommand {
     }),
   };
 
-  static args = [
-    { name: 'organization', required: false },
-    { name: 'repository', required: true },
-  ];
+  static args = {
+    organization: Args.string({
+      description: 'The organization to clone from.',
+    }),
+    repository: Args.string({
+      description: 'The repository to clone from.',
+    }),
+  };
 
   static title = 'Git Clone';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<CloneTaskContext>[]> {
     const { args, flags } = await this.parse(Clone);
 
     const { organization, repository } = args;
@@ -43,18 +55,26 @@ export default class Clone extends FathymCommand {
     const branch = flags.branch ? `--branch ${flags.branch}` : '';
 
     return [
-      confirmGitRepo(),
-      ensureOrganization(organization),
+      ensureOrganization(this.config.configDir, organization, undefined, true),
+      ensureRepository(
+        this.config.configDir,
+        repository,
+        undefined,
+        false,
+        true
+      ),
       {
-        title: `Cloning repository ${organization}/${repository}`,
+        title: `Cloning repository`,
         task: async (ctx, task) => {
-          const destination = path.join(process.cwd(), repository);
+          task.title = `Cloning repository ${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
 
-          const gitPath = `https://github.com/${organization}/${repository}.git`;
+          const destination = path.join(process.cwd(), ctx.GitHubRepository);
 
-          await execa(`git clone ${gitPath} ${destination}`, [depth, branch]);
+          const gitPath = `https://github.com/${ctx.GitHubOrganization}/${ctx.GitHubRepository}.git`;
 
-          task.title = `Repository ${organization}/${repository} cloned`;
+          await runProc(`git clone ${gitPath} ${destination}`, [depth, branch]);
+
+          task.title = `Repository ${ctx.GitHubOrganization}/${ctx.GitHubRepository} cloned`;
         },
       },
     ];

@@ -1,47 +1,108 @@
-import {} from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
+import { Args, Flags } from '@oclif/core';
+import { ListrTask } from 'listr2';
+import { EaCApplicationAsCode, EaCProcessor } from '@semanticjs/common';
+import { FathymCommand } from '../../../common/fathym-command';
 import {
-  ClosureInstruction,
-  FathymCommand,
-} from '../../../common/fathym-command';
+  ActiveEnterpriseTaskContext,
+  ApplicationTaskContext,
+  EaCTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
+  loadEaCTask,
+  ProjectTaskContext,
+  withEaCDraftEditTask,
+} from '../../../common/eac-services';
+import {
+  FathymTaskContext,
+  ensurePromptValue,
+} from '../../../common/core-helpers';
 
-export default class Processor extends FathymCommand {
-  static description = `Used for creating a managing application Processor settings.`;
+interface LCUTaskContext
+  extends FathymTaskContext,
+    ActiveEnterpriseTaskContext,
+    EaCTaskContext,
+    ProjectTaskContext,
+    ApplicationTaskContext {}
+
+export default class Processor extends FathymCommand<LCUTaskContext> {
+  static description = `Used for managing application processor settings.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    defaultFile: Flags.string({
+      char: 'd',
+      description: 'The path of the default file.',
+    }),
+    baseHref: Flags.string({
+      char: 'b',
+      description: 'The base href.',
+    }),
+  };
 
-  static args = [];
+  static args = {
+    type: Args.string({
+      description: 'The type of the processor settings to configure.',
+      required: true,
+      options: ['DFS', 'OAuth', 'Proxy', 'Redirect'],
+    }),
+    appLookup: Args.string({
+      description: 'The application lookup to manage processor settings for.',
+    }),
+  };
 
-  static title = 'Manage Processor Settings';
+  static title = 'Manage processor Settings';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
+  protected async loadTasks(): Promise<ListrTask<LCUTaskContext>[]> {
+    const { args, flags } = await this.parse(Processor);
+
+    const { appLookup, type } = args;
+
+    const { defaultFile, baseHref } = flags;
+
     return [
-      {
-        Instruction: 'fathym eac applications security --help',
-        Description: `You can manage more about your application.`,
-      },
+      ensureActiveEnterpriseTask(this.config.configDir),
+      loadEaCTask(this.config.configDir),
+      ensureApplicationTask(this.config.configDir, appLookup, false, true),
+      this.addApplicationViewPackageProcessorToDraft(type, {
+        BaseHref: baseHref,
+        DefaultFile: defaultFile,
+      }),
     ];
   }
 
-  protected async loadTasks(): Promise<ListrTask[]> {
-    // const { args } = await this.parse(Processor);
-
-    return [
+  protected addApplicationViewPackageProcessorToDraft(
+    type: string,
+    dets: Partial<{ BaseHref: string; DefaultFile: string }>
+  ): ListrTask<LCUTaskContext> {
+    return withEaCDraftEditTask<LCUTaskContext, EaCProcessor>(
+      'Add application view package processor',
+      this.config.configDir,
+      (ctx) => [['Applications', ctx.ApplicationLookup, 'Processor']],
       {
-        title: `Updating application Processor settings`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Updated application Processor settings`;
+        enabled: (ctx) => type === 'DFS',
+        prompt: async (ctx, task) => {
+          dets.BaseHref = await ensurePromptValue(
+            task,
+            'Base href for the application',
+            dets.BaseHref
+          );
 
-              resolve(true);
-            }, 3000);
-          });
+          dets.DefaultFile = await ensurePromptValue(
+            task,
+            'Location of default file',
+            dets.DefaultFile
+          );
         },
-      },
-    ];
+        draftPatch: (ctx) => {
+          const patch = {
+            Type: type,
+            ...dets,
+          };
+
+          return patch;
+        },
+      }
+    );
   }
 }

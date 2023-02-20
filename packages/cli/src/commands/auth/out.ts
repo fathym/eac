@@ -1,9 +1,8 @@
-import {} from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { ListrTask } from 'listr2';
+import { withUserAuthConfig } from '../../common/config-helpers';
+import { FathymCommand } from '../../common/fathym-command';
 
-export default class Out extends FathymCommand {
+export default class Out extends FathymCommand<any> {
   static description =
     'Used to sign out, so your CLI will NOT work with the EaC and other features.';
 
@@ -11,18 +10,9 @@ export default class Out extends FathymCommand {
 
   static flags = {};
 
-  static args = [];
+  static args = {};
 
   static title = 'Fathym Sign Out';
-
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym auth',
-        Description: `Use this to sign back in.`,
-      },
-    ];
-  }
 
   protected async loadTasks(): Promise<ListrTask[]> {
     return [
@@ -32,14 +22,12 @@ export default class Out extends FathymCommand {
       },
       {
         title: `Waiting for sign out`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = 'User Signed Out';
-
-              resolve(true);
-            }, 3000);
+        task: async (ctx, task) => {
+          await withUserAuthConfig(this.config.configDir, async (userAuth) => {
+            delete userAuth.AccessToken;
           });
+
+          task.title = `Sign out completed successfully`;
         },
       },
     ];

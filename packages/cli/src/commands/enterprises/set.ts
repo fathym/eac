@@ -1,9 +1,15 @@
-import {} from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { color } from '@oclif/color';
+import { ListrTask } from 'listr2';
+import { FathymCommand } from '../../common/fathym-command';
+import {
+  ensurePromptValue,
+  FathymTaskContext,
+} from '../../common/core-helpers';
+import { listEnterprises, withEaCDraft } from '../../common/eac-services';
+import { Args } from '@oclif/core';
+import { withUserAuthConfig } from '../../common/config-helpers';
 
-export default class Set extends FathymCommand {
+export default class Set extends FathymCommand<FathymTaskContext> {
   static description = `Set's the current user's active enterprise for the CLI. Determines
   which enterprise commands are executed against.`;
 
@@ -11,36 +17,66 @@ export default class Set extends FathymCommand {
 
   static flags = {};
 
-  static args = [{ name: 'entLookup', required: true }];
+  static args = {
+    entLookup: Args.string({
+      description: 'The enterprise lookup to set as active.',
+    }),
+  };
 
   static title = 'Set Active Enterprise';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [
-      {
-        Instruction: 'fathym eac --help',
-        Description: `You can now access the EaC via CLI,
-to manage your enterprie setup.`,
-      },
-    ];
-  }
-
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args } = await this.parse(Set);
 
-    // Add task to check for draft changes, if draft changes then block other aspects and return information that tells user to first commit or reset EaC changes before changing...  Maybe offer a way for inquierer to ask the user what they want to do if there are EaC Draft changes... Provide a commit flow prior to changing EaCs
+    let { entLookup } = args;
 
     return [
       {
-        title: `Setting the user's active enterprise to '${args.entLookup}'`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Active enterprise set to '${args.entLookup}'`;
+        title: `Setting the user's active enterprise`,
+        task: async (ctx, task) => {
+          const ents = await listEnterprises(this.config.configDir);
 
-              resolve(true);
-            }, 3000);
-          });
+          entLookup = await ensurePromptValue(
+            task,
+            'Choose enterprise:',
+            entLookup!,
+            ents.map((ent) => {
+              return {
+                message: `${ent.Name} (${color.blueBright(ent.Lookup)})`,
+                name: ent.Lookup,
+              };
+            })
+          );
+
+          task.title = `Setting the user's active enterprise to '${entLookup}'`;
+
+          const eacDraft = await withEaCDraft(this.config.configDir);
+
+          if (eacDraft.HasChanges) {
+            ctx.Fathym.Instructions = [
+              {
+                Instruction: 'fathym eac commit',
+                Description: `You can now access the EaC via CLI, to manage your enterprie setup.`,
+              },
+              {
+                Instruction: 'fathym eac clear',
+                Description: `You can now access the EaC via CLI, to manage your enterprie setup.`,
+              },
+            ];
+
+            throw new Error(`There are changes against the EaC draft.`);
+          } else {
+            await withUserAuthConfig(this.config.configDir, async (cfg) => {
+              cfg.ActiveEnterpriseLookup = entLookup!;
+            });
+
+            ctx.Fathym.Instructions = [
+              {
+                Instruction: 'fathym eac --help',
+                Description: `You can now access the EaC via CLI, to manage your enterprie setup.`,
+              },
+            ];
+          }
         },
       },
     ];

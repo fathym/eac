@@ -1,9 +1,10 @@
-import { Flags } from '@oclif/core';
-import { ListrTask } from 'listr';
-import {} from '@semanticjs/common';
-import { ClosureInstruction, FathymCommand } from '../../common/fathym-command';
+import { Args, Flags } from '@oclif/core';
+import { ListrTask } from 'listr2';
+
+import { FathymCommand } from '../../common/fathym-command';
+import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
-  commitChanges,
+  commitGitChanges,
   confirmGitRepo,
   fetchChange,
   fetchPrune,
@@ -12,14 +13,13 @@ import {
   pushOrigin,
   rebaseIntegration,
 } from '../../common/git-tasks';
-import { ensureMessage } from '../../common/git-helpers';
 
-export default class Commit extends FathymCommand {
-  static aliases = ['git commit', 'git sync'];
-
+export default class Commit extends FathymCommand<any> {
   static description = `Used for committing changes to the current working branch and syncing with integration.`;
 
-  static examples = ['<%= config.bin %> <%= command.id %>'];
+  static examples = [
+    '<%= config.bin %> <%= command.id %> "Commit messag here"',
+  ];
 
   static flags = {
     rebase: Flags.boolean({
@@ -28,26 +28,24 @@ export default class Commit extends FathymCommand {
     }),
   };
 
-  static args = [{ name: 'message' }];
+  static args = {
+    message: Args.string({
+      description: 'The commit message.',
+    }),
+  };
 
   static title = 'Git Commit';
 
-  protected async loadInstructions(): Promise<ClosureInstruction[]> {
-    return [];
-  }
-
-  protected async loadTasks(): Promise<ListrTask[]> {
+  protected async loadTasks(): Promise<ListrTask<any>[]> {
     const { args, flags } = await this.parse(Commit);
 
-    const { rebase } = flags;
+    const { ci, rebase } = flags;
 
-    let { message } = args;
-
-    message = await ensureMessage(message);
+    const { message } = args;
 
     return [
       confirmGitRepo(),
-      commitChanges(message),
+      commitGitChanges(message),
       fetchChange(),
       rebase ? rebaseIntegration() : mergeIntegration(),
       pull(),

@@ -1,17 +1,29 @@
 import { Hook, toConfiguredId, toStandardizedId } from '@oclif/core';
-import inquirer from 'inquirer';
+import { color } from '@oclif/color';
+import enquirer from 'enquirer';
 
 const hook: Hook.CommandIncomplete = async function ({
   config,
   matches,
   argv,
 }) {
-  const { command } = await inquirer.prompt<{ command: string }>([
+  const { command } = await enquirer.prompt<{ command: string }>([
     {
+      type: 'select',
       name: 'command',
-      type: 'list',
       message: 'Which of these commands would you like to run?',
-      choices: matches.map((p) => toConfiguredId(p.id, config)),
+      choices: matches.map((p: any) => {
+        const command = color.green(
+          `fathym ${p.id.toString().replace(/:/g, ' ')}`
+        );
+
+        return {
+          message: `${p.title} - ${color.blueBright(
+            p.description
+          )} (${command})`,
+          name: toConfiguredId(p.id, config),
+        };
+      }),
     },
   ]);
 
