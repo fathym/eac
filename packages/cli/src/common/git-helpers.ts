@@ -35,7 +35,7 @@ export async function loadCurrentGitOrgRepo(
 }
 
 export async function loadCurrentGitPackageName(): Promise<string> {
-  const orgRepo = loadCurrentGitOrgRepo();
+  const orgRepo = await loadCurrentGitOrgRepo();
 
   const name = `@${orgRepo}`;
 
