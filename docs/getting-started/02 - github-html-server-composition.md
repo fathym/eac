@@ -211,6 +211,13 @@ Next you will configure the modifier that will compose the formatted markdown in
 fathym lcu @fathym-it/lcu-eac-modifiers-html-composer
 ```
 
+<!-- {
+  "MODIFIER*NAME": "HTML Markdown Composer",
+  "TARGET_PATH_REGEX": ".*.(md|mdx).*",
+  "TEMPLATE_PATH": "./index.html",
+  "TARGET_SELECTOR": "//div[@id='fathym-compose']"
+} -->
+
 > **NOTE** - The priority is important to ensure modifiers execute in the correct order. Higher priority modifiers execute first, then lower priority ones. Modifiers with the same priority execute in parallel. The LCU packages help manage modifiers by our (and the communities) own internal setup.
 
 With the new modifier created, you'll need to add it to the project again for use. This time we'll add the HTML composer to our specific application.
@@ -223,7 +230,10 @@ This will create the final aspect of our initial modifier flow, and once committ
 
 ```cli
 fathym eac commit "Configured second application in project"
-fathym eac projects applications preview {project-lookup} {app-lookup}
+```
+
+```cli
+fathym eac projects applications preview
 ```
 
 ## What's Next?

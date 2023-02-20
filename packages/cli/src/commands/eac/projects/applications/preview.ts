@@ -76,7 +76,7 @@ export default class Preview extends FathymCommand<PreivewContext> {
             ''
           );
 
-          if (!path?.startsWith('/')) {
+          if (path && !path?.startsWith('/')) {
             path = `/${path}`;
           }
 

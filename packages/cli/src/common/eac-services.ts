@@ -428,15 +428,15 @@ export function ensureModifierTask<
     ApplicationTaskContext
 >(
   configDir: string,
-  appLookup?: string,
+  mdfrLookup?: string,
   create?: boolean,
   addFromDraft?: boolean,
   projectFilter?: boolean,
   applicationFilter?: boolean,
   enabled?: (ctx: TContext) => boolean
 ): ListrTask<TContext> {
-  return ensureSelection<TContext, EaCDFSModifier>(configDir, appLookup, {
-    type: 'DFSModifier',
+  return ensureSelection<TContext, EaCDFSModifier>(configDir, mdfrLookup, {
+    type: 'DFS Modifier',
     shouldCreate: create,
     addFromDraft: addFromDraft,
     enabled: enabled,

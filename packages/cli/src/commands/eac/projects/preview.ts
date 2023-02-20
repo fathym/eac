@@ -56,7 +56,7 @@ export default class Preview extends FathymCommand<PreivewContext> {
 
           const host = project.PrimaryHost;
 
-          if (!path?.startsWith('/')) {
+          if (path && !path?.startsWith('/')) {
             path = `/${path}`;
           }
 
