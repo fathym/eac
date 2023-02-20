@@ -1,28 +1,31 @@
 import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
+import {
+  FathymTaskContext,
+  ensurePromptValue,
+} from '../../../common/core-helpers';
 import {
   ActiveEnterpriseTaskContext,
-  ApplicationTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  FathymTaskContext,
-  loadEaCTask,
   ProjectTaskContext,
-} from '../../../common/core-helpers';
-import { ensurePromptValue, withEaCDraft } from '../../../common/eac-services';
+  ApplicationTaskContext,
+  ensureActiveEnterpriseTask,
+  loadEaCTask,
+  ensureApplicationTask,
+  withEaCDraftEditTask,
+} from '../../../common/eac-services';
+import { EaCApplicationLookupConfiguration } from '@semanticjs/common';
 
-interface LCUTaskContext
+interface LookupTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
     EaCTaskContext,
     ProjectTaskContext,
     ApplicationTaskContext {}
 
-export default class Lookup extends FathymCommand<LCUTaskContext> {
+export default class Lookup extends FathymCommand<LookupTaskContext> {
   static description = `Used for managing application lookup settings.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -42,7 +45,7 @@ export default class Lookup extends FathymCommand<LCUTaskContext> {
 
   static title = 'Manage processor Settings';
 
-  protected async loadTasks(): Promise<ListrTask<LCUTaskContext>[]> {
+  protected async loadTasks(): Promise<ListrTask<LookupTaskContext>[]> {
     const { args, flags } = await this.parse(Lookup);
 
     const { appLookup } = args;
@@ -50,9 +53,9 @@ export default class Lookup extends FathymCommand<LCUTaskContext> {
     const { path } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, appLookup, false, true),
+      ensureApplicationTask(this.config.configDir, appLookup, false, true),
       this.addApplicationLookupToDraft({
         PathRegex: path,
       }),
@@ -61,43 +64,32 @@ export default class Lookup extends FathymCommand<LCUTaskContext> {
 
   protected addApplicationLookupToDraft(
     dets: Partial<{ PathRegex: string }>
-  ): ListrTask<LCUTaskContext> {
-    return {
-      title: 'Create zip application',
-      task: async (ctx, task) => {
-        dets.PathRegex = await ensurePromptValue(
-          task,
-          'Path for the application',
-          dets.PathRegex
-        );
+  ): ListrTask<LookupTaskContext> {
+    return withEaCDraftEditTask<
+      LookupTaskContext,
+      EaCApplicationLookupConfiguration
+    >(
+      'Add application lookup config',
+      this.config.configDir,
+      (ctx) => [['Applications', ctx.ApplicationLookup, 'LookupConfig']],
+      {
+        prompt: async (ctx, task) => {
+          dets.PathRegex = await ensurePromptValue(
+            task,
+            'Path for the application',
+            dets.PathRegex
+          );
 
-        dets.PathRegex = `${dets.PathRegex}.*`;
+          dets.PathRegex = `${dets.PathRegex}.*`;
+        },
+        draftPatch: (ctx) => {
+          const patch = {
+            ...dets,
+          };
 
-        const currentEaCAppLookup = ctx.EaC.Applications
-          ? ctx.EaC.Applications[ctx.ApplicationLookup]?.LookupConfig || {}
-          : {};
-
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            if (!draft.EaC.Applications) {
-              draft.EaC.Applications = {};
-            }
-
-            if (!draft.EaC.Applications[ctx.ApplicationLookup]) {
-              draft.EaC.Applications[ctx.ApplicationLookup] = {};
-            }
-
-            draft.EaC.Applications[ctx.ApplicationLookup].LookupConfig = {
-              ...currentEaCAppLookup,
-              ...dets,
-            };
-
-            return draft;
-          }
-        );
-      },
-    };
+          return patch;
+        },
+      }
+    );
   }
 }

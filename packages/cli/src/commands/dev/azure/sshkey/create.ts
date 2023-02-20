@@ -1,23 +1,21 @@
 import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import open from 'open';
 import { FathymCommand } from '../../../../common/fathym-command';
 import {
-  ActiveEnterpriseTaskContext,
   azureCliInstallTask,
   AzureCLITaskContext,
-  EaCTaskContext,
-  ensureActiveEnterprise,
   FathymTaskContext,
-  loadEaCTask,
 } from '../../../../common/core-helpers';
-import { runProc } from '../../../../common/task-helpers';
 import {
+  ActiveEnterpriseTaskContext,
   azSshKeyCreateTask,
   CloudResourceGroupTaskContext,
   CloudTaskContext,
+  EaCTaskContext,
+  ensureActiveEnterpriseTask,
   ensureCloudResourceGroupTask,
   ensureCloudTask,
+  loadEaCTask,
   SSHKeyTaskContext,
 } from '../../../../common/eac-services';
 
@@ -58,7 +56,7 @@ export default class SSHKey extends FathymCommand<SSHKeyContext> {
     const { keyName } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       azureCliInstallTask(),
       loadEaCTask(this.config.configDir),
       ensureCloudTask(), // cloudLookup),

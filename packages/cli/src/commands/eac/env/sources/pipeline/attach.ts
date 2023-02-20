@@ -1,20 +1,18 @@
 import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+
 import { FathymCommand } from '../../../../../common/fathym-command';
+import { FathymTaskContext, merge } from '../../../../../common/core-helpers';
 import {
   ActiveEnterpriseTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureSourceControl,
-  FathymTaskContext,
-  loadEaCTask,
-} from '../../../../../common/core-helpers';
-import {
+  ensureActiveEnterpriseTask,
   ensurePipelineTask,
+  ensureSourceTask,
+  loadEaCTask,
   PipelineTaskContext,
   SourceTaskContext,
-  withEaCDraft,
+  withEaCDraftEditTask,
 } from '../../../../../common/eac-services';
 
 interface AttachTaskContext
@@ -48,52 +46,33 @@ export default class Attach extends FathymCommand<any> {
     const { sourceLookup, pipelineLookup } = args;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureSourceControl(this.config.configDir, sourceLookup),
-      ensurePipelineTask(pipelineLookup),
-      {
-        title: `Attaching build pipeline to source control`,
-        task: (ctx, task) => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              task.title = `Build pipeline attached to source control`;
-
-              resolve(true);
-            }, 3000);
-          });
-        },
-      },
+      ensureSourceTask(this.config.configDir, sourceLookup, false, true),
+      ensurePipelineTask(this.config.configDir, pipelineLookup, false, true),
+      this.attachBuildPipelineToSource(),
     ];
   }
 
   protected attachBuildPipelineToSource(): ListrTask<AttachTaskContext> {
-    return {
-      title: 'Add modifier to application',
-      task: async (ctx, task) => {
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            draft.EaC.Environments![
-              ctx.EaC.Enterprise?.PrimaryEnvironment!
-            ].Sources![ctx.SourceLookup].DevOpsActionTriggerLookups?.push(
-              ctx.PipelineLookup
-            );
-
-            return draft;
-          },
-          [
-            [
-              'Environments',
-              ctx.EaC.Enterprise?.PrimaryEnvironment!,
-              'Sources',
-              ctx.SourceLookup,
-              ['DevOpsActionTriggerLookups', []],
-            ],
-          ]
-        );
-      },
-    };
+    return withEaCDraftEditTask<AttachTaskContext, string[]>(
+      'Add pipeline to source',
+      this.config.configDir,
+      (ctx) => [
+        [
+          'Environments',
+          ctx.EaC.Enterprise!.PrimaryEnvironment!,
+          'Sources',
+          ctx.SourceLookup,
+          ['DevOpsActionTriggerLookups', []],
+        ],
+      ],
+      {
+        draftPatch: (ctx) => [[ctx.PipelineLookup]],
+        applyPatch: (ctx, current, draft, patch) => {
+          merge(patch, draft);
+        },
+      }
+    );
   }
 }

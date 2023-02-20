@@ -1,7 +1,10 @@
 import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../common/fathym-command';
-import { FathymTaskContext, setApiRoot } from '../../common/core-helpers';
-import { ensurePromptValue } from '../../common/eac-services';
+import {
+  ensurePromptValue,
+  FathymTaskContext,
+  setApiRoot,
+} from '../../common/core-helpers';
 import { Args } from '@oclif/core';
 
 export default class SetAPIRoot extends FathymCommand<FathymTaskContext> {

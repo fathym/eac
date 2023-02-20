@@ -1,11 +1,10 @@
 import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
-import { ensureActiveEnterprise } from '../../common/core-helpers';
-import { commitGitChanges } from '../../common/git-tasks';
-import { commitDraftTask } from '../../common/eac-services';
+import {
+  commitDraftTask,
+  ensureActiveEnterpriseTask,
+} from '../../common/eac-services';
 
 export default class Commit extends FathymCommand<any> {
   static description = `Used for commiting changes to the EaC.`;
@@ -28,7 +27,7 @@ export default class Commit extends FathymCommand<any> {
     const { message } = args;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       commitDraftTask(this.config.cacheDir, message!),
     ];
   }

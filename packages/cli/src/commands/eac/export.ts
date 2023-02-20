@@ -1,18 +1,15 @@
 import { Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import { EnterpriseAsCode } from '@semanticjs/common';
 import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
+import { mkdir, pathExists, writeJson } from 'fs-extra';
+import path from 'node:path';
+import { FathymTaskContext } from '../../common/core-helpers';
 import {
   ActiveEnterpriseTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
   loadEaCTask,
-} from '../../common/core-helpers';
-import { withEaCDraft } from '../../common/eac-services';
-import { mkdir, pathExists, writeJson } from 'fs-extra';
-import path from 'node:path';
+} from '../../common/eac-services';
 
 interface ExportTaskContext
   extends FathymTaskContext,
@@ -41,7 +38,7 @@ export default class Export extends FathymCommand<ExportTaskContext> {
     const { file } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
       {
         title: `Exporting EaC`,

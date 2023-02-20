@@ -1,24 +1,24 @@
 import { Args, Flags } from '@oclif/core';
-import { color } from '@oclif/color';
-import { ListrTask, PromptOptions } from 'listr2';
+import { ListrTask } from 'listr2';
 import { randomUUID } from 'node:crypto';
 import { FathymCommand } from '../../../../../common/fathym-command';
+import { runProc } from '../../../../../common/task-helpers';
 import {
   ActiveEnterpriseTaskContext,
-  azureCliInstallTask,
-  AzureCLITaskContext,
-  delay,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
   loadEaCTask,
   setAzureSubTask,
-  SubscriptionTaskContext,
-} from '../../../../../common/core-helpers';
-import { runProc } from '../../../../../common/task-helpers';
-import { downloadFile, withEaCDraft } from '../../../../../common/eac-services';
+  withEaCDraftEditTask,
+} from '../../../../../common/eac-services';
 import { EaCCloudDetails } from '@semanticjs/common';
-import loadAxios from '../../../../../common/axios';
+import {
+  FathymTaskContext,
+  AzureCLITaskContext,
+  SubscriptionTaskContext,
+  azureCliInstallTask,
+  removeUndefined,
+} from '../../../../../common/core-helpers';
 
 interface DefineTaskContext
   extends FathymTaskContext,
@@ -59,7 +59,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     cloudLookup = cloudLookup || randomUUID();
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
       azureCliInstallTask(),
       setAzureSubTask(this.config.configDir),
@@ -71,77 +71,59 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     generate: boolean,
     cloudLookup: string
   ): ListrTask<DefineTaskContext> {
-    return {
-      title: 'Create cloud subscription connection',
-      enabled: (ctx) => ctx.AzureCLIInstalled,
-      task: async (ctx, task) => {
-        const env =
-          ctx.EaC.Environments![ctx.EaC.Enterprise?.PrimaryEnvironment!];
+    let generated: Record<string, any> = {};
 
-        const currentCloud =
-          env.Clouds && env.Clouds[cloudLookup]
-            ? env.Clouds[cloudLookup!].Cloud || {}
-            : {};
+    return withEaCDraftEditTask<DefineTaskContext, EaCCloudDetails>(
+      'Create cloud subscription connection',
+      this.config.configDir,
+      (ctx) => [
+        [
+          'Environments',
+          ctx.EaC.Enterprise!.PrimaryEnvironment!,
+          'Clouds',
+          cloudLookup,
+          [
+            'Cloud',
+            {
+              Name: ctx.SubscriptionName,
+              Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
+            },
+          ],
+        ],
+      ],
+      {
+        enabled: (ctx) => ctx.AzureCLIInstalled,
+        prompt: async (ctx, task) => {
+          if (generate) {
+            const svcPrincStr = await runProc('az', [
+              'ad',
+              'sp',
+              'create-for-rbac',
+              // `--name "${ctx.SubscriptionID}"`,
+              '--role Contributor',
+              `--scopes /subscriptions/${ctx.SubscriptionID}`,
+              // `--tenant ${ctx.TenantID}`,
+            ]);
 
-        let azCloud: EaCCloudDetails = {
-          Name: ctx.SubscriptionName,
-          Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
-          Type: 'Azure',
-          SubscriptionID: currentCloud.SubscriptionID,
-          TenantID: currentCloud.TenantID,
-          ApplicationID: currentCloud.ApplicationID,
-          AuthKey: currentCloud.AuthKey,
-        };
+            const svcPrinc = JSON.parse(svcPrincStr);
 
-        if (generate) {
-          const svcPrincStr = await runProc('az', [
-            'ad',
-            'sp',
-            'create-for-rbac',
-            // `--name "${ctx.SubscriptionID}"`,
-            '--role Contributor',
-            `--scopes /subscriptions/${ctx.SubscriptionID}`,
-            // `--tenant ${ctx.TenantID}`,
-          ]);
-
-          const svcPrinc = JSON.parse(svcPrincStr);
-
-          azCloud = {
-            ...azCloud,
-            ApplicationID: svcPrinc.appId,
-            AuthKey: svcPrinc.password,
-            SubscriptionID: ctx.SubscriptionID,
-            TenantID: svcPrinc.tenant,
-          };
-        }
-
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            if (!draft.EaC.Environments) {
-              draft.EaC.Environments = {};
-            }
-
-            if (
-              !draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
-            ) {
-              draft.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!] =
-                {};
-            }
-
-            draft.EaC.Environments![
-              ctx.EaC.Enterprise!.PrimaryEnvironment!
-            ].Clouds = {
-              [cloudLookup]: {
-                Cloud: azCloud,
-              },
+            generated = {
+              Type: 'Azure',
+              ApplicationID: svcPrinc.appId,
+              AuthKey: svcPrinc.password,
+              SubscriptionID: ctx.SubscriptionID,
+              TenantID: svcPrinc.tenant,
             };
-
-            return draft;
           }
-        );
-      },
-    };
+        },
+        draftPatch: (ctx) => {
+          const patch = {
+            ...removeUndefined(generated),
+          };
+
+          return patch;
+        },
+      }
+    );
   }
 }

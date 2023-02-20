@@ -1,7 +1,7 @@
 import { Args, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
 import { ListrTask, PromptOptions } from 'listr2';
-import {} from '@semanticjs/common';
+
 import { FathymTaskContext } from '../../common/core-helpers';
 import { FathymCommand } from '../../common/fathym-command';
 import { downloadFile } from '../../common/eac-services';

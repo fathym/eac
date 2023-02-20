@@ -1,26 +1,21 @@
 import { Args, Flags } from '@oclif/core';
-import { color } from '@oclif/color';
-import { ListrTask, PromptOptions } from 'listr2';
-import {} from '@semanticjs/common';
+import { ListrTask } from 'listr2';
+import { FathymCommand } from '../../common/fathym-command';
 import {
   ActiveEnterpriseTaskContext,
   ApplicationTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  ensureProject,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
+  ensureProjectTask,
   loadEaCTask,
   ProjectTaskContext,
-} from '../../common/core-helpers';
-import { FathymCommand } from '../../common/fathym-command';
-import {
-  downloadFile,
-  ensurePromptValue,
   uploadFile,
 } from '../../common/eac-services';
-import { url } from '@oclif/core/lib/flags';
-import { outputFile } from 'fs-extra';
+import {
+  FathymTaskContext,
+  ensurePromptValue,
+} from '../../common/core-helpers';
 
 interface UploadTaskContext
   extends FathymTaskContext,
@@ -69,17 +64,17 @@ export default class Upload extends FathymCommand<UploadTaskContext> {
     const { appLookup, findApp, projectFilter } = flags;
 
     const tasks: ListrTask<UploadTaskContext>[] = [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
     ];
 
     if (projectFilter) {
-      tasks.push(ensureProject(this.config.configDir, '', false, true));
+      tasks.push(ensureProjectTask(this.config.configDir, '', false, true));
     }
 
     tasks.push(
       findApp
-        ? ensureApplication(
+        ? ensureApplicationTask(
             this.config.configDir,
             appLookup,
             false,

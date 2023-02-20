@@ -1,25 +1,19 @@
 import { Args, Flags } from '@oclif/core';
 import { color } from '@oclif/color';
-import { Listr, ListrTask, ListrTaskWrapper, PromptOptions } from 'listr2';
+import { ListrTask, ListrTaskWrapper, PromptOptions } from 'listr2';
 import { FathymCommand } from '../../common/fathym-command';
 import { runProc } from '../../common/task-helpers';
 import { LcuPackageConfig } from '../../common/LcuPackageConfig';
 import {
-  ActiveEnterpriseTaskContext,
   azureCliInstallTask,
   AzureCLITaskContext,
-  EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureProject,
+  ensurePromptValue,
   FathymTaskContext,
   LCUParamAnswersTaskContext,
   loadChildDirectories,
-  loadEaCTask,
   loadFileAsJson,
   ParamAnswers,
   processAsyncArray,
-  ProjectTaskContext,
-  setAzureSubTask,
   SubscriptionTaskContext,
 } from '../../common/core-helpers';
 import loadAxios from '../../common/axios';
@@ -28,7 +22,14 @@ import { ensureOrganization } from '../../common/git-tasks';
 import path from 'node:path';
 import { InstallLCURequest } from '../../common/InstallLCURequest';
 import { EnterpriseAsCode } from '@semanticjs/common';
-import { ensurePromptValue } from '../../common/eac-services';
+import {
+  ActiveEnterpriseTaskContext,
+  EaCTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureProjectTask,
+  loadEaCTask,
+  ProjectTaskContext,
+} from '../../common/eac-services';
 
 export interface InstallContext
   extends FathymTaskContext,
@@ -97,7 +98,7 @@ export default class Install extends FathymCommand<InstallContext> {
                 task: (ctx, task) => {
                   return task.newListr<InstallContext>(
                     [
-                      ensureActiveEnterprise(this.config.configDir),
+                      ensureActiveEnterpriseTask(this.config.configDir),
                       loadEaCTask(this.config.configDir),
                     ],
                     {
@@ -147,7 +148,7 @@ export default class Install extends FathymCommand<InstallContext> {
         },
       },
       this.confirmAgreements(ci),
-      ensureProject(this.config.configDir, project, true, false, (ctx) =>
+      ensureProjectTask(this.config.configDir, project, true, false, (ctx) =>
         ctx.LCUPackageConfig?.Package
           ? !ctx.LCUPackageConfig.Package!.SkipProject
           : true
@@ -326,7 +327,7 @@ export default class Install extends FathymCommand<InstallContext> {
       task: async (ctx, task) => {
         lcu = await ensurePromptValue(task, 'Enter LCU Package name:', lcu);
 
-        lcu = lcu.replace(/\\/g, '/');
+        lcu = lcu!.replace(/\\/g, '/');
 
         await runProc('npx', ['make-dir-cli', 'lcus']);
 

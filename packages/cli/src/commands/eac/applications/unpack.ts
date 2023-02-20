@@ -1,19 +1,18 @@
-import { Args, Flags } from '@oclif/core';
+import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+import { EaCApplicationAsCode } from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
   ApplicationTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
   loadEaCTask,
   ProjectTaskContext,
-} from '../../../common/core-helpers';
-import { ensurePromptValue, withEaCDraft } from '../../../common/eac-services';
+  withEaCDraftEditTask,
+} from '../../../common/eac-services';
+import { FathymTaskContext } from '../../../common/core-helpers';
 
 interface UnpackTaskContext
   extends FathymTaskContext,
@@ -43,26 +42,28 @@ export default class Unpack extends FathymCommand<UnpackTaskContext> {
     const { appLookup } = args;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, appLookup, false, true),
+      ensureApplicationTask(this.config.configDir, appLookup, false, true),
       this.ensureApplicationUnpack(),
     ];
   }
 
-  protected ensureApplicationUnpack(): ListrTask<UnpackTaskContext> {
-    return {
-      title: 'Create Unpack Application Draft',
-      task: async (ctx, task) => {
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            return draft;
-          },
-          [['Applications', ctx.ApplicationLookup]]
-        );
-      },
-    };
+  protected ensureApplicationUnpack(
+    name?: string,
+    description?: string
+  ): ListrTask<UnpackTaskContext> {
+    return withEaCDraftEditTask<UnpackTaskContext, EaCApplicationAsCode>(
+      'Unpack Application Draft',
+      this.config.configDir,
+      (ctx) => [['Applications', ctx.ApplicationLookup]]
+      // {
+      //   draftPatch: (ctx) => {
+      //     const patch = {};
+
+      //     return patch;
+      //   },
+      // }
+    );
   }
 }

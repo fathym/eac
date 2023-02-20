@@ -1,25 +1,13 @@
-import { color } from '@oclif/color';
 import express from 'express';
 import oauth2 from 'simple-oauth2';
-// import keytar from 'keytar';
-import { ListrTask, ListrTaskWrapper, PromptOptions } from 'listr2';
-import { withConfig } from './config-helpers';
+import { ListrRendererFactory, ListrTask, ListrTaskWrapper } from 'listr2';
 import { ClosureInstruction } from './ClosureInstruction';
 import path from 'node:path';
 import { readFile, existsSync, readJson, readdir } from 'fs-extra';
-import loadAxios from './axios';
-import { EnterpriseAsCode } from '@semanticjs/common';
 import { runProc } from './task-helpers';
-import {
-  downloadFile,
-  EaCDraft,
-  ensurePromptValue,
-  SourceTaskContext,
-  withEaCDraft,
-} from './eac-services';
-import { randomUUID } from 'node:crypto';
-import { GitHubTaskContext } from './git-helpers';
-// import { EnterpriseAsCode } from '@semanticjs/common';
+import { downloadFile } from './eac-services';
+import { withSystemConfig, withUserAuthConfig } from './config-helpers';
+import { Draft } from 'immer';
 
 const tenant = 'fathymcloudprd';
 const clientId = '800193b8-028a-44dd-ba05-73e82ee8066a';
@@ -41,44 +29,8 @@ export interface AccessTokenTaskContext {
   AccessToken?: oauth2.AccessToken;
 }
 
-export interface EaCTaskContext {
-  EaC: EnterpriseAsCode;
-}
-
-export interface EaCRemovalsTaskContext {
-  EaCRemovals: EnterpriseAsCode;
-}
-
-export interface ApplicationTaskContext {
-  ApplicationLookup: string;
-}
-
-export interface DFSModifierTaskContext {
-  DFSModifierLookup: string;
-}
-
-export interface ProjectTaskContext {
-  ProjectLookup: string;
-}
-
-export interface LCUParamAnswersTaskContext {
-  LCUParamAnswers: ParamAnswers;
-}
-
-export interface ActiveEnterpriseTaskContext {
-  ActiveEnterpriseLookup: string;
-}
-
 export interface AzureCLITaskContext {
   AzureCLIInstalled: boolean;
-}
-
-export interface SubscriptionTaskContext {
-  SubscriptionID: string;
-
-  SubscriptionName: string;
-
-  TenantID: string;
 }
 
 export interface AzureSubscription {
@@ -89,18 +41,20 @@ export interface AzureSubscription {
   tenantId: string;
 }
 
+export interface LCUParamAnswersTaskContext {
+  LCUParamAnswers: ParamAnswers;
+}
+
 export interface ParamAnswers {
   [key: string]: string;
 }
 
-export class SystemConfig {
-  public APIRoot!: string;
-}
+export interface SubscriptionTaskContext {
+  SubscriptionID: string;
 
-export class UserAuthConfig {
-  public AccessToken?: oauth2.AccessToken;
+  SubscriptionName: string;
 
-  public ActiveEnterpriseLookup!: string;
+  TenantID: string;
 }
 
 const oauthCodeClient = new oauth2.AuthorizationCode({
@@ -152,466 +106,54 @@ export function azureCliInstallTask<TContext>(): ListrTask<
   };
 }
 
-export function setAzureSubTask<
-  TContext extends SubscriptionTaskContext &
-    AzureCLITaskContext &
-    ActiveEnterpriseTaskContext
->(configDir: string): ListrTask<TContext> {
-  return {
-    title: `Setting Azure Subscription`,
-    skip: (ctx) => !ctx.AzureCLIInstalled,
-    task: (ctx, task) => {
-      return task.newListr((parent) => [
-        {
-          title: 'Ensure login with Azure CLI',
-          task: async (ctx, task) => {
-            try {
-              await runProc('az', ['account', 'show']);
-
-              task.title = 'Azure CLI already authenticated';
-            } catch {
-              task.output = color.yellow(
-                'Opening a login form in your browser, complete sign in there, then return.'
-              );
-
-              await runProc('az', ['login']);
-            }
-          },
-        },
-        {
-          title: 'Select Azure Subscription',
-          task: async (ctx, task) => {
-            const subsList: AzureSubscription[] = JSON.parse(
-              (await runProc('az', ['account', 'list', '--refresh'])) || '[]'
-            );
-
-            subsList.unshift({
-              id: '-- Create New Subscription --',
-              name: '-- Create New Subscription --',
-              tenantId: '',
-            });
-
-            const subCheck: string = (
-              await task.prompt({
-                type: 'Select',
-                name: 'subId',
-                message: 'Choose Azure subscription:',
-                choices: subsList.map((account) => {
-                  return {
-                    message: `${account.name}`,
-                    name: account.id,
-                  };
-                }),
-                validate: (v) => Boolean(v),
-              } as PromptOptions<true>)
-            ).trim();
-
-            ctx.SubscriptionID =
-              subCheck === '-- Create New Subscription --' ? '' : subCheck;
-
-            if (ctx.SubscriptionID) {
-              const sub = subsList.find((al) => al.id === ctx.SubscriptionID);
-
-              ctx.TenantID = sub?.tenantId || '';
-
-              ctx.SubscriptionName = sub?.name || ctx.SubscriptionID;
-
-              task.title = `Azure subscription selected: ${ctx.SubscriptionID}`;
-            } else {
-              task.title = `Creating azure subscription`;
-
-              ctx.SubscriptionName = await task.prompt({
-                type: 'input',
-                name: 'subName',
-                message: 'Enter name for new Azure subscription name:',
-              });
-
-              task.title = `Creating azure subscription: ${ctx.SubscriptionName}`;
-
-              const sub = await createAzureSubscription(
-                configDir,
-                ctx.ActiveEnterpriseLookup,
-                ctx.SubscriptionName
-              );
-
-              ctx.SubscriptionID = sub.id;
-
-              ctx.SubscriptionName = sub.name;
-
-              ctx.TenantID = sub.tenantId;
-            }
-
-            await runProc('az', [
-              'account',
-              'set',
-              `--subscription ${ctx.SubscriptionID}`,
-            ]);
-
-            parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
-          },
-        },
-      ]);
-    },
-  };
-}
-
-export async function createAzureSubscription(
-  configDir: string,
-  entLookup: string,
-  subName: string
-): Promise<AzureSubscription> {
-  const axios = await loadAxios(configDir);
-
-  const response = await axios.post(`${entLookup}/azure/subscription/create`, {
-    Name: subName,
-  });
-
-  return response.data.Model as AzureSubscription;
-}
-
 export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
 
-interface EnsureSelectionOptions<TContext> {
-  addFromDraft?: boolean;
-
-  create?: boolean;
-
-  enabled?: (ctx: TContext) => boolean;
-
-  name: string;
-
-  loadOptionsFromEaC: (eac: EnterpriseAsCode) => PromptOptions<true>[];
-
-  filter?: (ctx: TContext, options: PromptOptions<true>[]) => boolean;
-}
-
-// export function ensureSelection<
-//   TContext extends ActiveEnterpriseTaskContext &
-//     EaCTaskContext &
-//     ProjectTaskContext &
-//     ApplicationTaskContext
-// >(
-//   configDir: string,
-//   lookup?: string,
-//   options?: EnsureSelectionOptions<TContext>
-// ): ListrTask<TContext> {
-//   const { addFromDraft, create, enabled, name, loadOptionsFromEaC, filter } =
-//     options || {};
-
-//   return {
-//     title: `Ensuring ${name} set`,
-//     enabled: enabled,
-//     task: async (ctx, task) => {
-//       const draft: EaCDraft = addFromDraft
-//         ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
-//         : ({} as EaCDraft);
-
-//       let apps = Object.keys({
-//         ...ctx.EaC?.Applications,
-//         ...draft.EaC?.Applications,
-//       });
-
-//       if (!lookup) {
-//         if (projectFilter) {
-//           const projectAppLookups = new Set([
-//             ...ctx.EaC.Projects![ctx.ProjectLookup].ApplicationLookups!,
-//             ...(ctx.EaC.Projects
-//               ? ctx.EaC.Projects[ctx.ProjectLookup].ApplicationLookups!
-//               : []),
-//           ]);
-
-//           apps = apps.filter((app) => projectAppLookups.has(app));
-//         }
-
-//         lookup = await ensurePromptValue(
-//           task,
-//           'Choose EaC Application:',
-//           lookup!,
-//           apps.map((app) => {
-//             const draftApp = (draft.EaC?.Applications || {})[app];
-
-//             const appName =
-//               draftApp?.Application?.Name ||
-//               ctx.EaC?.Applications![app]?.Application?.Name;
-
-//             const draftText = draftApp ? color.yellow('draft') : '';
-
-//             return {
-//               message: `${appName} ${draftText}`,
-//               name: app,
-//             };
-//           }),
-//           create ? async () => randomUUID() : undefined
-//         );
-//       }
-
-//       ctx.ApplicationLookup = lookup || '';
-
-//       task.title = `Selected application: ${
-//         apps[ctx.ApplicationLookup]?.Application?.Name || 'Creating New'
-//       }`; //  (${ctx.ProjectLookup})
-//     },
-//   };
-// }
-
-export function ensureActiveEnterprise<
-  TContext extends ActiveEnterpriseTaskContext
->(configDir: string): ListrTask<TContext> {
-  return {
-    title: `Ensuring active enterprise`,
-    task: async (ctx, task) => {
-      ctx.ActiveEnterpriseLookup = await loadActieEnterpriseLookup(configDir);
-
-      if (ctx.ActiveEnterpriseLookup) {
-        task.title = `Active enterprise is currently set to ${ctx.ActiveEnterpriseLookup}`;
+export async function ensurePromptValue<
+  Ctx,
+  Renderer extends ListrRendererFactory
+>(
+  task: ListrTaskWrapper<Ctx, Renderer>,
+  message: string,
+  value?: string,
+  choices?:
+    | string[]
+    | { name: string | (() => string); message?: string | (() => string) }[],
+  createValue?: () => Promise<string>,
+  createText = '- Create new -'
+): Promise<string> {
+  if (!value) {
+    if (createValue && choices) {
+      if (typeof choices[0] === 'string') {
+        choices.unshift(createText as any);
       } else {
-        throw new Error(
-          `Active enterprise must be set with 'fathym enterprises set' command.`
-        );
+        choices.unshift({
+          message: createText,
+          name: createText,
+        } as any);
       }
-    },
-  };
-}
+    }
 
-export function ensureApplication<
-  TContext extends ActiveEnterpriseTaskContext &
-    EaCTaskContext &
-    ProjectTaskContext &
-    ApplicationTaskContext
->(
-  configDir: string,
-  appLookup?: string,
-  create?: boolean,
-  addFromDraft?: boolean,
-  projectFilter?: boolean,
-  enabled?: (ctx: TContext) => boolean
-): ListrTask<TContext> {
-  return {
-    title: `Ensuring application set`,
-    enabled: enabled,
-    task: async (ctx, task) => {
-      const draft: EaCDraft = addFromDraft
-        ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
-        : ({} as EaCDraft);
+    value = (
+      await task.prompt({
+        type: choices?.length! > 0 ? 'select' : 'input',
+        message: message,
+        validate: (v) => !!createValue || Boolean(v),
+        choices: choices,
+      })
+    ).trim();
 
-      let apps = Object.keys({
-        ...ctx.EaC?.Applications,
-        ...draft.EaC?.Applications,
-      });
+    value = value === createText ? '' : value;
+  }
 
-      if (!appLookup) {
-        if (projectFilter) {
-          const projectAppLookups = new Set([
-            ...ctx.EaC.Projects![ctx.ProjectLookup].ApplicationLookups!,
-            ...(ctx.EaC.Projects
-              ? ctx.EaC.Projects[ctx.ProjectLookup].ApplicationLookups!
-              : []),
-          ]);
+  if (!value && createValue) {
+    value = await createValue();
+  }
 
-          apps = apps.filter((app) => projectAppLookups.has(app));
-        }
-
-        appLookup = await ensurePromptValue(
-          task,
-          'Choose EaC Application:',
-          appLookup!,
-          apps.map((app) => {
-            const draftApp = (draft.EaC?.Applications || {})[app];
-
-            const appName =
-              draftApp?.Application?.Name ||
-              ctx.EaC?.Applications![app]?.Application?.Name;
-
-            const draftText = draftApp ? color.yellow('draft') : '';
-
-            return {
-              message: `${appName} ${draftText}`,
-              name: app,
-            };
-          }),
-          create ? async () => randomUUID() : undefined
-        );
-      }
-
-      ctx.ApplicationLookup = appLookup || '';
-
-      task.title = `Selected application: ${
-        apps[ctx.ApplicationLookup]?.Application?.Name || 'Creating New'
-      }`; //  (${ctx.ProjectLookup})
-    },
-  };
-}
-
-export function ensureModifier<
-  TContext extends DFSModifierTaskContext &
-    ActiveEnterpriseTaskContext &
-    EaCTaskContext
->(
-  configDir: string,
-  modifierLookup?: string,
-  create?: boolean,
-  addFromDraft?: boolean,
-  enabled?: (ctx: TContext) => boolean
-): ListrTask<TContext> {
-  return {
-    title: `Ensuring modifier set`,
-    enabled: enabled,
-    task: async (ctx, task) => {
-      const draft: EaCDraft = addFromDraft
-        ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
-        : ({} as EaCDraft);
-
-      const modifiers = Object.keys({
-        ...ctx.EaC?.Modifiers,
-        ...draft.EaC?.Modifiers,
-      });
-
-      if (!modifierLookup) {
-        modifierLookup = await ensurePromptValue(
-          task,
-          'Choose EaC Modifier:',
-          modifierLookup!,
-          modifiers.map((mod) => {
-            const drfatMod = (draft.EaC?.Modifiers || {})[mod];
-
-            const modName = drfatMod?.Name || ctx.EaC?.Modifiers![mod]?.Name;
-
-            const draftText = drfatMod ? color.yellow('draft') : '';
-
-            return {
-              message: `${modName} ${draftText}`,
-              name: mod,
-            };
-          }),
-          create ? async () => randomUUID() : undefined
-        );
-      }
-
-      ctx.DFSModifierLookup = modifierLookup || '';
-
-      task.title = `Selected modifier: ${
-        modifiers[ctx.DFSModifierLookup]?.Name || 'Creating New'
-      }`; //  (${ctx.ProjectLookup})
-    },
-  };
-}
-
-export function ensureProject<
-  TContext extends ProjectTaskContext &
-    ActiveEnterpriseTaskContext &
-    EaCTaskContext
->(
-  configDir: string,
-  projectLookup?: string,
-  create?: boolean,
-  addFromDraft?: boolean,
-  enabled?: (ctx: TContext) => boolean
-): ListrTask<TContext> {
-  return {
-    title: `Ensuring project set`,
-    enabled: enabled,
-    task: async (ctx, task) => {
-      const draft: EaCDraft = addFromDraft
-        ? await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)
-        : ({} as EaCDraft);
-
-      const projects = Object.keys({
-        ...ctx.EaC?.Projects,
-        ...draft.EaC?.Projects,
-      });
-
-      if (!projectLookup) {
-        projectLookup = await ensurePromptValue(
-          task,
-          'Choose EaC Project:',
-          projectLookup!,
-          projects.map((proj) => {
-            const drfatProj = (draft.EaC?.Projects || {})[proj];
-
-            const projName =
-              drfatProj?.Project?.Name ||
-              ctx.EaC?.Projects![proj]?.Project?.Name;
-
-            const draftText = drfatProj ? color.yellow('draft') : '';
-
-            return {
-              message: `${projName} ${draftText}`,
-              name: proj,
-            };
-          }),
-          create ? async () => randomUUID() : undefined
-        );
-      }
-
-      ctx.ProjectLookup = projectLookup || '';
-
-      task.title = `Selected project: ${
-        projects[ctx.ProjectLookup]?.Project?.Name || 'Creating New'
-      }`; //  (${ctx.ProjectLookup})
-    },
-  };
-}
-
-export function ensureSourceControl<
-  TContext extends ActiveEnterpriseTaskContext &
-    EaCTaskContext &
-    GitHubTaskContext &
-    SourceTaskContext
->(configDir: string): ListrTask<TContext> {
-  return {
-    title: 'Create cloud subscription connection',
-    task: async (ctx, task) => {
-      let sourceLookup = `github://${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
-
-      if (!sourceLookup) {
-        const draft: EaCDraft =
-          (await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup)) ||
-          ({} as EaCDraft);
-
-        const env =
-          ctx.EaC.Environments![ctx.EaC.Enterprise?.PrimaryEnvironment!];
-
-        const draftEnv = draft.EaC.Environments
-          ? draft.EaC.Environments![ctx.EaC.Enterprise?.PrimaryEnvironment!]
-          : {};
-
-        const sourceLookups = Object.keys({
-          ...env?.Sources,
-          ...draftEnv?.Sources,
-        });
-
-        sourceLookup = await ensurePromptValue(
-          task,
-          'Choose source control',
-          sourceLookup,
-          sourceLookups.map((sl) => {
-            const drfatSource = (draftEnv?.Sources || {})[sl];
-
-            const sourceName = drfatSource?.Name || env.Sources![sl]?.Name;
-
-            const draftText = drfatSource ? color.yellow('draft') : '';
-
-            return {
-              message: `${sourceName} ${draftText}`,
-              name: sl,
-            };
-          }),
-          async () =>
-            `github://${ctx.GitHubOrganization}/${ctx.GitHubRepository}`
-        );
-      }
-
-      ctx.SourceLookup = sourceLookup || '';
-
-      task.title = `Selected source: ${
-        ctx.EaC.Projects![ctx.SourceLookup]?.Project?.Name || 'Creating New'
-      }`;
-    },
-  };
+  return value || '';
 }
 
 export async function getAccessToken(
@@ -628,8 +170,6 @@ export async function getAccessToken(
 
   await withUserAuthConfig(configDir, async (cfg) => {
     cfg.AccessToken = accessToken;
-
-    return cfg;
   });
 }
 
@@ -696,28 +236,6 @@ export async function loadApiRootUrl(configDir: string): Promise<string> {
   return config.APIRoot;
 }
 
-export async function loadEaC(
-  configDir: string,
-  entLookup: string
-): Promise<EnterpriseAsCode> {
-  const axios = await loadAxios(configDir);
-
-  const response = await axios.get(`${entLookup}/eac`);
-
-  return response.data?.Model || [];
-}
-
-export function loadEaCTask<
-  TContext extends EaCTaskContext & ActiveEnterpriseTaskContext
->(configDir: string): ListrTask<TContext> {
-  return {
-    title: `Load EaC for active enterprise`,
-    task: async (ctx, task) => {
-      ctx.EaC = await loadEaC(configDir, ctx.ActiveEnterpriseLookup);
-    },
-  };
-}
-
 export async function loadChildDirectories(
   directory: string,
   checkPath: string
@@ -751,6 +269,24 @@ export async function loadFileAsString(
   const str = existsSync(filePath) ? await readFile(filePath) : '';
 
   return String(str);
+}
+
+export function merge<T>(patch: T, draft: T): void {
+  if (Array.isArray(patch) && Array.isArray(draft)) {
+    draft.push(...(patch as any));
+    return;
+  }
+
+  for (const key in patch) {
+    const patchValue = patch[key];
+    const draftValue = draft[key];
+
+    if (typeof patchValue === 'object' && typeof draftValue === 'object') {
+      merge(patchValue as T, draftValue as T);
+    } else {
+      draft[key] = patchValue;
+    }
+  }
 }
 
 export async function processAsyncArray<T>(
@@ -795,11 +331,34 @@ export async function refreshAccessToken(
 
   await withUserAuthConfig(configDir, async (cfg) => {
     cfg.AccessToken = accessToken;
-
-    return cfg;
   });
 
   return accessToken;
+}
+
+export function removeUndefined<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj
+      .map((value) => removeUndefined(value))
+      .filter((value) => value !== undefined) as any as T;
+  }
+
+  const result = {} as any as T;
+
+  for (const key in obj) {
+    const value = obj[key];
+    const newValue = removeUndefined(value);
+
+    if (newValue !== undefined) {
+      result[key] = newValue;
+    }
+  }
+
+  return result as T;
 }
 
 export async function setApiRoot(
@@ -812,31 +371,5 @@ export async function setApiRoot(
     } else if (env === 'local') {
       cfg.APIRoot = `http://127.0.0.1:7119/api`;
     }
-
-    return cfg;
   });
-}
-
-export async function withSystemConfig(
-  configDir: string,
-  action?: (config: SystemConfig) => Promise<SystemConfig>
-): Promise<SystemConfig> {
-  return withConfig<SystemConfig>('lcu.system.json', configDir, async (cfg) => {
-    if (!cfg.APIRoot) {
-      cfg.APIRoot = `https://fcp-cli-stateflow.azurewebsites.net/api`;
-    }
-
-    if (action) {
-      cfg = await action(cfg);
-    }
-
-    return cfg;
-  });
-}
-
-export async function withUserAuthConfig(
-  configDir: string,
-  action?: (config: UserAuthConfig) => Promise<UserAuthConfig>
-): Promise<UserAuthConfig> {
-  return withConfig<UserAuthConfig>('user-auth.config.json', configDir, action);
 }

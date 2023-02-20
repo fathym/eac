@@ -1,8 +1,6 @@
 import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   commitGitChanges,
   confirmGitRepo,
@@ -10,8 +8,10 @@ import {
   pushOrigin,
 } from '../../../common/git-tasks';
 import { runProc } from '../../../common/task-helpers';
-import { ensurePromptValue } from '../../../common/eac-services';
-import { FathymTaskContext } from '../../../common/core-helpers';
+import {
+  ensurePromptValue,
+  FathymTaskContext,
+} from '../../../common/core-helpers';
 
 export default class Feature extends FathymCommand<FathymTaskContext> {
   static description = `Used for creating a feature branch from 'integration' in git.`;

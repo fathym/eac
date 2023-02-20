@@ -1,14 +1,11 @@
 import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
-import { confirmGitRepo, ensureOrganization } from '../../common/git-tasks';
+import { confirmGitRepo } from '../../common/git-tasks';
 import { runProc } from '../../common/task-helpers';
 import path from 'node:path';
 import Clone from './clone';
-import { GitHubTaskContext, loadGitUsername } from '../../common/git-helpers';
-import { AccessTokenTaskContext } from '../../common/core-helpers';
-import { ensurePromptValue } from '../../common/eac-services';
+import { loadGitUsername } from '../../common/git-helpers';
+import { ensurePromptValue } from '../../common/core-helpers';
 
 export default class Import extends Clone {
   static description = `Used for importing a remote source control into a configured EaC Source control.`;

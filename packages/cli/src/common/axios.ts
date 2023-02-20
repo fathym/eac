@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { loadApiRootUrl, withUserAuthConfig } from './core-helpers';
+import { withUserAuthConfig } from './config-helpers';
+import { loadApiRootUrl } from './core-helpers';
 
 export default async function loadAxios(
   configDir: string

@@ -1,7 +1,7 @@
 import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import open from 'open';
-import {} from '@semanticjs/common';
+
 import { FathymCommand } from '../../common/fathym-command';
 import {
   listGitHubBranches,

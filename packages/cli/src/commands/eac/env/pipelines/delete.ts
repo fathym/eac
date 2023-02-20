@@ -1,23 +1,17 @@
-import { Args, Flags } from '@oclif/core';
-import { color } from '@oclif/color';
+import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import { EnterpriseAsCode } from '@semanticjs/common';
 import { FathymCommand } from '../../../../common/fathym-command';
-import { ClosureInstruction } from '../../../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
+  deleteFromEaCTask,
   EaCRemovalsTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
-  loadEaCTask,
-  ProjectTaskContext,
-} from '../../../../common/core-helpers';
-import {
-  PipelineTaskContext,
-  deleteFromEaCTask,
+  ensureActiveEnterpriseTask,
   ensurePipelineTask,
+  loadEaCTask,
+  PipelineTaskContext,
 } from '../../../../common/eac-services';
+import { FathymTaskContext } from '../../../../common/core-helpers';
 
 interface DeleteContext
   extends FathymTaskContext,
@@ -47,9 +41,9 @@ export default class Delete extends FathymCommand<DeleteContext> {
     const { pipelineLookup } = args;
 
     return [
-      ensureActiveEnterprise(this.config.configDir) as ListrTask,
+      ensureActiveEnterpriseTask(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
-      ensurePipelineTask(pipelineLookup),
+      ensurePipelineTask(this.config.configDir, pipelineLookup),
       {
         title: `Configure pipeline removals`,
         task: async (ctx, task) => {

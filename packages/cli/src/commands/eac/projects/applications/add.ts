@@ -5,14 +5,14 @@ import {
   ActiveEnterpriseTaskContext,
   ApplicationTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  ensureProject,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
+  ensureProjectTask,
   loadEaCTask,
   ProjectTaskContext,
-} from '../../../../common/core-helpers';
-import { DepthOption, withEaCDraft } from '../../../../common/eac-services';
+  withEaCDraftEditTask,
+} from '../../../../common/eac-services';
+import { FathymTaskContext, merge } from '../../../../common/core-helpers';
 
 interface AddTaskContext
   extends FathymTaskContext,
@@ -47,36 +47,25 @@ export default class Add extends FathymCommand<AddTaskContext> {
     const { name, description } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureProject(this.config.configDir, projectLookup, false, true),
-      ensureApplication(this.config.configDir, appLookup, false, true),
+      ensureProjectTask(this.config.configDir, projectLookup, false, true),
+      ensureApplicationTask(this.config.configDir, appLookup, false, true),
       this.addApplicationToProject(),
     ];
   }
 
   protected addApplicationToProject(): ListrTask<AddTaskContext> {
-    return {
-      title: 'Create project',
-      task: async (ctx, task) => {
-        const currentEaCProj =
-          ctx.EaC.Projects && ctx.EaC.Projects[ctx.ProjectLookup]
-            ? ctx.EaC.Projects[ctx.ProjectLookup] || {}
-            : {};
-
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            draft.EaC.Projects![ctx.ProjectLookup].ApplicationLookups?.push(
-              ctx.ApplicationLookup
-            );
-
-            return draft;
-          },
-          [['Projects', ctx.ProjectLookup, ['ApplicationLookups', []]]]
-        );
-      },
-    };
+    return withEaCDraftEditTask<AddTaskContext, string[]>(
+      'Add modifier to application',
+      this.config.configDir,
+      (ctx) => [['Projects', ctx.ProjectLookup, ['ApplicationLookups', []]]],
+      {
+        draftPatch: (ctx) => [[ctx.ApplicationLookup]],
+        applyPatch: (ctx, current, draft, patch) => {
+          merge(patch, draft);
+        },
+      }
+    );
   }
 }

@@ -1,8 +1,7 @@
 import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+import { ensurePromptValue } from '../../../common/core-helpers';
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   commitGitChanges,
   confirmGitRepo,
@@ -10,7 +9,6 @@ import {
   pushOrigin,
 } from '../../../common/git-tasks';
 import { runProc } from '../../../common/task-helpers';
-import { ensurePromptValue } from '../../../common/eac-services';
 
 export default class Feature extends FathymCommand<any> {
   static description = `Used for merging 2 feature branches where 1 is merged into the other.`;

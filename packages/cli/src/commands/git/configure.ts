@@ -1,26 +1,14 @@
 import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+
 import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
-  commitGitChanges,
-  confirmGitRepo,
   ensureOrganization,
   ensureRepository,
-  fetchPrune,
   configureRepository,
-  pull,
-  pushOrigin,
 } from '../../common/git-tasks';
-import { runProc } from '../../common/task-helpers';
 import { FathymTaskContext } from '../../common/core-helpers';
-import {
-  GitHubTaskContext,
-  loadCurrentGitOrgRepo,
-} from '../../common/git-helpers';
-import loadAxios from '../../common/axios';
-import { ensurePromptValue } from '../../common/eac-services';
+import { GitHubTaskContext } from '../../common/git-helpers';
 
 interface InitTaskcontext extends FathymTaskContext, GitHubTaskContext {}
 

@@ -1,6 +1,6 @@
-import { ListrTask, PromptOptions } from 'listr2';
+import { ListrTask } from 'listr2';
 import loadAxios from './axios';
-import { ensurePromptValue } from './eac-services';
+import { ensurePromptValue } from './core-helpers';
 import {
   getCurrentBranch,
   GitHubTaskContext,

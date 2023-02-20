@@ -1,15 +1,12 @@
 import { color } from '@oclif/color';
-import { ListrTask, PromptOptions } from 'listr2';
-import {} from '@semanticjs/common';
+import { ListrTask } from 'listr2';
+
 import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
 import {
-  ActiveEnterpriseTaskContext,
-  ensureActiveEnterprise,
+  ensurePromptValue,
   FathymTaskContext,
 } from '../../common/core-helpers';
 import {
-  ensurePromptValue,
   listLicensesByEmail,
   listLicenseTypes,
 } from '../../common/eac-services';

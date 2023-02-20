@@ -1,22 +1,20 @@
 import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+
 import { FathymCommand } from '../../../../common/fathym-command';
-import { ClosureInstruction } from '../../../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
   ApplicationTaskContext,
   DFSModifierTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  ensureModifier,
-  ensureProject,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
+  ensureModifierTask,
   loadEaCTask,
   ProjectTaskContext,
-} from '../../../../common/core-helpers';
-import { withEaCDraft } from '../../../../common/eac-services';
+  withEaCDraftEditTask,
+} from '../../../../common/eac-services';
+import { FathymTaskContext, merge } from '../../../../common/core-helpers';
 
 interface AddTaskContext
   extends FathymTaskContext,
@@ -47,31 +45,27 @@ export default class Add extends FathymCommand<AddTaskContext> {
     const { appLookup } = args;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, appLookup, false, true),
-      ensureModifier(this.config.configDir, appLookup, false, true),
+      ensureApplicationTask(this.config.configDir, appLookup, false, true),
+      ensureModifierTask(this.config.configDir, appLookup, false, true),
       this.addModifierToApplication(),
     ];
   }
 
   protected addModifierToApplication(): ListrTask<AddTaskContext> {
-    return {
-      title: 'Add modifier to application',
-      task: async (ctx, task) => {
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            draft.EaC.Applications![
-              ctx.ApplicationLookup
-            ].ModifierLookups?.push(ctx.DFSModifierLookup);
-
-            return draft;
-          },
-          [['Applications', ctx.ApplicationLookup, ['ModifierLookups', []]]]
-        );
-      },
-    };
+    return withEaCDraftEditTask<AddTaskContext, string[]>(
+      'Add modifier to application',
+      this.config.configDir,
+      (ctx) => [
+        ['Applications', ctx.ApplicationLookup, ['ModifierLookups', []]],
+      ],
+      {
+        draftPatch: (ctx) => [[ctx.DFSModifierLookup]],
+        applyPatch: (ctx, current, draft, patch) => {
+          merge(patch, draft);
+        },
+      }
+    );
   }
 }

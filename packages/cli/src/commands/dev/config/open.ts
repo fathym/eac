@@ -20,6 +20,8 @@ export default class Open extends FathymCommand<FathymTaskContext> {
 
   static title = 'Open Config';
 
+  static forceRefresh = false;
+
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args } = await this.parse(Open);
 

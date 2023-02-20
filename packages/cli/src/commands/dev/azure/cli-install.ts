@@ -1,4 +1,3 @@
-import {} from '@oclif/core';
 import { ListrTask } from 'listr2';
 import open from 'open';
 import { FathymCommand } from '../../../common/fathym-command';

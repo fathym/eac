@@ -1,21 +1,18 @@
-import { Args, Flags } from '@oclif/core';
-import { color } from '@oclif/color';
+import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import { EnterpriseAsCode } from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
+  ApplicationTaskContext,
+  deleteFromEaCTask,
   EaCRemovalsTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
   loadEaCTask,
-  ApplicationTaskContext,
   ProjectTaskContext,
-} from '../../../common/core-helpers';
-import { deleteFromEaCTask } from '../../../common/eac-services';
+} from '../../../common/eac-services';
+import { FathymTaskContext } from '../../../common/core-helpers';
 
 interface DeleteContext
   extends FathymTaskContext,
@@ -46,9 +43,9 @@ export default class Delete extends FathymCommand<DeleteContext> {
     const { appLookup } = args;
 
     return [
-      ensureActiveEnterprise(this.config.configDir) as ListrTask,
+      ensureActiveEnterpriseTask(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, appLookup),
+      ensureApplicationTask(this.config.configDir, appLookup),
       {
         title: `Configure application removals`,
         task: async (ctx, task) => {

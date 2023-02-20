@@ -1,9 +1,6 @@
-import {} from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+import { withUserAuthConfig } from '../../common/config-helpers';
 import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
-import { withUserAuthConfig } from '../../common/core-helpers';
 
 export default class Out extends FathymCommand<any> {
   static description =
@@ -28,8 +25,6 @@ export default class Out extends FathymCommand<any> {
         task: async (ctx, task) => {
           await withUserAuthConfig(this.config.configDir, async (userAuth) => {
             delete userAuth.AccessToken;
-
-            return userAuth;
           });
 
           task.title = `Sign out completed successfully`;

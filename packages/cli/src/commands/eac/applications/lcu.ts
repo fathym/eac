@@ -1,19 +1,21 @@
 import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+import { EaCLowCodeUnit } from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
   ApplicationTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
   loadEaCTask,
   ProjectTaskContext,
+  withEaCDraftEditTask,
+} from '../../../common/eac-services';
+import {
+  FathymTaskContext,
+  ensurePromptValue,
 } from '../../../common/core-helpers';
-import { ensurePromptValue, withEaCDraft } from '../../../common/eac-services';
 
 interface LCUTaskContext
   extends FathymTaskContext,
@@ -75,9 +77,9 @@ export default class LCU extends FathymCommand<LCUTaskContext> {
     const { zipFile } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, appLookup, false, true),
+      ensureApplicationTask(this.config.configDir, appLookup, false, true),
       this.addApplicationZipLCUToDraft(type, { ZipFile: zipFile }),
     ];
   }
@@ -86,35 +88,28 @@ export default class LCU extends FathymCommand<LCUTaskContext> {
     type: string,
     zipDets: Partial<{ ZipFile: string }>
   ): ListrTask<LCUTaskContext> {
-    return {
-      title: 'Create zip application',
-      enabled: type === 'Zip',
-      task: async (ctx, task) => {
-        zipDets.ZipFile = await ensurePromptValue(
-          task,
-          'Location of zip file',
-          zipDets.ZipFile
-        );
+    return withEaCDraftEditTask<LCUTaskContext, EaCLowCodeUnit>(
+      'Add application view package Zip LowCodeUnit',
+      this.config.configDir,
+      (ctx) => [['Applications', ctx.ApplicationLookup, 'LowCodeUnit']],
+      {
+        enabled: (ctx) => type === 'Zip',
+        prompt: async (ctx, task) => {
+          zipDets.ZipFile = await ensurePromptValue(
+            task,
+            'Location of zip file',
+            zipDets.ZipFile
+          );
+        },
+        draftPatch: (ctx) => {
+          const patch = {
+            Type: type,
+            ...zipDets,
+          };
 
-        const currentEaCAppLCU = ctx.EaC.Applications
-          ? ctx.EaC.Applications[ctx.ApplicationLookup]?.LowCodeUnit || {}
-          : {};
-
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            draft.EaC.Applications![ctx.ApplicationLookup].LowCodeUnit = {
-              ...(currentEaCAppLCU.Type === type ? currentEaCAppLCU : {}),
-              Type: type,
-              ...zipDets,
-            };
-
-            return draft;
-          },
-          [['Applications', ctx.ApplicationLookup]]
-        );
-      },
-    };
+          return patch;
+        },
+      }
+    );
   }
 }

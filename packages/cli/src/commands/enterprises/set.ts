@@ -1,18 +1,13 @@
 import { color } from '@oclif/color';
-import { ListrTask, PromptOptions } from 'listr2';
-import {} from '@semanticjs/common';
+import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
-import {
-  FathymTaskContext,
-  withUserAuthConfig,
-} from '../../common/core-helpers';
 import {
   ensurePromptValue,
-  listEnterprises,
-  withEaCDraft,
-} from '../../common/eac-services';
+  FathymTaskContext,
+} from '../../common/core-helpers';
+import { listEnterprises, withEaCDraft } from '../../common/eac-services';
 import { Args } from '@oclif/core';
+import { withUserAuthConfig } from '../../common/config-helpers';
 
 export default class Set extends FathymCommand<FathymTaskContext> {
   static description = `Set's the current user's active enterprise for the CLI. Determines
@@ -73,8 +68,6 @@ export default class Set extends FathymCommand<FathymTaskContext> {
           } else {
             await withUserAuthConfig(this.config.configDir, async (cfg) => {
               cfg.ActiveEnterpriseLookup = entLookup!;
-
-              return cfg;
             });
 
             ctx.Fathym.Instructions = [

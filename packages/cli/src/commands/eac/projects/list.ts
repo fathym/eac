@@ -1,15 +1,13 @@
 import { color } from '@oclif/color';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
-import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
+import { FathymTaskContext } from '../../../common/core-helpers';
 import {
-  ActiveEnterpriseTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
+  ActiveEnterpriseTaskContext,
+  ensureActiveEnterpriseTask,
   loadEaCTask,
-} from '../../../common/core-helpers';
+} from '../../../common/eac-services';
+import { FathymCommand } from '../../../common/fathym-command';
 
 interface ListContext
   extends FathymTaskContext,
@@ -31,7 +29,7 @@ export default class List extends FathymCommand<ListContext> {
     // const { args } = await this.parse(List);
 
     return [
-      ensureActiveEnterprise(this.config.configDir) as ListrTask,
+      ensureActiveEnterpriseTask(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
       {
         title: `Loading EaC projects for active enterprise`,

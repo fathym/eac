@@ -1,6 +1,6 @@
 {
   "name": "@fathym/cli",
-  "version": "0.0.152",
+  "version": "0.0.153",
   "description": "The CLI used for code first flows with Fathym EaC.",
   "author": "Fathym, Inc",
   "bin": {
@@ -19,7 +19,6 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
-    "@fathym/common": "^0.0.24",
     "@microsoft/signalr": "^7.0.2",
     "@oclif/core": "^2.1.1",
     "@oclif/plugin-help": "^5.2.4",
@@ -33,6 +32,7 @@
     "form-data": "^4.0.0",
     "fs-extra": "^11.1.0",
     "handlebars": "^4.7.7",
+    "immer": "^9.0.19",
     "listr2": "^5.0.7",
     "open": "^8.4.1",
     "path": "^0.12.7",
@@ -98,6 +98,7 @@
     "deploy:all": "npm publish --access public",
     "deploy:refresh": "node -e \"setTimeout(()=>{},500)\" && npm run deploy:commit && fathym upgrade",
     "deploy:commit": "fathym git \"Deploy complete, syncing versions and readme updates\"",
+    "ftm": "node -e \"setTimeout(()=>{},0)\" && \"./bin/run.cmd\"",
     "fathym": "npm run build && \"./bin/run.cmd\"",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "shx rm -f oclif.manifest.json",

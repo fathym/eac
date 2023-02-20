@@ -1,21 +1,18 @@
 import { Args } from '@oclif/core';
-import { color } from '@oclif/color';
 import open from 'open';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
 import { FathymCommand } from '../../../../common/fathym-command';
-import { ClosureInstruction } from '../../../../common/ClosureInstruction';
+import { FathymTaskContext } from '../../../../common/core-helpers';
 import {
-  ActiveEnterpriseTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  FathymTaskContext,
-  loadEaCTask,
-  ApplicationTaskContext,
+  ActiveEnterpriseTaskContext,
   ProjectTaskContext,
-  ensureProject,
-} from '../../../../common/core-helpers';
+  ApplicationTaskContext,
+  ensureActiveEnterpriseTask,
+  loadEaCTask,
+  ensureProjectTask,
+  ensureApplicationTask,
+} from '../../../../common/eac-services';
 
 interface PreivewContext
   extends FathymTaskContext,
@@ -40,7 +37,7 @@ export default class Preview extends FathymCommand<PreivewContext> {
     }),
   };
 
-  static title = 'List Applications';
+  static title = 'Preivew Project Application';
 
   protected async loadTasks(): Promise<ListrTask<PreivewContext>[]> {
     const { args } = await this.parse(Preview);
@@ -48,10 +45,16 @@ export default class Preview extends FathymCommand<PreivewContext> {
     const { appLookup, projectLookup } = args;
 
     return [
-      ensureActiveEnterprise(this.config.configDir) as ListrTask,
+      ensureActiveEnterpriseTask(this.config.configDir) as ListrTask,
       loadEaCTask(this.config.configDir),
-      ensureProject(this.config.configDir, projectLookup),
-      ensureApplication(this.config.configDir, appLookup, false, false, true),
+      ensureProjectTask(this.config.configDir, projectLookup),
+      ensureApplicationTask(
+        this.config.configDir,
+        appLookup,
+        false,
+        false,
+        true
+      ),
       {
         title: `Open application preview`,
         task: async (ctx, task) => {

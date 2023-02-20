@@ -5,13 +5,14 @@ import {
   ActiveEnterpriseTaskContext,
   ApplicationTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
   loadEaCTask,
   ProjectTaskContext,
-} from '../../../common/core-helpers';
-import { withEaCDraft } from '../../../common/eac-services';
+  withEaCDraftEditTask,
+} from '../../../common/eac-services';
+import { EaCApplicationDetails } from '@semanticjs/common';
+import { FathymTaskContext } from '../../../common/core-helpers';
 
 interface DefineTaskContext
   extends FathymTaskContext,
@@ -52,9 +53,9 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     const { name, description } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, appLookup, true, true),
+      ensureApplicationTask(this.config.configDir, appLookup, true, true),
       this.addApplicationToDraft(name, description),
     ];
   }
@@ -63,40 +64,20 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     name?: string,
     description?: string
   ): ListrTask<DefineTaskContext> {
-    return {
-      title: 'Create application',
-      task: async (ctx, task) => {
-        const currentEaCApp =
-          ctx.EaC.Applications && ctx.EaC.Applications[ctx.ApplicationLookup]
-            ? ctx.EaC.Applications[ctx.ApplicationLookup] || {}
-            : {};
+    return withEaCDraftEditTask<DefineTaskContext, EaCApplicationDetails>(
+      'Define application',
+      this.config.configDir,
+      (ctx) => [['Applications', ctx.ApplicationLookup, 'Application']],
+      {
+        draftPatch: (ctx) => {
+          const patch = {
+            Name: name,
+            Description: description || name,
+          };
 
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            if (name || description) {
-              draft.EaC.Applications![ctx.ApplicationLookup].Application = {
-                ...currentEaCApp.Application,
-                Name:
-                  name ||
-                  draft.EaC.Applications![ctx.ApplicationLookup]?.Application
-                    ?.Name ||
-                  currentEaCApp.Application?.Name,
-                Description:
-                  description ||
-                  draft.EaC.Applications![ctx.ApplicationLookup]?.Application
-                    ?.Description ||
-                  currentEaCApp.Application?.Description ||
-                  name,
-              };
-            }
-
-            return draft;
-          },
-          [['Applications', ctx.ApplicationLookup]]
-        );
-      },
-    };
+          return patch;
+        },
+      }
+    );
   }
 }

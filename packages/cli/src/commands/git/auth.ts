@@ -1,16 +1,14 @@
 import { Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import open from 'open';
-import {} from '@semanticjs/common';
-import { FathymCommand } from '../../common/fathym-command';
-import { ClosureInstruction } from '../../common/ClosureInstruction';
+import { FathymTaskContext } from '../../common/core-helpers';
 import {
   ActiveEnterpriseTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
   loadEaCTask,
-} from '../../common/core-helpers';
+} from '../../common/eac-services';
+import { FathymCommand } from '../../common/fathym-command';
 
 interface AuthTaskContext
   extends FathymTaskContext,
@@ -42,7 +40,7 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
     const { edit, self } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
       {
         title: 'Open GitHub in browser for authentication',

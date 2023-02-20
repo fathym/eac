@@ -1,8 +1,6 @@
 import { Args } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   commitGitChanges,
   confirmGitRepo,
@@ -14,9 +12,6 @@ import {
   pullRequest,
   pushOrigin,
 } from '../../../common/git-tasks';
-import { runProc } from '../../../common/task-helpers';
-import { ensurePromptValue } from '../../../common/eac-services';
-import loadAxios from '../../../common/axios';
 import { FathymTaskContext } from '../../../common/core-helpers';
 import { GitHubTaskContext } from '../../../common/git-helpers';
 

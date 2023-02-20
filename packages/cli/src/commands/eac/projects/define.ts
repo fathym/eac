@@ -1,25 +1,17 @@
 import { Args, Flags } from '@oclif/core';
-import { color } from '@oclif/color';
-import { ListrTask, PromptOptions } from 'listr2';
-import { randomUUID } from 'node:crypto';
+import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../common/fathym-command';
+import { FathymTaskContext } from '../../../common/core-helpers';
 import {
   ActiveEnterpriseTaskContext,
-  azureCliInstallTask,
-  AzureCLITaskContext,
-  delay,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureProject,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureProjectTask,
   loadEaCTask,
   ProjectTaskContext,
-  setAzureSubTask,
-  SubscriptionTaskContext,
-} from '../../../common/core-helpers';
-import { runProc } from '../../../common/task-helpers';
-import { downloadFile, withEaCDraft } from '../../../common/eac-services';
-import { EaCCloudDetails } from '@semanticjs/common';
+  withEaCDraftEditTask,
+} from '../../../common/eac-services';
+import { EaCProjectDetails } from '@semanticjs/common';
 
 interface DefineTaskContext
   extends FathymTaskContext,
@@ -59,9 +51,9 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     const { name, description } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureProject(this.config.configDir, projectLookup, true, true),
+      ensureProjectTask(this.config.configDir, projectLookup, true, true),
       this.addProjectToDraft(name, description),
     ];
   }
@@ -70,45 +62,20 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     name?: string,
     description?: string
   ): ListrTask<DefineTaskContext> {
-    return {
-      title: 'Create project',
-      task: async (ctx, task) => {
-        const currentEaCProj =
-          ctx.EaC.Projects && ctx.EaC.Projects[ctx.ProjectLookup]
-            ? ctx.EaC.Projects[ctx.ProjectLookup] || {}
-            : {};
+    return withEaCDraftEditTask<DefineTaskContext, EaCProjectDetails>(
+      'Define project',
+      this.config.configDir,
+      (ctx) => [['Projects', ctx.ProjectLookup, 'Project']],
+      {
+        draftPatch: (ctx) => {
+          const patch = {
+            Name: name,
+            Description: description || name,
+          };
 
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            if (!draft.EaC.Projects) {
-              draft.EaC.Projects = {};
-            }
-
-            if (!draft.EaC.Projects[ctx.ProjectLookup]) {
-              draft.EaC.Projects[ctx.ProjectLookup] = {};
-            }
-
-            if (name || description) {
-              draft.EaC.Projects[ctx.ProjectLookup].Project = {
-                ...currentEaCProj.Project,
-                Name:
-                  name ||
-                  draft.EaC.Projects[ctx.ProjectLookup]?.Project?.Name ||
-                  currentEaCProj.Project?.Name,
-                Description:
-                  description ||
-                  draft.EaC.Projects[ctx.ProjectLookup]?.Project?.Description ||
-                  currentEaCProj.Project?.Description ||
-                  name,
-              };
-            }
-
-            return draft;
-          }
-        );
-      },
-    };
+          return patch;
+        },
+      }
+    );
   }
 }

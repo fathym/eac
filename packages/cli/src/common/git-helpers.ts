@@ -1,9 +1,5 @@
 import { runProc } from './task-helpers';
-import { prompt } from 'enquirer';
 import loadAxios from './axios';
-import { loadApiRootUrl } from './core-helpers';
-import { InstallLCURequest } from './InstallLCURequest';
-import { ensurePromptValue } from './eac-services';
 
 export interface GitHubTaskContext {
   GitHubBranches: string[];

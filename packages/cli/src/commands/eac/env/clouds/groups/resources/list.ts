@@ -1,21 +1,19 @@
 import { color } from '@oclif/color';
 import { Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+
 import { FathymCommand } from '../../../../../../common/fathym-command';
 import {
   ActiveEnterpriseTaskContext,
-  EaCTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
-  loadEaCTask,
-} from '../../../../../../common/core-helpers';
-import {
   CloudResourceGroupTaskContext,
   CloudTaskContext,
+  EaCTaskContext,
+  ensureActiveEnterpriseTask,
   ensureCloudResourceGroupTask,
   ensureCloudTask,
+  loadEaCTask,
 } from '../../../../../../common/eac-services';
+import { FathymTaskContext } from '../../../../../../common/core-helpers';
 
 interface ListContext
   extends FathymTaskContext,
@@ -50,7 +48,7 @@ export default class List extends FathymCommand<ListContext> {
     const { cloudLookup, cloudResGroupLookup } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
       ensureCloudTask(cloudLookup),
       ensureCloudResourceGroupTask(this.config.configDir, cloudResGroupLookup),

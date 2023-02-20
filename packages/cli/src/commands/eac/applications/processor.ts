@@ -1,19 +1,21 @@
 import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
-import {} from '@semanticjs/common';
+import { EaCApplicationAsCode, EaCProcessor } from '@semanticjs/common';
 import { FathymCommand } from '../../../common/fathym-command';
-import { ClosureInstruction } from '../../../common/ClosureInstruction';
 import {
   ActiveEnterpriseTaskContext,
   ApplicationTaskContext,
   EaCTaskContext,
-  ensureActiveEnterprise,
-  ensureApplication,
-  FathymTaskContext,
+  ensureActiveEnterpriseTask,
+  ensureApplicationTask,
   loadEaCTask,
   ProjectTaskContext,
+  withEaCDraftEditTask,
+} from '../../../common/eac-services';
+import {
+  FathymTaskContext,
+  ensurePromptValue,
 } from '../../../common/core-helpers';
-import { ensurePromptValue, withEaCDraft } from '../../../common/eac-services';
 
 interface LCUTaskContext
   extends FathymTaskContext,
@@ -59,9 +61,9 @@ export default class Processor extends FathymCommand<LCUTaskContext> {
     const { defaultFile, baseHref } = flags;
 
     return [
-      ensureActiveEnterprise(this.config.configDir),
+      ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      ensureApplication(this.config.configDir, appLookup, false, true),
+      ensureApplicationTask(this.config.configDir, appLookup, false, true),
       this.addApplicationViewPackageProcessorToDraft(type, {
         BaseHref: baseHref,
         DefaultFile: defaultFile,
@@ -73,43 +75,34 @@ export default class Processor extends FathymCommand<LCUTaskContext> {
     type: string,
     dets: Partial<{ BaseHref: string; DefaultFile: string }>
   ): ListrTask<LCUTaskContext> {
-    return {
-      title: 'Create zip application',
-      enabled: type === 'DFS',
-      task: async (ctx, task) => {
-        dets.BaseHref = await ensurePromptValue(
-          task,
-          'Base href for the application',
-          dets.BaseHref
-        );
+    return withEaCDraftEditTask<LCUTaskContext, EaCProcessor>(
+      'Add application view package processor',
+      this.config.configDir,
+      (ctx) => [['Applications', ctx.ApplicationLookup, 'Processor']],
+      {
+        enabled: (ctx) => type === 'DFS',
+        prompt: async (ctx, task) => {
+          dets.BaseHref = await ensurePromptValue(
+            task,
+            'Base href for the application',
+            dets.BaseHref
+          );
 
-        dets.DefaultFile = await ensurePromptValue(
-          task,
-          'Location of default file',
-          dets.DefaultFile
-        );
+          dets.DefaultFile = await ensurePromptValue(
+            task,
+            'Location of default file',
+            dets.DefaultFile
+          );
+        },
+        draftPatch: (ctx) => {
+          const patch = {
+            Type: type,
+            ...dets,
+          };
 
-        const currentEaCAppProcessor = ctx.EaC.Applications
-          ? ctx.EaC.Applications[ctx.ApplicationLookup]?.Processor || {}
-          : {};
-
-        await withEaCDraft(
-          this.config.configDir,
-          ctx.ActiveEnterpriseLookup,
-          async (draft) => {
-            draft.EaC.Applications![ctx.ApplicationLookup].Processor = {
-              ...(currentEaCAppProcessor.Type === type
-                ? currentEaCAppProcessor
-                : {}),
-              Type: type,
-              ...dets,
-            };
-
-            return draft;
-          },
-          [['Applications', ctx.ApplicationLookup]]
-        );
-      },
-    };
+          return patch;
+        },
+      }
+    );
   }
 }

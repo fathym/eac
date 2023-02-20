@@ -1,12 +1,6 @@
 import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../common/fathym-command';
-import {
-  ActiveEnterpriseTaskContext,
-  ensureActiveEnterprise,
-  FathymTaskContext,
-  setApiRoot,
-} from '../../common/core-helpers';
-import path from 'node:path';
+import { FathymTaskContext } from '../../common/core-helpers';
 import open from 'open';
 import { Args, Flags } from '@oclif/core';
 import { ensureOrganization, ensureRepository } from '../../common/git-tasks';
