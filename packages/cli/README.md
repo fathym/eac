@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.153 win32-x64 node-v18.12.1
+@fathym/cli/0.0.154 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -52,9 +52,9 @@ USAGE
 * [`fathym eac applications processor TYPE [APPLOOKUP]`](#fathym-eac-applications-processor-type-applookup)
 * [`fathym eac applications set [APPLOOKUP]`](#fathym-eac-applications-set-applookup)
 * [`fathym eac applications unpack [APPLOOKUP]`](#fathym-eac-applications-unpack-applookup)
-* [`fathym eac clear`](#fathym-eac-clear)
 * [`fathym eac commit [MESSAGE]`](#fathym-eac-commit-message)
 * [`fathym eac draft`](#fathym-eac-draft)
+* [`fathym eac drop`](#fathym-eac-drop)
 * [`fathym eac env clouds azure define [CLOUDLOOKUP]`](#fathym-eac-env-clouds-azure-define-cloudlookup)
 * [`fathym eac env clouds delete [CLOUDLOOKUP]`](#fathym-eac-env-clouds-delete-cloudlookup)
 * [`fathym eac env clouds groups list`](#fathym-eac-env-clouds-groups-list)
@@ -66,7 +66,7 @@ USAGE
 * [`fathym eac env sources define [SOURCELOOKUP]`](#fathym-eac-env-sources-define-sourcelookup)
 * [`fathym eac env sources delete [SOURCELOOKUP]`](#fathym-eac-env-sources-delete-sourcelookup)
 * [`fathym eac env sources list`](#fathym-eac-env-sources-list)
-* [`fathym eac env sources pipeline attach`](#fathym-eac-env-sources-pipeline-attach)
+* [`fathym eac env sources pipeline attach [SOURCELOOKUP] [PIPELINELOOKUP]`](#fathym-eac-env-sources-pipeline-attach-sourcelookup-pipelinelookup)
 * [`fathym eac export`](#fathym-eac-export)
 * [`fathym eac modifiers define`](#fathym-eac-modifiers-define)
 * [`fathym eac projects applications add [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-add-projectlookup-applookup)
@@ -127,7 +127,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.153/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -525,24 +525,6 @@ EXAMPLES
   $ fathym eac applications unpack
 ```
 
-## `fathym eac clear`
-
-Used to clear the current draft to EaC that is queued for commit.
-
-```
-USAGE
-  $ fathym eac clear [--json]
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Used to clear the current draft to EaC that is queued for commit.
-
-EXAMPLES
-  $ fathym eac clear
-```
-
 ## `fathym eac commit [MESSAGE]`
 
 Used for commiting changes to the EaC.
@@ -570,7 +552,10 @@ Used to retrieve the current draft to EaC that is queued for commit.
 
 ```
 USAGE
-  $ fathym eac draft [--json]
+  $ fathym eac draft [--json] [-f <value>]
+
+FLAGS
+  -f, --file=<value>  File path where the export should be written
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -580,6 +565,24 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym eac draft
+```
+
+## `fathym eac drop`
+
+Used to drop the current draft to EaC that is queued for commit.
+
+```
+USAGE
+  $ fathym eac drop [--json]
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to drop the current draft to EaC that is queued for commit.
+
+EXAMPLES
+  $ fathym eac drop
 ```
 
 ## `fathym eac env clouds azure define [CLOUDLOOKUP]`
@@ -759,7 +762,7 @@ EXAMPLES
 
 ## `fathym eac env sources define [SOURCELOOKUP]`
 
-Used for creating a new source control.
+Used for defining a new source control.
 
 ```
 USAGE
@@ -778,7 +781,7 @@ GLOBAL FLAGS
   --json  Format output as json.
 
 DESCRIPTION
-  Used for creating a new source control.
+  Used for defining a new source control.
 
 EXAMPLES
   $ fathym eac env sources define
@@ -823,13 +826,17 @@ EXAMPLES
   $ fathym eac env sources list
 ```
 
-## `fathym eac env sources pipeline attach`
+## `fathym eac env sources pipeline attach [SOURCELOOKUP] [PIPELINELOOKUP]`
 
 Used for attaching a build pipeline to a source control.
 
 ```
 USAGE
-  $ fathym eac env sources pipeline attach [--json]
+  $ fathym eac env sources pipeline attach [SOURCELOOKUP] [PIPELINELOOKUP] [--json]
+
+ARGUMENTS
+  SOURCELOOKUP    The source lookup
+  PIPELINELOOKUP  The pipeline lookup
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -1152,7 +1159,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.153/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1459,7 +1466,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.153/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1525,7 +1532,7 @@ EXAMPLES
   $ fathym open
 ```
 
-_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.153/dist/commands/open.ts)_
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -1778,5 +1785,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.153/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
