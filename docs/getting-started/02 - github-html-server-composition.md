@@ -44,21 +44,35 @@ Next move into the repository folder.
 cd .\{name-of-new-repo}
 ```
 
-Now we need to define the source control in our EaC.
+## Preparing for local development
+
+A few things have changed in our code so lets take a look. Start by opening your code.
 
 ```cli
-fathym eac env sources define
+fathym open
 ```
 
-This added a source definition to our draft that we will commit later in this guide.
+And then lets sync our local.
+
+```cli
+fathym git
+```
+
+This command does a few things in addition to the standard git pull that helps to keep your development branch in sync with integration and other development from your team.
 
 ## Configuring your build pipeline
 
 As mentioned previously, there are many different ways to get your deployment artifacts into Fathym. You'll move from the zip deploy to something automated in GitHub. To do that, you'll configure a build pipeline for the new source control.
 
-A build pipeline is a configuration of the build process. It is made up of a template and the parameters necessary to fullfill the chosen template. A source control can only have a single build pipeline while a build pipeline can have multiple source controls. This ensures understanding on how a source control is built, and allows you to make edits to a build pipeline that update multiple source controls at the same time (like a series of React build). This helps keep your GitHub Actions in sync as your architecture evolves.
+A build pipeline is a configuration of the build process. It is made up of a template and the parameters necessary to fullfill the chosen template. A source control can only have a single build pipeline while a build pipeline can have multiple source controls. This ensures understanding on how a source control is built, and allows you to make edits to a build pipeline that update multiple source controls at the same time (like a series of React builds). This helps keep your GitHub Actions in sync as your architecture evolves.
 
-Here we'll use another LCU to get a root static build going for our simple code base. There are equivelant commands in the CLI to use, though often the LCUs serve as a quicker way to integrate solutions (even if you need to [build them yourself](../lcus/build-your-own-lowcodeunits.md))
+To start, we need to define the source control in our EaC. This will add a source definition to our draft. Select the organization and repository you used previously.
+
+```cli
+fathym eac env sources define
+```
+
+Now we'll use another LCU to get a root static build going for our simple code base. There are equivelant commands in the CLI to use, though often the LCUs serve as a quicker way to integrate solutions (even if you need to [build them yourself](../lcus/build-your-own-lowcodeunits.md)).
 
 ```cli
 fathym lcu @fathym-it/lcu-eac-pipelines-root-static
@@ -82,29 +96,7 @@ Once the commit completes the source will be created with a new GitHub Action. I
 
 This is a big step for yourself and/or team, as you've set up a complete continuous integration workflow to automate your project builds. You've also laid the ground work for continuous deployment.
 
-## Cracking open the source control
-
-A few things have changed in our code so lets take a look. Start by opening your code.
-
-```cli
-fathym open
-```
-
-And then lets sync our local.
-
-```cli
-fathym git
-```
-
-This command does a few things in addition to the standard git pull that helps to keep your development branch in sync with integration and other development from your team.
-
-Now, since we're going to be making changes, let's get ourselves a new feature branch.
-
-```cli
-fathym git feature testing
-```
-
-## Let's continue with the blog
+## Continuing blog development
 
 Now you have a continuous integration flow in place and a better understanding of how your branching strategy is configured, so let's start using it all.
 

@@ -36,7 +36,7 @@ export default class Set extends FathymCommand<FathymTaskContext> {
         task: async (ctx, task) => {
           const ents = await listEnterprises(this.config.configDir);
 
-          entLookup = await ensurePromptValue(
+          entLookup = (await ensurePromptValue(
             task,
             'Choose enterprise:',
             entLookup!,
@@ -46,7 +46,7 @@ export default class Set extends FathymCommand<FathymTaskContext> {
                 name: ent.Lookup,
               };
             })
-          );
+          )) as string;
 
           task.title = `Setting the user's active enterprise to '${entLookup}'`;
 

@@ -179,11 +179,11 @@ export function commitDraftTask(
   return {
     title: 'Commiting EaC Draft',
     task: async (ctx, task) => {
-      message = await ensurePromptValue(
+      message = (await ensurePromptValue(
         task,
         'Message for the EaC commit:',
         message
-      );
+      )) as string;
 
       const axios = await loadAxios(configDir);
 
@@ -324,7 +324,7 @@ export function ensureSelection<
           eacLookups = await filterLookups!(ctx, draft.EaC!, eacLookups);
         }
 
-        lookup = await ensurePromptValue(
+        lookup = (await ensurePromptValue(
           task,
           `Choose EaC ${type}:`,
           lookup!,
@@ -344,7 +344,7 @@ export function ensureSelection<
             };
           }),
           shouldCreate ? create || (async () => randomUUID()) : undefined
-        );
+        )) as string;
       }
 
       task.title = `Selected ${type}: ${

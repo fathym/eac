@@ -32,10 +32,10 @@ export default class SetAPIRoot extends FathymCommand<FathymTaskContext> {
       {
         title: `Setting API root`,
         task: async (ctx, task) => {
-          env = await ensurePromptValue(task, 'Select API Environment', env!, [
+          env = (await ensurePromptValue(task, 'Select API Environment', env!, [
             'prod',
             'local',
-          ]);
+          ])) as string;
 
           await setApiRoot(this.config.configDir, env);
 

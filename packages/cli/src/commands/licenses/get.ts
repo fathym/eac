@@ -38,7 +38,7 @@ export default class Get extends FathymCommand<FathymTaskContext> {
         task: async (ctx, task) => {
           const licenseTypes = await listLicenseTypes(this.config.configDir);
 
-          licenseType = await ensurePromptValue(
+          licenseType = (await ensurePromptValue(
             task,
             'Choose License Type:',
             licenseType,
@@ -48,7 +48,7 @@ export default class Get extends FathymCommand<FathymTaskContext> {
                 name: licenseType,
               };
             })
-          );
+          )) as string;
 
           await listLicensesByEmail(this.config.configDir, licenseType);
         },

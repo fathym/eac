@@ -82,17 +82,17 @@ export default class Processor extends FathymCommand<LCUTaskContext> {
       {
         enabled: (ctx) => type === 'DFS',
         prompt: async (ctx, task) => {
-          dets.BaseHref = await ensurePromptValue(
+          dets.BaseHref = (await ensurePromptValue(
             task,
             'Base href for the application',
             dets.BaseHref
-          );
+          )) as string;
 
-          dets.DefaultFile = await ensurePromptValue(
+          dets.DefaultFile = (await ensurePromptValue(
             task,
             'Location of default file',
             dets.DefaultFile
-          );
+          )) as string;
         },
         draftPatch: (ctx) => {
           const patch = {

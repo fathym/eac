@@ -41,27 +41,27 @@ export default class Import extends Clone {
         task: async (ctx, task) => {
           const destination = path.join(process.cwd(), repository!);
 
-          remote = await ensurePromptValue(
+          remote = (await ensurePromptValue(
             task,
             'Set the remote to import',
             remote
-          );
+          )) as string;
 
           //  TODO: Use ensure organization task
-          organization = await ensurePromptValue(
+          organization = (await ensurePromptValue(
             task,
             'Set the organization to clone',
             organization,
             undefined,
             () => loadGitUsername(),
             '- Use Default -'
-          );
+          )) as string;
 
-          repository = await ensurePromptValue(
+          repository = (await ensurePromptValue(
             task,
             'Set the organization to clone',
             repository
-          );
+          )) as string;
 
           await runProc(`git`, [
             'clone',

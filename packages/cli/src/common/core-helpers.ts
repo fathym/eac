@@ -123,8 +123,9 @@ export async function ensurePromptValue<
     | string[]
     | { name: string | (() => string); message?: string | (() => string) }[],
   createValue?: () => Promise<string>,
-  createText = '- Create new -'
-): Promise<string> {
+  createText = '- Create new -',
+  type?: string
+): Promise<string | string[]> {
   if (!value) {
     if (createValue && choices) {
       if (typeof choices[0] === 'string') {
@@ -137,14 +138,12 @@ export async function ensurePromptValue<
       }
     }
 
-    value = (
-      await task.prompt({
-        type: choices?.length! > 0 ? 'select' : 'input',
-        message: message,
-        validate: (v) => !!createValue || Boolean(v),
-        choices: choices,
-      })
-    ).trim();
+    value = await task.prompt({
+      type: type || (choices?.length! > 0 ? 'autocomplete' : 'input'),
+      message: message,
+      validate: (v) => !!createValue || Boolean(v),
+      choices: choices,
+    });
 
     value = value === createText ? '' : value;
   }

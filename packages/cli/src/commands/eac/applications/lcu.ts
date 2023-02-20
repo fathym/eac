@@ -95,11 +95,11 @@ export default class LCU extends FathymCommand<LCUTaskContext> {
       {
         enabled: (ctx) => type === 'Zip',
         prompt: async (ctx, task) => {
-          zipDets.ZipFile = await ensurePromptValue(
+          zipDets.ZipFile = (await ensurePromptValue(
             task,
             'Location of zip file',
             zipDets.ZipFile
-          );
+          )) as string;
         },
         draftPatch: (ctx) => {
           const patch = {

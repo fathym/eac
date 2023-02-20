@@ -325,7 +325,11 @@ export default class Install extends FathymCommand<InstallContext> {
     return {
       title: `Download LCU: ${lcu}`,
       task: async (ctx, task) => {
-        lcu = await ensurePromptValue(task, 'Enter LCU Package name:', lcu);
+        lcu = (await ensurePromptValue(
+          task,
+          'Enter LCU Package name:',
+          lcu
+        )) as string;
 
         lcu = lcu!.replace(/\\/g, '/');
 

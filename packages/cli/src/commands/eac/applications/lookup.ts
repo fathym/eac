@@ -74,11 +74,11 @@ export default class Lookup extends FathymCommand<LookupTaskContext> {
       (ctx) => [['Applications', ctx.ApplicationLookup, 'LookupConfig']],
       {
         prompt: async (ctx, task) => {
-          dets.PathRegex = await ensurePromptValue(
+          dets.PathRegex = (await ensurePromptValue(
             task,
             'Path for the application',
             dets.PathRegex
-          );
+          )) as string;
 
           dets.PathRegex = `${dets.PathRegex}.*`;
         },

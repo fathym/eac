@@ -41,11 +41,11 @@ export default class Feature extends FathymCommand<FathymTaskContext> {
       {
         title: 'Create new feature branch',
         task: async (ctx, task) => {
-          name = await ensurePromptValue(
+          name = (await ensurePromptValue(
             task,
             'What is the name of the feature branch?',
             name
-          );
+          )) as string;
 
           await runProc(`git checkout`, [
             `-b feature/${name}`,
