@@ -254,7 +254,7 @@ Also, if you go look at your builds again (either in the [enterprise feed](https
 
 ## What's Next?
 
-There is a lot that you have set up over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through code-to-deploy. Next, you'll expand what you've been doing with this blog to bring in some interactivity and bring in TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM. This enables additional team workflows
+There is a lot that you have set up over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through code-to-deploy. Next, you'll expand what you've been doing with this blog to bring in some interactivity and bring in TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM. This enables additional team workflows for testing and release management.
 
 <!-- ## Bonus - Global Edge CDN
 

@@ -1,12 +1,12 @@
 # Bringing the blog to life
 
+So far we've just been getting things setup and learning a bit of the lay of the land at Fathym. Now let's quickly look at bringing in a few more things to showcase how fathym works to help you deliver your user experiences with speed and efficiency.
+
 ## Let's bring in TailwindCSS and React
 
-Tailwind CSS is a utility-first CSS framework that allows developers to build custom user interfaces more quickly and easily using pre-designed styles and layout options. This helps to reduce the time and effort required to create visually appealing interfaces, and makes it easier to create consistent and professional-looking designs without having to write a lot of custom CSS.
+Tailwind CSS is a utility-first CSS framework that allows developers to build custom user interfaces more quickly and easily using pre-designed styles and layout options. Their combination can help developers build responsive, lightweight, and fast web applications that are efficient, scalable, and maintainable, which can help to reduce development time and improve the overall performance of the applications.
 
-React is a JavaScript library that allows developers to create reusable components and build complex user interfaces using a declarative approach. This makes it easier to develop and maintain large applications, as it allows developers to create reusable components that can be easily combined to build complex user interfaces.
-
-The combination of Tailwind CSS and React can help developers build responsive, lightweight, and fast web applications that are efficient, scalable, and maintainable, which can help to reduce development time and improve the overall performance of the applications.
+Coupled with Fathym's out of the box cloud native starting point and automated devops process, and you have a workflow
 
 Now we can update our `index.html` with something more visually rich and look at bringing in some react interactivity.
 
@@ -35,7 +35,7 @@ Now we can update our `index.html` with something more visually rich and look at
   <body
     class="font-sans font-normal leading-relaxed font-base dark:text-gray-100 text-gray-800 prose dark"
   >
-    <div id="fathym-inject">
+    <div id="fathym-compose">
       <h1>Content Not Found</h1>
 
       <p>The content you are trying to access is not available.</p>
@@ -96,10 +96,13 @@ When using the GitHub build artifact as your deployment artifact, there is one l
 
 Using NPM packages, we can maintain a complete deployment history. Using NPM tags, we can create a simple way for qa, dev, and product owners to work together to validate stories are complete through all requirements. In addition, these can be used to support automation with tools like Chromatic and Applitools.
 
-There are a couple steps that Fathym just can't automate, and we'll walk you through those now:
+In order to get this going we'll need to getour NPM JS account setup and configured. We'll walk you through that now:
 
-1. (Create a new organization)[https://github.com/organizations/plan] (a free plan will do for this, keep in mind that is public) in GitHub. We think its important to look for organization names that are also available at npmjs.org. We use this at Fathym to keep our repos and npm packages aligned for simplicity
-2. (Creat a new organization)[https://www.npmjs.com/org/create] (a free plan will do for this, keep in mind that is public) in NPM.
+- (Creat a new organization)[https://www.npmjs.com/org/create] (a free plan will do for this, keep in mind that is public) in NPM.
+  - You can create any organization name, and it will serve as the root of your package names. @{npmjs-organization}/{package-name}
+  - We recommend to try and get organization names in GitHub and NPM JS in sync for management purposes.
+
+We'll use the same repository we were working with for the last tutorial, add to it and tweak it.
 
 Now we are going to need to create a new build pipeline to generate the NPM package.
 
