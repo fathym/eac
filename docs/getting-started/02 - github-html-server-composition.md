@@ -81,7 +81,7 @@ fathym lcu @fathym-it/lcu-eac-pipelines-root-static
 Once the build pipeline is defined, you can now attach it to the source control.
 
 ```cli
-fathym eac sources pipeline attach
+fathym eac env sources pipeline attach
 ```
 
 Now, we need to commit all of our EaC changes for the source and build pipelines.
@@ -156,11 +156,11 @@ Upon pushing your changes to the repository, you'll be able to see the build in 
 fathym git home -s actions
 ```
 
-Alternatively, you can use your Fathym [enterprise feed](https://www.fathym.com/dashboard/activity) to see all build activity (and more) at a glance.
+Alternatively, you can use your Fathym [enterprise feed](https://www.fathym.com/dashboard) to see all build activity (and more) at a glance.
 
 <!--
 ```cli
-fathym open https://www.fathym.com/dashboard/activity
+fathym open https://www.fathym.com/dashboard
 ``` -->
 
 ## Deploy the GitHub artifact
@@ -171,10 +171,14 @@ In order to deploy that artifact, you'll need to create a new application again,
 
 > **NOTE** - If you haven't created a project yet, head to the [previous walkthrough](./overview.md). If you don't have your project lookup and need to find it, you can use `fathym eac projects list`.
 
+We'll use another LCU Package here to quickly install our GitHub application.
+
 ```cli
-fathym eac applications create "My Second Application"
-fathym eac applications lcu {app-lookup} --type github
-fathym eac applications processor {app-lookup}
+fathym lcu @fathym-it/lcu-eac-applications-lcu-github
+```
+
+```cli
+fathym eac applications lcu GitHub -p /second
 fathym eac projects applications add {project-lookup} {app-lookup}
 fathym eac commit "Configured second application in project"
 fathym eac projects applications preview {project-lookup} {app-lookup}
