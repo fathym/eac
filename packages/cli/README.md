@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.157 win32-x64 node-v18.12.1
+@fathym/cli/0.0.158 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -127,7 +127,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.157/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.158/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -915,11 +915,14 @@ Used for preivewing a application.
 
 ```
 USAGE
-  $ fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP] [--json]
+  $ fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP] [--json] [-p <value>]
 
 ARGUMENTS
   PROJECTLOOKUP  The project lookup to preview.
   APPLOOKUP      The application lookup to preview.
+
+FLAGS
+  -p, --path=<value>  The path to preview.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -1025,10 +1028,13 @@ Used for preivewing a project.
 
 ```
 USAGE
-  $ fathym eac projects preview [PROJECTLOOKUP] [--json]
+  $ fathym eac projects preview [PROJECTLOOKUP] [--json] [-p <value>]
 
 ARGUMENTS
   PROJECTLOOKUP  The project lookup to preview.
+
+FLAGS
+  -p, --path=<value>  The path to preview.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -1159,7 +1165,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.157/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.158/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1466,7 +1472,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.157/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.158/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1532,7 +1538,7 @@ EXAMPLES
   $ fathym open
 ```
 
-_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.157/dist/commands/open.ts)_
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.158/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -1785,5 +1791,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.157/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.158/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
