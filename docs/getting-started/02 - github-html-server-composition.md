@@ -129,7 +129,7 @@ Once open, add the following HTML, save, and then close the file.
     <title>My Fathym App</title>
   </head>
   <body>
-    <div id="fathym-inject">
+    <div id="fathym-compose">
       <h1>Content Not Found</h1>
 
       <p>The content you are trying to access is not available.</p>
@@ -138,7 +138,7 @@ Once open, add the following HTML, save, and then close the file.
 </html>
 ```
 
-Take note of the div with id `fathym-inject`, you'll need this id later when configuring Fathym Runtime server side composition.
+Take note of the div with id `fathym-compose`, you'll need this id later when configuring Fathym Runtime server side composition.
 
 Update the `README.md` file with whatever markdown you want to use. We support a large portion of the CommonMark spec via the work done by [xoofx/markdig](https://github.com/xoofx/markdig).
 
@@ -197,32 +197,26 @@ Once a file is chosen for a request it will pass through any configured modifier
 
 ## Configuring the markdown composition
 
-In the first guide we demonstrated
-
-In order to enable markdown composition with your index.html file, you'll need to setup a couple of different modifiers. One will convert any markdown to HTML using the Markdown to Html Modifier. The other one, the HTML Inject Modifier, will format it into the defined template.
-
-First you'll configure the modifier for markdown to html.
+In the first guide we demonstrated how markdown can be converted into HTML. We hooked that DFS modifier up for all applications in the project, so let's see it working here as well.
 
 ```cli
-fathym eac modifiers create "Markdown to HTML" --pathFilter "*.(md|mdx)" --priority 500 --type MarkdownToHTML --details "{}"
+fathym eac projects applications preview -p /README.md
 ```
 
-The priority will become important once we configure the second modifier to ensure they execute in the correct order. Higher priority modifiers execute first, then lower priority. Modifiers with the same priority execute in parallel.
+Let's introduce another feature of the Fathym Runtime, server side composition. In order to enable markdown composition with your index.html file, you'll need to setup another modifier. The new one will work withe converted HTML, the HTML Composer Modifier. It will format the HTML into a configured template.
 
-Next you will configure the modifier that will inject the formatted markdown into the HTML template.
+Next you will configure the modifier that will compose the formatted markdown into the HTML template (index.html).
 
 ```cli
-fathym eac modifiers create "Markdown Injector" --pathFilter "*index.html" --priority 400 --type HtmlInjector --details "{}"
+fathym lcu @fathym-it/lcu-eac-modifiers-html-composer
 ```
 
-With both modifiers created, you'll need to add the modifier for use. There are two ways to do this. First, you can add a modifier at the application level so that it only executes when the given application executes. Otherwise, you can add a modifier at the project level so that it executes for all applications in the project.
+> **NOTE** - The priority is important to ensure modifiers execute in the correct order. Higher priority modifiers execute first, then lower priority ones. Modifiers with the same priority execute in parallel. The LCU packages help manage modifiers by our (and the communities) own internal setup.
 
-We'll add the markdown to HTML modifier to the project, and then add the HTML injector to our specific application.
+With the new modifier created, you'll need to add it to the project again for use. This time we'll add the HTML composer to our specific application.
 
 ```cli
-fathym eac projects modifiers add {project-lookup} {modifier-lookup}
-
-fathym eac applications modifiers add {app-lookup} {modifier-lookup}
+fathym eac applications modifiers add
 ```
 
 This will create the final aspect of our initial modifier flow, and once committed, you'll be able to preview it in your browser
