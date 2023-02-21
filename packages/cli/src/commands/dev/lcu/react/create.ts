@@ -6,6 +6,7 @@ import { FathymTaskContext } from '../../../../common/core-helpers';
 import {
   isGitRepo,
   loadCurrentGitOrgRepo,
+  loadCurrentGitPackageName,
 } from '../../../../common/git-helpers';
 import { readJSON, writeFile, writeJSON } from 'fs-extra';
 import path from 'node:path';
@@ -112,12 +113,8 @@ module.exports = {
 
           const gitRepo = await isGitRepo();
 
-          const [organization, repository] = gitRepo
-            ? await loadCurrentGitOrgRepo('|')
-            : [];
-
-          pckgJson.name = organization
-            ? `@${organization}/${repository}`
+          pckgJson.name = gitRepo
+            ? await loadCurrentGitPackageName()
             : pckgJson.name;
           pckgJson.version = '0.0.0';
           pckgJson.private = false;
