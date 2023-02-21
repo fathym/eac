@@ -8,7 +8,19 @@ Tailwind CSS is a utility-first CSS framework that allows developers to build cu
 
 Coupled with Fathym's out of the box cloud native starting point and automated devops processes, you have a workflow for efficiently delivering your solutions.
 
-We can start by creating a react application in our current repository. You can create your react application however you want, we use this command for our internal applications.
+We need to start by cleaning up some of the files in our existing repo. Starting with a new branch to do the cleanup on
+
+```cli
+fathym git feature react-app
+```
+
+Lets remove the following from the root.
+
+```cli
+npx rimraf .github index.html
+```
+
+Now we can create a react application in our current repository. You can create your react application however you want, we use this command for our internal applications.
 
 ```cli
 fathym dev lcu react create --tailwind
@@ -36,7 +48,7 @@ In order to get this going we'll need to get your NPM JS account setup and confi
 
 We'll use the same repository we were working with in the last tutorial, add to it and tweak it.
 
-Let's start by changing our build pipeline over to generate the NPM package. We'll do this by first creating a new pipeline using one of our LCU packages:
+Let's start by adding a build pipeline to generate the NPM package. We'll do this by first creating a new pipeline using one of our LCU packages:
 
 ```cli
 fathym lcu @fathym-it/lcu-eac-pipelines-react
@@ -52,7 +64,7 @@ fathym eac env sources pipeline attach
 fathym eac commit "Attach for NPM"
 ```
 
-Once complete, this will kick off a new build and eventually deploy your NPM package. It's important to note here that if your organization for GitHub and NPM do not match, you will need to go into your `package.json` manually and update the organiation part of the name to equal what you have setup in NPM.
+Once complete, this will kick off a new build and eventually deploy your NPM package to NPM. It's important to note here that if your organization for GitHub and NPM do not match, you will need to go into your `package.json` manually and update the organiation part of the name to equal what you have setup in NPM.
 
 You can test, locally, that you have things configured correctly by first running `npm adduser` and once authenticated run `npm run deploy`. If everything is configured correctly, a first 0.0.1 version of your application will be deployed to NPM.
 

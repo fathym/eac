@@ -14,6 +14,7 @@ import {
   SourceTaskContext,
   withEaCDraftEditTask,
 } from '../../../../../common/eac-services';
+import { EaCSourceControl } from '@semanticjs/common';
 
 interface AttachTaskContext
   extends FathymTaskContext,
@@ -55,7 +56,7 @@ export default class Attach extends FathymCommand<any> {
   }
 
   protected attachBuildPipelineToSource(): ListrTask<AttachTaskContext> {
-    return withEaCDraftEditTask<AttachTaskContext, string[]>(
+    return withEaCDraftEditTask<AttachTaskContext, EaCSourceControl>(
       'Add pipeline to source',
       this.config.configDir,
       (ctx) => [
@@ -64,13 +65,13 @@ export default class Attach extends FathymCommand<any> {
           ctx.EaC.Enterprise!.PrimaryEnvironment!,
           'Sources',
           ctx.SourceLookup,
-          ['DevOpsActionTriggerLookups', []],
         ],
       ],
       {
-        draftPatch: (ctx) => [[ctx.PipelineLookup]],
-        applyPatch: (ctx, current, draft, patch) => {
-          merge(patch, draft);
+        draftPatch: (ctx) => {
+          return {
+            DevOpsActionTriggerLookups: [],
+          };
         },
       }
     );
