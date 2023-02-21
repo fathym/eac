@@ -70,8 +70,15 @@ export default class Attach extends FathymCommand<any> {
       {
         draftPatch: (ctx) => {
           return {
-            DevOpsActionTriggerLookups: [],
+            DevOpsActionTriggerLookups: [ctx.PipelineLookup],
           };
+        },
+        applyPatch: (ctx, current, draft, patch) => {
+          merge(current, draft);
+
+          draft.DevOpsActionTriggerLookups = [];
+
+          merge(patch, draft);
         },
       }
     );
