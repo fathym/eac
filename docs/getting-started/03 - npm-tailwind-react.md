@@ -6,9 +6,15 @@ So far we've just been getting things setup and learning a bit of the lay of the
 
 Tailwind CSS is a utility-first CSS framework that allows developers to build custom user interfaces more quickly and easily using pre-designed styles and layout options. Their combination can help developers build responsive, lightweight, and fast web applications that are efficient, scalable, and maintainable, which can help to reduce development time and improve the overall performance of the applications.
 
-Coupled with Fathym's out of the box cloud native starting point and automated devops processes, and you have a workflow fore efficiently delivering your solutions.
+Coupled with Fathym's out of the box cloud native starting point and automated devops processes, you have a workflow for efficiently delivering your solutions.
 
-Now we can update our `index.html` with something more visually rich and look at bringing in some react interactivity.
+We can start by creating a react application in our current repository. You can create your react application however you want, we use this command for our internal applications.
+
+```cli
+fathym dev lcu create react --tailwind
+```
+
+This will generate a new react application using CRA (create-react-app), add in tailwind configuations, and setup the index.html file.
 
 ```html
 <!DOCTYPE html>

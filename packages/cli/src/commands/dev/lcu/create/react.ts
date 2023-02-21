@@ -12,6 +12,7 @@ import {
   loadCurrentGitPackageName,
 } from '../../../../common/git-helpers';
 import { readFile, readJSON, writeFile, writeJSON } from 'fs-extra';
+import path from 'node:path';
 
 interface CreateReactTaskContext extends FathymTaskContext {}
 
@@ -32,9 +33,10 @@ export default class CreateReact extends FathymCommand<FathymTaskContext> {
   };
 
   static args = {
-    // name: Args.string({
-    //   description: 'The name of the application to create.',
-    // }),
+    name: Args.string({
+      description: 'The name of the application to create.',
+      default: '.',
+    }),
   };
 
   static title = 'Create React Application';
@@ -42,7 +44,13 @@ export default class CreateReact extends FathymCommand<FathymTaskContext> {
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args, flags } = await this.parse(CreateReact);
 
-    let { mui, tailwind } = flags;
+    let { name } = args;
+
+    const { mui, tailwind } = flags;
+
+    name = name || '.';
+
+    const pckgJsonPath = path.join(name, './package.json');
 
     return [
       {
@@ -50,7 +58,7 @@ export default class CreateReact extends FathymCommand<FathymTaskContext> {
         task: async (ctx, task) => {
           await runProc('npx', [
             'create-react-app',
-            '.',
+            name,
             '--template typescript',
           ]);
         },
@@ -59,6 +67,8 @@ export default class CreateReact extends FathymCommand<FathymTaskContext> {
         title: `Add Tailwind`,
         enabled: (ctx) => tailwind,
         task: async (ctx, task) => {
+          await runProc('cd', [name]);
+
           await runProc('npm', [
             'install ',
             '-D',
@@ -103,7 +113,7 @@ module.exports = {
       {
         title: `Configure react app`,
         task: async (ctx, task) => {
-          const pckgJson = await readJSON('./package.json');
+          const pckgJson = await readJSON(pckgJsonPath);
 
           const gitRepo = await isGitRepo();
 
@@ -118,7 +128,7 @@ module.exports = {
           pckgJson.private = false;
           pckgJson.homepage = '.';
 
-          await writeJSON('./package.json', pckgJson, {
+          await writeJSON(pckgJsonPath, pckgJson, {
             spaces: 2,
           });
         },
@@ -126,7 +136,7 @@ module.exports = {
       {
         title: `Configure scripts`,
         task: async (ctx, task) => {
-          const pckgJson = await readJSON('./package.json');
+          const pckgJson = await readJSON(pckgJsonPath);
 
           pckgJson.scripts.deploy = 'npm version patch && npm run deploy:app';
           pckgJson.scripts['deploy:app'] =
@@ -134,7 +144,7 @@ module.exports = {
           pckgJson.scripts['deploy:package-json'] =
             'npx fathym dev package transform -d ./build';
 
-          await writeJSON('./package.json', pckgJson, {
+          await writeJSON(pckgJsonPath, pckgJson, {
             spaces: 2,
           });
         },
