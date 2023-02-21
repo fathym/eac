@@ -32,7 +32,7 @@ This does a number of things for you to setup your repository, including branch 
 
 > **NOTE** - You may have noticed the use of `ftm` here. The Fathym CLI can be accessed in two ways, `fathym` or the shorthand `ftm`. Both can be used interchangeably for any of the commands. The previous command could have been replaced with `fathym git configure -s` with the same outcome.
 
-Let's clone our new repository and we'll continue to work on it. Follow the promptes and select the organization and repository you just initialized. Make sure to navigate into a folder where you would like to [organize your repositories](../git/organize-your-repositories.md).
+Let's clone our new repository and we'll continue to work on it. Follow the prompts and select the organization and repository you just initialized. Make sure to navigate into a folder where you would like to [organize your repositories](../git/organize-your-repositories.md).
 
 ```cli
 fathym git clone
@@ -64,7 +64,7 @@ This command does a few things in addition to the standard git pull that helps t
 
 As mentioned previously, there are many different ways to get your deployment artifacts into Fathym. You'll move from the zip deploy to something automated in GitHub. To do that, you'll configure a build pipeline for the new source control.
 
-A build pipeline is a configuration of the build process. It is made up of a template and the parameters necessary to fullfill the chosen template. A source control can only have a single build pipeline while a build pipeline can have multiple source controls. This ensures understanding on how a source control is built, and allows you to make edits to a build pipeline that update multiple source controls at the same time (like a series of React builds). This helps keep your GitHub Actions in sync as your architecture evolves.
+A build pipeline is a configuration of the build process. It is made up of a template and the parameters necessary to fulfill the chosen template. A source control can only have a single build pipeline while a build pipeline can have multiple source controls. This ensures understanding on how a source control is built, and allows you to make edits to a build pipeline that update multiple source controls at the same time (like a series of React builds). This helps keep your GitHub Actions in sync as your architecture evolves.
 
 To start, we need to define the source control in our EaC. This will add a source definition to our draft. Select the organization and repository you used previously.
 
@@ -72,7 +72,7 @@ To start, we need to define the source control in our EaC. This will add a sourc
 fathym eac env sources define
 ```
 
-Now we'll use another LCU to get a root static build going for our simple code base. There are equivelant commands in the CLI to use, though often the LCUs serve as a quicker way to integrate solutions (even if you need to [build them yourself](../lcus/build-your-own-lowcodeunits.md)).
+Now we'll use another LCU to get a root static build going for our simple code base. There are equivalent commands in the CLI to use, though often the LCUs serve as a quicker way to integrate solutions (even if you need to [build them yourself](../lcus/build-your-own-lowcodeunits.md)).
 
 ```cli
 fathym lcu @fathym-it/lcu-eac-pipelines-root-static
@@ -179,7 +179,7 @@ fathym lcu @fathym-it/lcu-eac-applications-lcu-github
 
 Follow the prompts and select your existing project and select the GitHub source control created earlier. Finally input something like `/github-app` for the path. Once completed, a new application, lookup, lcu, and processor will have been configured as we did in the [zip example](./01%20-%20overview.md), except this time interactively with the LCU package.
 
-> **NOTE** - Notice the source control being attached to the application, this sets the application up to recieve automatic deployments and will alter the GitHub Action for this purpose.
+> **NOTE** - Notice the source control being attached to the application, this sets the application up to receive automatic deployments and will alter the GitHub Action for this purpose.
 
 Let's preview our new application:
 
@@ -238,7 +238,7 @@ fathym eac projects applications preview
 
 ## Finalizing our feature development
 
-As we finish our feature development, and it passes [feature testing](../devops/testing/overview.md), we will need to make sure that we open a pull request to integration to have our changes incoporated. We can do this using the following command.
+As we finish our feature development, and it passes [feature testing](../devops/testing/overview.md), we will need to make sure that we open a pull request to integration to have our changes incorporated. We can do this using the following command.
 
 ```cli
 fathym git feature integrate

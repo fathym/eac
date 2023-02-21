@@ -130,7 +130,7 @@ Not that we've used the `Host` token as a dynamic way of accessing where the `de
 fathym dfs upload ./deploy.zip /deploys/deploy.zip
 ```
 
-> **NOTE** - You can host the zip file anywhere its publically available, it does not have to be in our DFS. (private zip access is not currently available)
+> **NOTE** - You can host the zip file anywhere its publicly available, it does not have to be in our DFS. (private zip access is not currently available)
 
 Then, we can add the application to the project using the prompts and selecting our `draft` project and application.
 
