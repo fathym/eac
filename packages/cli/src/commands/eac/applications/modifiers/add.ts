@@ -62,9 +62,9 @@ export default class Add extends FathymCommand<AddTaskContext> {
       ],
       {
         draftPatch: (ctx) => [[ctx.DFSModifierLookup]],
-        applyPatch: (ctx, current, draft, patch) => {
-          merge(patch, draft);
-        },
+        // applyPatch: (ctx, current, draft, patch) => {
+        //   merge(patch, draft);
+        // },
       }
     );
   }
