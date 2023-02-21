@@ -11,10 +11,16 @@ Coupled with Fathym's out of the box cloud native starting point and automated d
 We can start by creating a react application in our current repository. You can create your react application however you want, we use this command for our internal applications.
 
 ```cli
-fathym dev lcu create react --tailwind
+fathym dev lcu react create --tailwind
 ```
 
 This will generate a new react application using CRA (create-react-app), add in tailwind configuations, setup the `index.html` file to showcase tailwind, and start the application. If you don'tuse our cli, you will need to setup and configure everything yourself, including deploy scrpits used next.
+
+Try out the new tailwind application with:
+
+```cli
+npm start
+```
 
 ## Deployment artifacts with NPM packages
 
@@ -30,22 +36,37 @@ In order to get this going we'll need to get your NPM JS account setup and confi
 
 We'll use the same repository we were working with in the last tutorial, add to it and tweak it.
 
-Now we are going to need to create a new build pipeline to generate the NPM package.
+Let's start by changing our build pipeline over to generate the NPM package. We'll do this by first creating a new pipeline using one of our LCU packages:
 
 ```cli
-fathym eac pipelines create "My Basic NPM Package Artifact" [options]
-fathym eac sources pipeline attach {username/organization} my-new-repository {pipeline-lookup}
+fathym lcu @fathym-it/lcu-eac-pipelines-react
 ```
 
-Next we will change the LCU for our application to target NPM artifacts instead of GitHub, and inform it which source to use, along with the version (or tag) to deploy.
+And now updating the build pipeline attachment for our source control, and then commit that update.
 
 ```cli
-fathym eac applications lcu {app-lookup} --type npm
+fathym eac env sources pipeline attach
 ```
 
-Tag based deployments are key to our internal processes around QA and product validation. It allows us to automate deployments of features and bugs, keeping our QA environments ready to be tested at any moment.
+```cli
+fathym eac commit "Attach for NPM"
+```
 
-Now we can commit all of our changes to the EaC at once.
+Once complete, this will kick off a new build and eventually deploy your NPM package. It's important to note here that if your organization for GitHub and NPM do not match, you will need to go into your `package.json` manually and update the organiation part of the name to equal what you have setup in NPM.
+
+You can test, locally, that you have things configured correctly by first running `npm adduser` and once authenticated run `npm run deploy`. If everything is configured correctly, a first 0.0.1 version of your application will be deployed to NPM.
+
+Next we will create the LCU for our application to target NPM artifacts (similar to our setup for GitHub).
+
+```cli
+fathym lcu @fathym-it/lcu-eac-applications-lcu-npm
+```
+
+Follow the prompts and enter the name of your NPM package and choose a path. You'll notice that packages are generated for any branch you make changes to. We'll explore how this can be used to support your code-to-deploy workflows.
+
+> **NOTE** - Tag based deployments are key to our internal processes around QA and product validation. It allows us to automate deployments of features and bugs, keeping our QA environments ready to be tested at any moment.
+
+Now we can preview our new application.
 
 ```cli
 fathym eac commit "Configured source and builds for {username/organization} my-new-repository"
@@ -54,7 +75,8 @@ fathym eac projects applications preview {project-lookup} {app-lookup}
 
 This will override the previous build pipeline and GitHub action. Kicking off an automatic build that once complete will deploy the latest version of our application out for preview.
 
-> **NOTE** - It's also pretty cool because you can use html in your markdown, allowing you to bring rich, tailwind styling and capabilities into your docs, blogs, and other static sites.
+<!--
+> **NOTE** - It's also pretty cool because you can use html in your markdown, allowing you to bring rich, tailwind styling and capabilities into your docs, blogs, and other static sites. -->
 
 ## Adding google analytics tracking and other thrid party libraries
 
