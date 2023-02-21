@@ -127,6 +127,13 @@ Once open, add the following HTML, save, and then close the file.
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>My Fathym App</title>
+
+    <style>
+      body {
+        background-color: black;
+        color: white;
+      }
+    </style>
   </head>
   <body>
     <div id="fathym-compose">
