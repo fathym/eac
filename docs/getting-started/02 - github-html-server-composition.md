@@ -130,9 +130,9 @@ Once open, add the following HTML, save, and then close the file.
   </head>
   <body>
     <div id="fathym-compose">
-      <h1>Content Not Found</h1>
+      <h1>My Fathym App</h1>
 
-      <p>The content you are trying to access is not available.</p>
+      <p>The first set of content for my app.</p>
     </div>
   </body>
 </html>
