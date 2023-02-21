@@ -70,6 +70,14 @@ Once complete, this will kick off a new build and eventually deploy your NPM pac
 
 You can test, locally, that you have things configured correctly by first running `npm adduser` and once authenticated run `npm run deploy`. If everything is configured correctly, a first 0.0.1 version of your application will be deployed to NPM.
 
+Let's also get our feature branch synced with the integration changes that occurred by running
+
+```cli
+fathym git
+```
+
+This will merge integration into your local branch, where you will see the new `.github/workflows/lcu-relesae.yml file`.
+
 Next we will create the LCU for our application to target NPM artifacts (similar to our setup for GitHub).
 
 ```cli

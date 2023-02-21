@@ -55,6 +55,8 @@ export default class Create extends FathymCommand<FathymTaskContext> {
             name,
             '--template typescript',
           ]);
+
+          await runProc('npm', ['install', '@fathym/cli@latest', '--save-dev']);
         },
       },
       {
@@ -96,13 +98,13 @@ module.exports = {
           );
         },
       },
-      // {
-      //   title: `Add MUI`,
-      //   enabled: (ctx) => mui,
-      //   task: async (ctx, task) => {
-      //     throw new Error('MUI setup is not yet supported');
-      //   },
-      // },
+      {
+        title: `Add MUI`,
+        enabled: (ctx) => mui,
+        task: async (ctx, task) => {
+          throw new Error('MUI setup is not yet supported');
+        },
+      },
       {
         title: `Configure react app`,
         task: async (ctx, task) => {
@@ -135,7 +137,7 @@ module.exports = {
           pckgJson.scripts['deploy:app'] =
             'npm run build && npm run deploy:package-json && npm publish ./build --access public';
           pckgJson.scripts['deploy:package-json'] =
-            'npx fathym dev package transform -d ./build';
+            'fathym dev package transform -d ./build';
 
           await writeJSON(pckgJsonPath, pckgJson, {
             spaces: 2,
