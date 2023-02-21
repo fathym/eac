@@ -2,21 +2,15 @@ import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../../common/fathym-command';
 import { runProc } from '../../../../common/task-helpers';
-import {
-  ensurePromptValue,
-  FathymTaskContext,
-} from '../../../../common/core-helpers';
+import { FathymTaskContext } from '../../../../common/core-helpers';
 import {
   isGitRepo,
   loadCurrentGitOrgRepo,
-  loadCurrentGitPackageName,
 } from '../../../../common/git-helpers';
-import { readFile, readJSON, writeFile, writeJSON } from 'fs-extra';
+import { readJSON, writeFile, writeJSON } from 'fs-extra';
 import path from 'node:path';
 
-interface CreateReactTaskContext extends FathymTaskContext {}
-
-export default class CreateReact extends FathymCommand<FathymTaskContext> {
+export default class Create extends FathymCommand<FathymTaskContext> {
   static description = 'Used to create a new react application.';
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
@@ -42,7 +36,7 @@ export default class CreateReact extends FathymCommand<FathymTaskContext> {
   static title = 'Create React Application';
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
-    const { args, flags } = await this.parse(CreateReact);
+    const { args, flags } = await this.parse(Create);
 
     let { name } = args;
 
@@ -67,20 +61,19 @@ export default class CreateReact extends FathymCommand<FathymTaskContext> {
         title: `Add Tailwind`,
         enabled: (ctx) => tailwind,
         task: async (ctx, task) => {
-          await runProc('cd', [name]);
-
           await runProc('npm', [
             'install ',
             '-D',
             'tailwindcss ',
             'postcss',
             'autoprefixer',
+            `--prefix ${name}`,
           ]);
 
-          await runProc('npx', ['tailwindcss ', 'init', '-p ']);
+          await runProc(`cd ${name} && npx`, ['tailwindcss ', 'init', '-p ']);
 
           await writeFile(
-            './tailwind.config.js',
+            path.join(name, './tailwind.config.js'),
             `/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -95,7 +88,7 @@ module.exports = {
           );
 
           await writeFile(
-            './src/index.css',
+            path.join(name, './src/index.css'),
             `@tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -150,19 +143,50 @@ module.exports = {
         },
       },
       {
-        title: `Configure index.html`,
+        title: `Configure App.tsx`,
         task: async (ctx, task) => {
-          // const indexHtml = await readFile('./public/index.html');
-          // await writeFile('./public/index.html', indexHtml);
-          // // Update the index.html file to have some default styles applied
+          const appTsx = `import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+
+        <h1 className="text-3xl font-bold underline text-red-600">
+          Some Tailwind Styling
+        </h1>
+
+        <p>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+`;
+
+          await writeFile(path.join(name, './src/App.tsx'), appTsx);
         },
       },
-      {
-        title: `Start application`,
-        task: async (ctx, task) => {
-          await runProc('npm', ['start']);
-        },
-      },
+      // {
+      //   title: `Start application`,
+      //   task: async (ctx, task) => {
+      //     runProc('npm', ['start', `--prefix ${name}`]);
+      //   },
+      // },
     ];
   }
 }

@@ -14,101 +14,21 @@ We can start by creating a react application in our current repository. You can 
 fathym dev lcu create react --tailwind
 ```
 
-This will generate a new react application using CRA (create-react-app), add in tailwind configuations, and setup the index.html file.
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>My Fathym App</title>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-    <script
-      src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"
-    >
-
-      <script>
-          tailwind.config = {
-              theme: {
-                  extend: {},
-              },
-          };
-    </script>
-  </head>
-  <body
-    class="font-sans font-normal leading-relaxed font-base dark:text-gray-100 text-gray-800 prose dark"
-  >
-    <div id="fathym-compose">
-      <h1>Content Not Found</h1>
-
-      <p>The content you are trying to access is not available.</p>
-    </div>
-
-    <div id="drawer"></div>
-
-    <script>
-      // Create the Drawer component
-      const Drawer = () => {
-          // Use the useState hook from the global React object to store the state of the drawer
-          const [isOpen, setIsOpen] = React.useState(false);
-
-          // Toggle the state of the drawer when the button is clicked
-          const toggleDrawer = () => {
-              setIsOpen(!isOpen);
-          };
-
-          // Return the JSX for the component
-          return (
-              <>
-                  {/* Button to toggle the drawer */}
-                  <button
-                      class="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      onClick={toggleDrawer}
-                  >
-                      Toggle Drawer
-                  </button>
-
-                  {/* Drawer component */}
-                  <aside
-                      style={{
-                          left:
-                      }}
-                      className={`fixed z-[1] top-0 bg-slate-700 text-gray-200 drop-shadow h-full w-[300px] ${isOpen ? "left-0" : "left-[-300px]"}`}
-                  >
-                      {/* Drawer content goes here */}
-                      An awesome react drawer along side tailwind
-                  </aside>
-              </>
-          );
-      };
-
-      // Render the Drawer component to the DOM
-      ReactDOM.render(<Drawer />, document.getElementById("drawer"));
-    </script>
-  </body>
-</html>
-```
-
-Typically this isn't how you'd would bring in TailwindCSS and React, but in the case of tinkering, you can.
-
-It's also pretty cool because you can use html in your markdown, allowing you to bring rich styling and capabilities into your docs, blogs, and other static sites.
+This will generate a new react application using CRA (create-react-app), add in tailwind configuations, setup the `index.html` file to showcase tailwind, and start the application. If you don'tuse our cli, you will need to setup and configure everything yourself, including deploy scrpits used next.
 
 ## Deployment artifacts with NPM packages
 
-When using the GitHub build artifact as your deployment artifact, there is one limiting factor, and that is the retention time on those artifacts. While not common to jump back several versions that might be outdated, it is possible that the current version, if unchanged for longer than the retention time, will itself not be deployable. One of the key benefits of hosting with fathym is being able to host any version of your artifact, on any route, based on your needs (production, staging, test, etc.).
+When using the GitHub build artifact as your deployment artifact, there is one limiting factor, and that is the retention time on those artifacts. While not common to jump back several versions that might be outdated, it is possible that the current version, if unchanged for longer than the retention time, will itself not be deployable. One of the key benefits of hosting with Fathym is being able to host any version of your artifact, on any route, based on your needs (production, staging, test, etc.).
 
-Using NPM packages, we can maintain a complete deployment history. Using NPM tags, we can create a simple way for qa, dev, and product owners to work together to validate stories are complete through all requirements. In addition, these can be used to support automation with tools like Chromatic and Applitools.
+Using NPM packages, we can maintain a complete deployment history. Using NPM tags, we can create a simple way for qa, dev, and product owners to work together to validate stories are complete, with all requirements met. In addition, these can be used to support automation with tools like Chromatic and Applitools.
 
-In order to get this going we'll need to getour NPM JS account setup and configured. We'll walk you through that now:
+In order to get this going we'll need to get your NPM JS account setup and configured. We'll walk you through that now:
 
 - (Creat a new organization)[https://www.npmjs.com/org/create] (a free plan will do for this, keep in mind that is public) in NPM.
   - You can create any organization name, and it will serve as the root of your package names. @{npmjs-organization}/{package-name}
   - We recommend to try and get organization names in GitHub and NPM JS in sync for management purposes.
 
-We'll use the same repository we were working with for the last tutorial, add to it and tweak it.
+We'll use the same repository we were working with in the last tutorial, add to it and tweak it.
 
 Now we are going to need to create a new build pipeline to generate the NPM package.
 
@@ -133,6 +53,8 @@ fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
 This will override the previous build pipeline and GitHub action. Kicking off an automatic build that once complete will deploy the latest version of our application out for preview.
+
+> **NOTE** - It's also pretty cool because you can use html in your markdown, allowing you to bring rich, tailwind styling and capabilities into your docs, blogs, and other static sites.
 
 ## Adding google analytics tracking and other thrid party libraries
 
