@@ -417,7 +417,10 @@ export function pull<T>(): ListrTask<T> {
       const exists = await remoteExists(currentBranch);
 
       if (!exists) {
-        await runProc(`git push`, ['--set-upstream origin', `feature/${name}`]);
+        await runProc(`git push`, [
+          '--set-upstream origin',
+          `feature/${currentBranch}`,
+        ]);
       }
 
       await runProc('git', ['pull']);

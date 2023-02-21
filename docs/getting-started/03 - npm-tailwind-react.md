@@ -51,10 +51,12 @@ We'll use the same repository we were working with in the last tutorial, add to 
 Let's start by adding a build pipeline to generate the NPM package. We'll do this by first creating a new pipeline using one of our LCU packages:
 
 ```cli
-fathym lcu @fathym-it/lcu-eac-pipelines-react
+fathym lcu @fathym-it/lcu-eac-pipelines-react-npm
 ```
 
-And now updating the build pipeline attachment for our source control, and then commit that update.
+You'll need to get an NPM token to use for this from [here](https://www.npmjs.com/). Click on your user picture in the top right and select `Access Token`. Then generate a new token with the longest expiration windows allowed.
+
+Now we update the build pipeline attachment for our source control, and then commit our EaC.
 
 ```cli
 fathym eac env sources pipeline attach
