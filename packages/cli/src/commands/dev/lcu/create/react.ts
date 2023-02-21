@@ -131,23 +131,20 @@ module.exports = {
           pckgJson.scripts.deploy = 'npm version patch && npm run deploy:app';
           pckgJson.scripts['deploy:app'] =
             'npm run build && npm run deploy:package-json && npm publish ./build --access public';
-          pckgJson.scripts['deploy:package-json'];
+          pckgJson.scripts['deploy:package-json'] =
+            'npx fathym dev package transform -d ./build';
 
           await writeJSON('./package.json', pckgJson, {
             spaces: 2,
           });
-          // package.json copy script
-          // deploy scripts
         },
       },
       {
         title: `Configure index.html`,
         task: async (ctx, task) => {
-          const indexHtml = await readFile('./public/index.html');
-
-          await writeFile('./public/index.html', indexHtml);
-
-          // Update the index.html file to have some default styles applied
+          // const indexHtml = await readFile('./public/index.html');
+          // await writeFile('./public/index.html', indexHtml);
+          // // Update the index.html file to have some default styles applied
         },
       },
       {
