@@ -32,6 +32,8 @@ export default class PackageTransform extends FathymCommand<FathymTaskContext> {
 
   static title = 'PackageJSON Transform';
 
+  static forceRefresh = false;
+
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { args, flags } = await this.parse(PackageTransform);
 
