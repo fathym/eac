@@ -163,7 +163,7 @@ If your using chrome, you'll see the raw markdown on the web page. If your using
 Let's look at two last features of the Fathym EaC for this guide, we'll see them both in action in this next command.
 
 ```cli
-fathym lcu @fathym-it/lcu-eac-modifier-markdown-to-html
+fathym lcu @fathym-it/lcu-eac-modifiers-markdown-to-html
 ```
 
 We are seeing two features here, the first is our LCU Packages, this are building blocks for composing your solutions. The second is a DFS Modifier, specifically for converting markdown into HTML.
