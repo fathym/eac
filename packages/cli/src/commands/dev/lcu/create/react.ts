@@ -57,7 +57,7 @@ export default class CreateReact extends FathymCommand<FathymTaskContext> {
       },
       {
         title: `Add Tailwind`,
-        enabled: tailwind,
+        enabled: (ctx) => tailwind,
         task: async (ctx, task) => {
           await runProc('npm', [
             'install ',
@@ -93,13 +93,13 @@ module.exports = {
           );
         },
       },
-      {
-        title: `Add MUI`,
-        enabled: mui,
-        task: async (ctx, task) => {
-          throw new Error('MUI setup is not yet supported');
-        },
-      },
+      // {
+      //   title: `Add MUI`,
+      //   enabled: (ctx) => mui,
+      //   task: async (ctx, task) => {
+      //     throw new Error('MUI setup is not yet supported');
+      //   },
+      // },
       {
         title: `Configure react app`,
         task: async (ctx, task) => {
