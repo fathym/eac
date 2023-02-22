@@ -74,6 +74,8 @@ export default class Clone extends FathymCommand<CloneTaskContext> {
 
           await runProc(`git clone ${gitPath} ${destination}`, [depth, branch]);
 
+          await runProc(`cd`, [destination]);
+
           task.title = `Repository ${ctx.GitHubOrganization}/${ctx.GitHubRepository} cloned`;
         },
       },

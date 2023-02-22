@@ -38,7 +38,7 @@ npx touch README.md
 npx open-cli README.md
 ```
 
-With the README.md file open, add some basic markdown:
+With the README.md file open, add some basic markdown and then save `Ctrl+S` your file changes:
 
 ```markdown
 # Welcome to our Blog
@@ -130,7 +130,7 @@ Not that we've used the `Host` token as a dynamic way of accessing where the `de
 fathym dfs upload ./deploy.zip /deploys/deploy.zip
 ```
 
-> **NOTE** - You can host the zip file anywhere its publically available, it does not have to be in our DFS. (private zip access is not currently available)
+> **NOTE** - You can host the zip file anywhere its publicly available, it does not have to be in our DFS. (private zip access is not currently available)
 
 Then, we can add the application to the project using the prompts and selecting our `draft` project and application.
 
@@ -163,10 +163,10 @@ If your using chrome, you'll see the raw markdown on the web page. If your using
 Let's look at two last features of the Fathym EaC for this guide, we'll see them both in action in this next command.
 
 ```cli
-fathym lcu @fathym-it/lcu-eac-modifier-markdown-to-html
+fathym lcu @fathym-it/lcu-eac-modifiers-markdown-to-html
 ```
 
-We are seeing two features here, the first is our LCU Packages, this are building blocks for composing your solutions. The second is a DFS Modifier, specifically for converting markdwon into HTML.
+We are seeing two features here, the first is our LCU Packages, this are building blocks for composing your solutions. The second is a DFS Modifier, specifically for converting markdown into HTML.
 
 Before we can see our new installed modifier in action, we have to added it to a project (modifiers can also be added to individual applications).
 

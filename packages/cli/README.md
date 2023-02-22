@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.154 win32-x64 node-v18.12.1
+@fathym/cli/0.0.175 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -41,7 +41,9 @@ USAGE
 * [`fathym dev azure sshkey create [RESOURCEGROUP]`](#fathym-dev-azure-sshkey-create-resourcegroup)
 * [`fathym dev config open [CONFIG]`](#fathym-dev-config-open-config)
 * [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
+* [`fathym dev lcu react create [NAME]`](#fathym-dev-lcu-react-create-name)
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
+* [`fathym dev package transform`](#fathym-dev-package-transform)
 * [`fathym dfs upload [FILE] [FILEPATH]`](#fathym-dfs-upload-file-filepath)
 * [`fathym eac applications define [APPLOOKUP]`](#fathym-eac-applications-define-applookup)
 * [`fathym eac applications delete [APPLOOKUP]`](#fathym-eac-applications-delete-applookup)
@@ -68,7 +70,8 @@ USAGE
 * [`fathym eac env sources list`](#fathym-eac-env-sources-list)
 * [`fathym eac env sources pipeline attach [SOURCELOOKUP] [PIPELINELOOKUP]`](#fathym-eac-env-sources-pipeline-attach-sourcelookup-pipelinelookup)
 * [`fathym eac export`](#fathym-eac-export)
-* [`fathym eac modifiers define`](#fathym-eac-modifiers-define)
+* [`fathym eac modifiers define [MODIFIERLOOKUP]`](#fathym-eac-modifiers-define-modifierlookup)
+* [`fathym eac modifiers delete [MODIFIERLOOKUP]`](#fathym-eac-modifiers-delete-modifierlookup)
 * [`fathym eac projects applications add [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-add-projectlookup-applookup)
 * [`fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP]`](#fathym-eac-projects-applications-preview-projectlookup-applookup)
 * [`fathym eac projects define [PROJECTLOOKUP]`](#fathym-eac-projects-define-projectlookup)
@@ -127,7 +130,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.175/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -271,6 +274,31 @@ EXAMPLES
   $ fathym dev download {url} {outputFile}
 ```
 
+## `fathym dev lcu react create [NAME]`
+
+Used to create a new react application.
+
+```
+USAGE
+  $ fathym dev lcu react create [NAME] [--json] [-m] [-t]
+
+ARGUMENTS
+  NAME  [default: .] The name of the application to create.
+
+FLAGS
+  -m, --mui       Used to determine if mui should be installed.
+  -t, --tailwind  Used to determine if tailwind should be installed.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to create a new react application.
+
+EXAMPLES
+  $ fathym dev lcu react create
+```
+
 ## `fathym dev lcu scaffold [NAME]`
 
 Used to scaffold a new LCU.
@@ -293,6 +321,28 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym dev lcu scaffold dev lcu scaffold --help
+```
+
+## `fathym dev package transform`
+
+Used to transform the package json file.
+
+```
+USAGE
+  $ fathym dev package transform [--json] [-d <value>] [-f <value>]
+
+FLAGS
+  -d, --destination=<value>  Used to determine where to move the transformed package.
+  -f, --transform=<value>    [default: name|version] The package json property keys to bring along, | separated.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to transform the package json file.
+
+EXAMPLES
+  $ fathym dev package transform
 ```
 
 ## `fathym dfs upload [FILE] [FILEPATH]`
@@ -334,8 +384,8 @@ ARGUMENTS
   APPLOOKUP  The application lookup to use for define.
 
 FLAGS
-  -d, --description=<value>  The description of the pojrect.
-  -n, --name=<value>         The name of the pojrect.
+  -d, --description=<value>  The description of the project.
+  -n, --name=<value>         The name of the project.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -869,22 +919,53 @@ EXAMPLES
   $ fathym eac export
 ```
 
-## `fathym eac modifiers define`
+## `fathym eac modifiers define [MODIFIERLOOKUP]`
 
-Used for creating a new DFS modifier.
+Used for defining a DFS modifier.
 
 ```
 USAGE
-  $ fathym eac modifiers define [--json]
+  $ fathym eac modifiers define [MODIFIERLOOKUP] [--json] [-n <value>] [-f <value>] [-p <value>] [-d] [-p <value>]
+
+ARGUMENTS
+  MODIFIERLOOKUP  The modifier lookup to use for define.
+
+FLAGS
+  -d, --disabled            Wether the modifier is disabled or not.
+  -f, --pathFilter=<value>  The path filter regex of the modifier.
+  -n, --name=<value>        The name of the modifier.
+  -p, --details=<value>     The string version of the details JSON.
+  -p, --priority=<value>    The priority of the modifier.
 
 GLOBAL FLAGS
   --json  Format output as json.
 
 DESCRIPTION
-  Used for creating a new DFS modifier.
+  Used for defining a DFS modifier.
 
 EXAMPLES
   $ fathym eac modifiers define
+```
+
+## `fathym eac modifiers delete [MODIFIERLOOKUP]`
+
+Used for deleting a DFS Modifier.
+
+```
+USAGE
+  $ fathym eac modifiers delete [MODIFIERLOOKUP] [--json]
+
+ARGUMENTS
+  MODIFIERLOOKUP  The modifier lookup to delete.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for deleting a DFS Modifier.
+
+EXAMPLES
+  $ fathym eac modifiers delete
 ```
 
 ## `fathym eac projects applications add [PROJECTLOOKUP] [APPLOOKUP]`
@@ -915,11 +996,14 @@ Used for preivewing a application.
 
 ```
 USAGE
-  $ fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP] [--json]
+  $ fathym eac projects applications preview [PROJECTLOOKUP] [APPLOOKUP] [--json] [-p <value>]
 
 ARGUMENTS
   PROJECTLOOKUP  The project lookup to preview.
   APPLOOKUP      The application lookup to preview.
+
+FLAGS
+  -p, --path=<value>  The path to preview.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -943,8 +1027,8 @@ ARGUMENTS
   PROJECTLOOKUP  The project lookup to use for define.
 
 FLAGS
-  -d, --description=<value>  The description of the pojrect.
-  -n, --name=<value>         The name of the pojrect.
+  -d, --description=<value>  The description of the project.
+  -n, --name=<value>         The name of the project.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -1025,10 +1109,13 @@ Used for preivewing a project.
 
 ```
 USAGE
-  $ fathym eac projects preview [PROJECTLOOKUP] [--json]
+  $ fathym eac projects preview [PROJECTLOOKUP] [--json] [-p <value>]
 
 ARGUMENTS
   PROJECTLOOKUP  The project lookup to preview.
+
+FLAGS
+  -p, --path=<value>  The path to preview.
 
 GLOBAL FLAGS
   --json  Format output as json.
@@ -1159,7 +1246,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.175/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1466,7 +1553,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.175/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1532,7 +1619,7 @@ EXAMPLES
   $ fathym open
 ```
 
-_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/open.ts)_
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.175/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -1785,5 +1872,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.154/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.175/dist/commands/upgrade.ts)_
 <!-- commandsstop -->

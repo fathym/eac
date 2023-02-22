@@ -179,11 +179,11 @@ export function commitDraftTask(
   return {
     title: 'Commiting EaC Draft',
     task: async (ctx, task) => {
-      message = await ensurePromptValue(
+      message = (await ensurePromptValue(
         task,
         'Message for the EaC commit:',
         message
-      );
+      )) as string;
 
       const axios = await loadAxios(configDir);
 
@@ -324,7 +324,7 @@ export function ensureSelection<
           eacLookups = await filterLookups!(ctx, draft.EaC!, eacLookups);
         }
 
-        lookup = await ensurePromptValue(
+        lookup = (await ensurePromptValue(
           task,
           `Choose EaC ${type}:`,
           lookup!,
@@ -344,7 +344,7 @@ export function ensureSelection<
             };
           }),
           shouldCreate ? create || (async () => randomUUID()) : undefined
-        );
+        )) as string;
       }
 
       task.title = `Selected ${type}: ${
@@ -428,15 +428,15 @@ export function ensureModifierTask<
     ApplicationTaskContext
 >(
   configDir: string,
-  appLookup?: string,
+  mdfrLookup?: string,
   create?: boolean,
   addFromDraft?: boolean,
   projectFilter?: boolean,
   applicationFilter?: boolean,
   enabled?: (ctx: TContext) => boolean
 ): ListrTask<TContext> {
-  return ensureSelection<TContext, EaCDFSModifier>(configDir, appLookup, {
-    type: 'DFSModifier',
+  return ensureSelection<TContext, EaCDFSModifier>(configDir, mdfrLookup, {
+    type: 'DFS Modifier',
     shouldCreate: create,
     addFromDraft: addFromDraft,
     enabled: enabled,
@@ -529,7 +529,7 @@ export function ensurePipelineTask<
       return doa?.Name!;
     },
     loadFromEaC: async (ctx, eac) => {
-      const env = eac.Environments
+      const env = eac?.Environments
         ? eac.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
         : {};
 
@@ -561,7 +561,7 @@ export function ensureSourceTask<
       return doa?.Name!;
     },
     loadFromEaC: async (ctx, eac) => {
-      const env = eac.Environments
+      const env = eac?.Environments
         ? eac.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
         : {};
 

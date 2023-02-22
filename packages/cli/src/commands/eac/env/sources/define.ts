@@ -5,6 +5,7 @@ import { FathymCommand } from '../../../../common/fathym-command';
 import { GitHubTaskContext } from '../../../../common/git-helpers';
 import {
   ensureBranch,
+  ensureBranches,
   ensureOrganization,
   ensureRepository,
 } from '../../../../common/git-tasks';
@@ -60,12 +61,18 @@ export default class Define extends FathymCommand<DefineTaskContext> {
       loadEaCTask(this.config.configDir),
       ensureOrganization(this.config.configDir, organization),
       ensureRepository(this.config.configDir, repository),
+      ensureBranches(this.config.configDir, (ctx, value) => {
+        ctx.GitHubBranch = value || '';
+      }),
       ensureBranch(
         this.config.configDir,
         (ctx, value) => {
           ctx.GitHubBranch = value || '';
         },
-        mainBranch
+        mainBranch,
+        (ctx) => ctx.GitHubBranches?.length >= 2,
+        undefined,
+        'branches'
       ),
       this.defineSourceControl(),
     ];
@@ -91,7 +98,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
         draftPatch: (ctx) => {
           const patch = {
             Type: 'GitHub',
-            Name: `@${ctx.GitHubOrganization}/${ctx.GitHubRepository}`,
+            Name: `github://${ctx.GitHubOrganization}/${ctx.GitHubRepository}`,
             Organization: ctx.GitHubOrganization,
             Repository: ctx.GitHubRepository,
             Branches: ctx.GitHubBranches || [ctx.GitHubBranch],

@@ -214,14 +214,14 @@ export default class Install extends FathymCommand<InstallContext> {
     return {
       title: `Cleaning up LCU install files`,
       task: async (ctx) => {
-        // await runProc('npx', [
-        //   'rimraf',
-        //   ctx.LCUPackageFiles.replace('\\package', ''),
-        // ]);
+        await runProc('npx', [
+          'rimraf',
+          ctx.LCUPackageFiles.replace('\\package', ''),
+        ]);
 
-        // await runProc('npx', ['rimraf', ctx.LCUPackageTarball]);
+        await runProc('npx', ['rimraf', ctx.LCUPackageTarball]);
 
-        await runProc('npx', ['rimraf', './lcus']);
+        // await runProc('npx', ['rimraf', './lcus']);
       },
     };
   }
@@ -229,7 +229,16 @@ export default class Install extends FathymCommand<InstallContext> {
   protected confirmAgreements(ci: boolean): ListrTask<InstallContext> {
     return {
       title: 'Processing LCU Agreements',
-      skip: () => false,
+      // enabled: async (ctx) => {
+      //   const agreesCfg = await loadFileAsJson<any>(
+      //     ctx.LCUPackageFiles,
+      //     './assets/agreements.json'
+      //   );
+
+      //   const agreeKeys = Object.keys(agreesCfg);
+
+      //   return agreeKeys?.length > 0;
+      // },
       task: async (ctx, task) => {
         if (ci) {
           // TODO: This should do something to automatically accept agreements
@@ -325,21 +334,27 @@ export default class Install extends FathymCommand<InstallContext> {
     return {
       title: `Download LCU: ${lcu}`,
       task: async (ctx, task) => {
-        lcu = await ensurePromptValue(task, 'Enter LCU Package name:', lcu);
+        lcu = (await ensurePromptValue(
+          task,
+          'Enter LCU Package name:',
+          lcu
+        )) as string;
 
         lcu = lcu!.replace(/\\/g, '/');
 
-        await runProc('npx', ['make-dir-cli', 'lcus']);
+        const unpackDest = path.join(this.config.configDir, './lcus');
+
+        await runProc('npx', ['make-dir-cli', unpackDest]);
 
         ctx.LCUPackageTarball = await runProc('npm', [
           'pack',
           lcu,
-          '--pack-destination="./lcus"',
+          `--pack-destination="${unpackDest}"`,
         ]);
 
-        ctx.LCUPackageTarball = `./lcus/${ctx.LCUPackageTarball}`.replace(
-          '\n',
-          ''
+        ctx.LCUPackageTarball = path.join(
+          unpackDest,
+          `./${ctx.LCUPackageTarball}`.replace('\n', '')
         );
 
         task.title = `Downloaded LCU: ${lcu}`;

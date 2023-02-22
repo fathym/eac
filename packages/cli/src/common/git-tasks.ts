@@ -36,7 +36,7 @@ export function configureRepository<TContext extends GitHubTaskContext>(
     task: async (ctx, task) => {
       task.title = `Initialize Repository: @${ctx.GitHubOrganization}/${ctx.GitHubRepository}`;
 
-      license = await ensurePromptValue(
+      license = (await ensurePromptValue(
         task,
         'Select the license type to initialize with',
         license,
@@ -54,8 +54,8 @@ export function configureRepository<TContext extends GitHubTaskContext>(
             name: 'gpl3',
           },
         ],
-        () => {
-          return ensurePromptValue(
+        async () => {
+          return (await ensurePromptValue(
             task,
             'Enter custom license template name',
             '',
@@ -64,10 +64,10 @@ export function configureRepository<TContext extends GitHubTaskContext>(
               return '';
             },
             '- No Template -'
-          );
+          )) as string;
         },
         '- Custom Entry -'
-      );
+      )) as string;
 
       const axios = await loadAxios(configDir);
 
@@ -100,11 +100,11 @@ export function commitGitChanges(message?: string): ListrTask {
     skip: () => hasCommittedChanges(),
     task: async (ctx, task) => {
       if (await hasNotCommittedChanges()) {
-        message = await ensurePromptValue(
+        message = (await ensurePromptValue(
           task,
           'Enter commit message:',
           message
-        );
+        )) as string;
       }
 
       await runProc('git', ['add', '-A']);
@@ -120,14 +120,18 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
   branch?: string,
   enabled?: (ctx: TContext) => boolean,
   skipLocal?: boolean,
-  filter?: 'feature' | 'hotfix'
+  filter?: 'feature' | 'hotfix' | 'branches'
 ): ListrTask<TContext> {
   return {
     title: `Ensuring branch set`,
     enabled: enabled,
     task: async (ctx, task) => {
       const branchFilter = (branch = '') => {
-        return !filter || branch.indexOf(`${filter}`) === 0;
+        return (
+          !filter ||
+          (filter === 'branches' && ctx.GitHubBranches?.includes(branch)) ||
+          branch.indexOf(`${filter}`) === 0
+        );
       };
 
       if (!branch) {
@@ -144,22 +148,22 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
         if (branches.length > 0) {
           const gitRepo = await isGitRepo();
 
-          branch = await ensurePromptValue(
+          branch = (await ensurePromptValue(
             task,
-            'Choose GitHub branch:',
+            'Choose GitHub branches:',
             '',
             branches.map((org) => org.Name),
             gitRepo && !skipLocal
               ? async () => {
                   if (!skipLocal && gitRepo) {
-                    branch = await await getCurrentBranch();
+                    branch = await getCurrentBranch();
                   }
 
                   return branch || '';
                 }
               : undefined,
             '- Use Local -'
-          );
+          )) as string;
         }
       }
 
@@ -169,9 +173,57 @@ export function ensureBranch<TContext extends GitHubTaskContext>(
         );
       }
 
-      ctxSet(ctx, branch);
+      ctxSet(ctx, branch?.trim());
 
       task.title = `GitHub branch set to ${branch}`;
+    },
+  };
+}
+
+export function ensureBranches<TContext extends GitHubTaskContext>(
+  configDir: string,
+  ctxSet: (ctx: TContext, value?: string) => void,
+  branches?: string[],
+  enabled?: (ctx: TContext) => boolean,
+  skipLocal?: boolean
+): ListrTask<TContext> {
+  return {
+    title: `Ensuring branch set`,
+    enabled: enabled,
+    task: async (ctx, task) => {
+      if (!branches) {
+        let branchOptions = await listGitHubBranches(
+          configDir,
+          ctx.GitHubOrganization,
+          ctx.GitHubRepository
+        );
+
+        branchOptions = branchOptions || [];
+
+        branchOptions.unshift({ Name: 'qa/**' });
+        branchOptions.unshift({ Name: 'hotfix/**' });
+        branchOptions.unshift({ Name: 'feature/**' });
+        branchOptions.unshift({ Name: 'integration' });
+        branchOptions.unshift({ Name: 'main' });
+
+        const branchNames = Array.from(
+          new Set(branchOptions.map((bo) => bo.Name)).values()
+        );
+
+        if (branchNames.length > 0) {
+          ctx.GitHubBranches = (await ensurePromptValue(
+            task,
+            'Choose GitHub branch (space bar to select multiple):',
+            '',
+            branchNames,
+            undefined,
+            undefined,
+            'multiselect'
+          )) as string[];
+        }
+      }
+
+      task.title = `GitHub branches set to ${branches}`;
     },
   };
 }
@@ -193,7 +245,7 @@ export function ensureOrganization<TContext extends GitHubTaskContext>(
         orgs = orgs || [];
 
         if (orgs.length > 0) {
-          organization = await ensurePromptValue(
+          organization = (await ensurePromptValue(
             task,
             'Choose GitHub organization:',
             organization,
@@ -214,7 +266,7 @@ export function ensureOrganization<TContext extends GitHubTaskContext>(
                   return user;
                 },
             '- Use Local -'
-          );
+          )) as string;
         }
       }
 
@@ -248,7 +300,7 @@ export function ensureRepository<TContext extends GitHubTaskContext>(
         if (repos.length > 0) {
           const gitRepo = await isGitRepo();
 
-          repository = await ensurePromptValue(
+          repository = (await ensurePromptValue(
             task,
             'Choose GitHub repository:',
             repository,
@@ -260,22 +312,22 @@ export function ensureRepository<TContext extends GitHubTaskContext>(
                       await loadCurrentGitOrgRepo('|')
                     ).split('|');
 
-                    return orgRepo[1];
+                    return orgRepo[1] as string;
                   }
 
                   if (allowCreate) {
-                    return ensurePromptValue(
+                    return (await ensurePromptValue(
                       task,
                       'Name of the new repository',
                       repository
-                    );
+                    )) as string;
                   }
 
                   return repository || '';
                 }
               : undefined,
             gitRepo && !skipLocal ? '- Use Local -' : '- Create New -'
-          );
+          )) as string;
         }
       }
 
@@ -365,7 +417,7 @@ export function pull<T>(): ListrTask<T> {
       const exists = await remoteExists(currentBranch);
 
       if (!exists) {
-        await runProc(`git push`, ['--set-upstream origin', `feature/${name}`]);
+        await runProc(`git push`, ['--set-upstream origin', currentBranch]);
       }
 
       await runProc('git', ['pull']);

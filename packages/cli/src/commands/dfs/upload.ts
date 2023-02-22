@@ -92,17 +92,17 @@ export default class Upload extends FathymCommand<UploadTaskContext> {
     tasks.push({
       title: `Upload DFS file`,
       task: async (ctx, task) => {
-        file = await ensurePromptValue(
+        file = (await ensurePromptValue(
           task,
           Upload.args.file.description!,
           file
-        );
+        )) as string;
 
-        filePath = await ensurePromptValue(
+        filePath = (await ensurePromptValue(
           task,
           Upload.args.filePath.description!,
           filePath
-        );
+        )) as string;
 
         await uploadFile(file, ctx.ActiveEnterpriseLookup, filePath);
       },

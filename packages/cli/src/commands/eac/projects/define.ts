@@ -27,11 +27,11 @@ export default class Define extends FathymCommand<DefineTaskContext> {
   static flags = {
     description: Flags.string({
       char: 'd',
-      description: 'The description of the pojrect.',
+      description: 'The description of the project.',
     }),
     name: Flags.string({
       char: 'n',
-      description: 'The name of the pojrect.',
+      description: 'The name of the project.',
     }),
   };
 
