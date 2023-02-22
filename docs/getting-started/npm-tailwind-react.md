@@ -114,23 +114,45 @@ fathym eac projects preview -p README.md
 
 ## Using NPM package artifacts for QA
 
-Here, we'll give you just a little primer on how Fathym can be used to hose multiple versions of your applications in concert.
+Here, we'll give you just a little primer on how Fathym can be used to host multiple versions of your applications in concert.
 
 Integrate to integration again
+
+```cli
+fathym git feature integrate
+```
 
 Update original application to use the new version `integration`
 
 Create new feature branch
 
-Add a generic ThirdPartyLibrary Modifier
+```cli
+fathym git feature integrate
+```
+
+Make a change
 
 check in feature branch
+
+```cli
+fathym git "New feature branch changes"
+```
 
 Create app for new feature branch
 
 Preview
 
+```cli
+fathym eac projects applications -p README.md
+```
+
 Make another small change
+
+Push your changes
+
+```cli
+fathym git "Small changes"
+```
 
 Preview to see that changes were automatically applied
 
