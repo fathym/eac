@@ -233,7 +233,7 @@ fathym eac commit "Configured second application in project"
 ```
 
 ```cli
-fathym eac projects applications preview
+fathym eac projects applications preview -p README.md
 ```
 
 ## Finalizing our feature development
