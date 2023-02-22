@@ -78,13 +78,13 @@ fathym git
 
 This will merge integration into your local branch, where you will see the new `.github/workflows/lcu-relesae.yml file`.
 
-Next we will create the LCU for our application to target NPM artifacts (similar to our setup for GitHub). Enter the name of the package you created, then entere `latest` for the version, and for the path enter `/npm-app`.
+Next we will create the LCU for our application to target NPM artifacts (similar to our setup for GitHub). Enter the name of the package you created, then enter `react-app` (this should match the feature branch we created earlier) for the version, and for the path enter `/npm-app`.
 
 ```cli
 fathym lcu @fathym-it/lcu-eac-applications-lcu-npm
 ```
 
-You'll notice that packages are generated for any branch you make changes to. We'll explore how this can be used to support your code-to-deploy workflows.
+This will set the deployment to use our feature branch. You'll notice that packages are generated for any branch you make changes to. We'll explore how this can be used to support your code-to-deploy workflows at the end of this guide.
 
 > **NOTE** - Tag based deployments are key to our internal processes around QA and product validation. It allows us to automate deployments of features and bugs, keeping our QA environments ready to be tested at any moment.
 
@@ -111,6 +111,34 @@ Now we can preview one of the README.md files from our original zip release.
 ```cli
 fathym eac projects preview -p README.md
 ```
+
+## Using NPM package artifacts for QA
+
+Here, we'll give you just a little primer on how Fathym can be used to hose multiple versions of your applications in concert.
+
+Integrate to integration again
+
+Update original application to use the new version `integration`
+
+Create new feature branch
+
+Add a generic ThirdPartyLibrary Modifier
+
+check in feature branch
+
+Create app for new feature branch
+
+Preview
+
+Make another small change
+
+Preview to see that changes were automatically applied
+
+See changes different between integration and feature branch
+
+Integrate feature branch,
+
+see that integration host is automatically updated with latest integration version
 
 <!--
 ## Adding google analytics tracking and other thrid party libraries
