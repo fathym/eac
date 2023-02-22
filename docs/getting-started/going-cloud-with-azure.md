@@ -9,7 +9,7 @@ Working with cloud technologies can be a mind numbing task. You may have a fleet
 The first step in 'going cloud' is getting connected with Azure. This typically requires an account with Azure, billing profiles, and a created subscription. If you don't have any of that, no worries, we'll get you going now. Start by running the following command.
 
 ```cli
-fathym eac env clouds upsert -g
+fathym eac env clouds define -g
 ```
 
 The cli will make sure the Azure cli is installed, and prompt you to log in with Azure. Once that is done, you'll be able select from your list of available subscriptions.
