@@ -529,7 +529,7 @@ export function ensurePipelineTask<
       return doa?.Name!;
     },
     loadFromEaC: async (ctx, eac) => {
-      const env = eac.Environments
+      const env = eac?.Environments
         ? eac.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
         : {};
 
@@ -561,7 +561,7 @@ export function ensureSourceTask<
       return doa?.Name!;
     },
     loadFromEaC: async (ctx, eac) => {
-      const env = eac.Environments
+      const env = eac?.Environments
         ? eac.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!]
         : {};
 
