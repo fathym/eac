@@ -57,7 +57,12 @@ export default class Create extends FathymCommand<FathymTaskContext> {
             '--template typescript',
           ]);
 
-          await runProc('npm', ['install', '@fathym/cli@latest', '--save-dev']);
+          await runProc('npm', [
+            'install',
+            '@fathym/cli@latest',
+            '--save-dev',
+            `--prefix ${name}`,
+          ]);
         },
       },
       {
@@ -66,10 +71,10 @@ export default class Create extends FathymCommand<FathymTaskContext> {
         task: async (ctx, task) => {
           await runProc('npm', [
             'install ',
-            '-D',
             'tailwindcss ',
             'postcss',
             'autoprefixer',
+            '--save-dev',
             `--prefix ${name}`,
           ]);
 
