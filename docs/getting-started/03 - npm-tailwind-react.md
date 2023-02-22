@@ -78,28 +78,41 @@ fathym git
 
 This will merge integration into your local branch, where you will see the new `.github/workflows/lcu-relesae.yml file`.
 
-Next we will create the LCU for our application to target NPM artifacts (similar to our setup for GitHub).
+Next we will create the LCU for our application to target NPM artifacts (similar to our setup for GitHub). Enter the name of the package you created, then entere `latest` for the version, and for the path enter `/npm-app`.
 
 ```cli
 fathym lcu @fathym-it/lcu-eac-applications-lcu-npm
 ```
 
-Follow the prompts and enter the name of your NPM package and choose a path. You'll notice that packages are generated for any branch you make changes to. We'll explore how this can be used to support your code-to-deploy workflows.
+You'll notice that packages are generated for any branch you make changes to. We'll explore how this can be used to support your code-to-deploy workflows.
 
 > **NOTE** - Tag based deployments are key to our internal processes around QA and product validation. It allows us to automate deployments of features and bugs, keeping our QA environments ready to be tested at any moment.
 
 Now we can preview our new application.
 
 ```cli
-fathym eac commit "Configured source and builds for {username/organization} my-new-repository"
-fathym eac projects applications preview {project-lookup} {app-lookup}
+fathym eac projects applications preview
 ```
 
-This will override the previous build pipeline and GitHub action. Kicking off an automatic build that once complete will deploy the latest version of our application out for preview.
+## Bringing this together with our previous example
+
+You may have noticed that we slipped in our `fathym-compose` div in the App.tsx file. Let's update the DFS Modifier that we created earlier for the HTML Compose, and instead of our hold index.html file, let's set our markdown files to use this new app as its layout. then commit your changes
+
+```cli
+fathym eac modifiers define "{ \"TemplatePath\": \"/npm-app\", \"Compositions\": [{ \"Source\": \"%DFS%\", \"TargetSelector\": \"//div[@id='fathym-compose']\" }] }"
+```
+
+```cli
+fathym eac commit "Attach for NPM"
+```
+
+Now we can preview one of the README.md files from our original zip release.
+
+```cli
+fathym eac projects preview -s README.md
+```
 
 <!--
-> **NOTE** - It's also pretty cool because you can use html in your markdown, allowing you to bring rich, tailwind styling and capabilities into your docs, blogs, and other static sites. -->
-
 ## Adding google analytics tracking and other thrid party libraries
 
 ## Bonus - working with the CLI
@@ -153,4 +166,4 @@ fathym eac projects unset
 fathym eac applications unset
 ```
 
-There are other objects within the EaC that support this, use the `--help` on commands to see if they support setting active values.
+There are other objects within the EaC that support this, use the `--help` on commands to see if they support setting active values. -->

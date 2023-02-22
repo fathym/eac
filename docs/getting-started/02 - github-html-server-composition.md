@@ -212,28 +212,21 @@ fathym eac projects applications preview -p /README.md
 
 Let's introduce another feature of the Fathym Runtime, server side composition. In order to enable markdown composition with your index.html file, you'll need to setup another modifier. The new one will work withe converted HTML, the HTML Composer Modifier. It will format the HTML into a configured template.
 
-Next you will configure the modifier that will compose the formatted markdown into the HTML template (index.html).
+Next you will configure the modifier that will compose the formatted markdown into the HTML template (index.html). Set the name of the modifier to `HTML Markdown Composer`, the modifier lookup to `html-markdown-composer`, the path regex to `.*.(md|mdx).*`, the template path to `./index.html`, and the xpath target to `//div[@id='fathym-compose']`.
 
 ```cli
 fathym lcu @fathym-it/lcu-eac-modifiers-html-composer
 ```
 
-<!-- {
-  "MODIFIER*NAME": "HTML Markdown Composer",
-  "TARGET_PATH_REGEX": ".*.(md|mdx).*",
-  "TEMPLATE_PATH": "./index.html",
-  "TARGET_SELECTOR": "//div[@id='fathym-compose']"
-} -->
+> **NOTE** - The priority is important to ensure modifiers execute in the correct order. Higher priority modifiers execute first, then lower priority ones. Modifiers with the same priority execute in parallel. The LCU packages help manage modifiers by our (and the communities) own internal best practice configurations.
 
-> **NOTE** - The priority is important to ensure modifiers execute in the correct order. Higher priority modifiers execute first, then lower priority ones. Modifiers with the same priority execute in parallel. The LCU packages help manage modifiers by our (and the communities) own internal setup.
-
-With the new modifier created, you'll need to add it to the project again for use. This time we'll add the HTML composer to our specific application.
+With the new modifier created, you'll need to add it to the project again for use.
 
 ```cli
-fathym eac applications modifiers add
+fathym eac projects modifiers add
 ```
 
-This will create the final aspect of our initial modifier flow, and once committed, you'll be able to preview it in your browser
+This will create the final aspect of our initial modifier flow, and once committed, you'll be able to preview it in your browser.
 
 ```cli
 fathym eac commit "Configured second application in project"
