@@ -35,7 +35,7 @@ npx touch README.md
 ```
 
 ```cli
-npx open-cli README.md
+npx fathym open README.md
 ```
 
 With the README.md file open, add some basic markdown and then save `Ctrl+S` your file changes:
