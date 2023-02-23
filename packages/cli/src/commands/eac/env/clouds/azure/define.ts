@@ -95,17 +95,36 @@ export default class Define extends FathymCommand<DefineTaskContext> {
         enabled: (ctx) => ctx.AzureCLIInstalled,
         prompt: async (ctx, task) => {
           if (generate) {
-            const svcPrincStr = await runProc('az', [
-              'ad',
-              'sp',
-              'create-for-rbac',
-              // `--name "${ctx.SubscriptionID}"`,
-              '--role Contributor',
-              `--scopes /subscriptions/${ctx.SubscriptionID}`,
-              // `--tenant ${ctx.TenantID}`,
-            ]);
+            let svcPrincStr = '{}';
 
-            const svcPrinc = JSON.parse(svcPrincStr);
+            try {
+              svcPrincStr = await runProc('az', [
+                'ad',
+                'sp',
+                'create-for-rbac',
+                // `--name "${ctx.SubscriptionID}"`,
+                '--role Contributor',
+                `--scopes /subscriptions/${ctx.SubscriptionID}`,
+                // `--tenant ${ctx.TenantID}`,
+              ]);
+            } catch {
+              //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
+              await runProc('az', ['accounts', 'clear']);
+
+              await runProc('az', ['login']);
+
+              svcPrincStr = await runProc('az', [
+                'ad',
+                'sp',
+                'create-for-rbac',
+                // `--name "${ctx.SubscriptionID}"`,
+                '--role Contributor',
+                `--scopes /subscriptions/${ctx.SubscriptionID}`,
+                // `--tenant ${ctx.TenantID}`,
+              ]);
+            }
+
+            const svcPrinc = JSON.parse(svcPrincStr || '{}');
 
             generated = {
               Type: 'Azure',
