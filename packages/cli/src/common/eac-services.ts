@@ -32,6 +32,7 @@ import {
   ensureAzureCliLogin,
   ensureAzureCliSetupTask,
   ensurePromptValue,
+  FathymTaskContext,
   loadActieEnterpriseLookup,
   merge,
   removeUndefined,
@@ -174,10 +175,9 @@ export function azSshKeyCreateTask<
   };
 }
 
-export function commitDraftTask(
-  configDir: string,
-  message: string
-): ListrTask<ActiveEnterpriseTaskContext> {
+export function commitDraftTask<
+  TContext extends FathymTaskContext & ActiveEnterpriseTaskContext
+>(configDir: string, message: string): ListrTask<TContext> {
   return {
     title: 'Commiting EaC Draft',
     task: async (ctx, task) => {
@@ -208,6 +208,17 @@ export function commitDraftTask(
 
         await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup);
       } else {
+        if (resp.Status.Code === 501) {
+          ctx.Fathym.Instructions = [
+            ...ctx.Fathym.Instructions,
+            {
+              Instruction: 'ftm dev billing manage',
+              Description: `Open the billing page and complete subscription prchase to use
+these features. Once purchase is complete, rerun the command`,
+            },
+          ];
+        }
+
         throw new Error(resp.Status.Message);
       }
     },
