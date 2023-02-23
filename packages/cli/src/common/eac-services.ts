@@ -211,7 +211,7 @@ export function commitDraftTask<
         } else {
           if (resp.Status.Code === 501) {
             ctx.Fathym.Instructions = [
-              ...ctx.Fathym.Instructions,
+              ...(ctx.Fathym.Instructions || []),
               {
                 Instruction: 'ftm dev billing manage',
                 Description: `Open the billing page and complete subscription prchase to use
