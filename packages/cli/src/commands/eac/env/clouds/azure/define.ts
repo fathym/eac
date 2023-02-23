@@ -109,7 +109,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
               ]);
             } catch {
               //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
-              await runProc('az', ['accounts', 'clear']);
+              await runProc('az', ['account', 'clear']);
 
               await runProc('az', ['login']);
 
