@@ -18,6 +18,7 @@ import {
   SubscriptionTaskContext,
   azureCliInstallTask,
   removeUndefined,
+  ensureAzureCliSetupTask,
 } from '../../../../../common/core-helpers';
 
 interface DefineTaskContext
@@ -61,7 +62,6 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     return [
       ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      azureCliInstallTask(),
       setAzureSubTask(this.config.configDir),
       this.createCloudConnection(generate, cloudLookup),
     ];

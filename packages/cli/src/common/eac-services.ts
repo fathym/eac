@@ -29,6 +29,8 @@ import { Draft } from 'immer';
 import {
   AzureCLITaskContext,
   AzureSubscription,
+  ensureAzureCliLogin,
+  ensureAzureCliSetupTask,
   ensurePromptValue,
   loadActieEnterpriseLookup,
   merge,
@@ -814,27 +816,12 @@ export function setAzureSubTask<
 >(configDir: string): ListrTask<TContext> {
   return {
     title: `Setting Azure Subscription`,
-    skip: (ctx) => !ctx.AzureCLIInstalled,
     task: (ctx, task) => {
       return task.newListr((parent) => [
-        {
-          title: 'Ensure login with Azure CLI',
-          task: async (ctx, task) => {
-            try {
-              await runProc('az', ['account', 'show']);
-
-              task.title = 'Azure CLI already authenticated';
-            } catch {
-              task.output = color.yellow(
-                'Opening a login form in your browser, complete sign in there, then return.'
-              );
-
-              await runProc('az', ['login']);
-            }
-          },
-        },
+        ensureAzureCliSetupTask(),
         {
           title: 'Select Azure Subscription',
+          skip: (ctx) => !ctx.AzureCLIInstalled,
           task: async (ctx, task) => {
             const subsList: AzureSubscription[] = JSON.parse(
               (await runProc('az', ['account', 'list', '--refresh'])) || '[]'
