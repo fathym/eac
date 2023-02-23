@@ -136,18 +136,28 @@ Once open, add the following HTML, save, and then close the file.
     </style>
   </head>
   <body>
+    <header>
+      <h1>Welcome to Fathym</h1>
+    </header>
+
+    <nav>
+      <a href="./README.md">Readme</a>
+    </nav>
+
     <div id="fathym-compose">
       <h1>My Fathym App</h1>
 
-      <p>The first set of content for my app.</p>
+      <p>The first set of content for my app landing page.</p>
     </div>
+
+    <footer>Copyright &copy; 2023</footer>
   </body>
 </html>
 ```
 
 Take note of the div with id `fathym-compose`, you'll need this id later when configuring Fathym Runtime server side composition.
 
-Update the `README.md` file with whatever markdown you want to use. We support a large portion of the CommonMark spec via the work done by [xoofx/markdig](https://github.com/xoofx/markdig).
+Update the `README.md` file with whatever markdown you want to use. We support a large portion of the CommonMark spec via the work done by [xoofx/markdig](https://github.com/xoofx/markdig). You can also update the HTML template with additional markup.
 
 Now you are ready to check in and push your code.
 

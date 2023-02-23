@@ -72,6 +72,7 @@ export default class Create extends FathymCommand<FathymTaskContext> {
           await runProc('npm', [
             'install ',
             'tailwindcss ',
+            '@tailwindcss/typography',
             'postcss',
             'autoprefixer',
             '--save-dev',
@@ -90,7 +91,9 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ]
 }
 `
           );
@@ -181,7 +184,7 @@ function App() {
           Learn React
         </a>
 
-        <div id="fathym-compose" className="mt-8"></div>
+        <div id="fathym-compose" className="mt-8 prose dark:prose-invert"></div>
       </header>
     </div>
   );

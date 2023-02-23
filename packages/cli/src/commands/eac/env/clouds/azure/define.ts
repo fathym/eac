@@ -28,7 +28,7 @@ interface DefineTaskContext
     SubscriptionTaskContext {}
 
 export default class Define extends FathymCommand<DefineTaskContext> {
-  static description = `Used for creating a new project.`;
+  static description = `Used for defining a new cloud connection.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
