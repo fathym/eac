@@ -1,4 +1,4 @@
-# Expanding your blog with Fathym
+# Expanding your app with Fathym
 
 Using the zip deployment artifact can be a quick and easy way to get started with Fathym, but it may not be the most efficient or effective way to organize and manage your code over time. To make your code more manageable and scalable, it is often useful to set up a more permanent structure for your code using a version control system like Git, which can be hosted on a platform like GitHub. This allows you to track changes to your code over time, collaborate with others on your project, and easily roll back changes if necessary.
 
@@ -96,7 +96,7 @@ Once the commit completes the source will be created with a new GitHub Action. I
 
 This is a big step for yourself and/or team, as you've set up a complete continuous integration workflow to automate your project builds. You've also laid the ground work for continuous deployment.
 
-## Continuing blog development
+## Continuing development
 
 Now you have a continuous integration flow in place and a better understanding of how your branching strategy is configured, so let's start using it all.
 
@@ -264,7 +264,7 @@ Also, if you go look at your builds again (either in the [enterprise feed](https
 
 ## What's Next?
 
-There is a lot that you have set up over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through code-to-deploy. Next, you'll expand what you've been doing with this blog to bring in some interactivity and bring in TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM. This enables additional team workflows for testing and release management.
+There is a lot that you have set up over the course of these walkthroughs. You've created a complete CI/CD workflow to take you through code-to-deploy. Next, you'll expand what you've been doing with this app to bring in React and TailwindCSS. We'll also introduce one more type of deployment artifact, the one our team prefers: NPM. This enables additional team workflows for testing and release management.
 
 <!-- ## Bonus - Global Edge CDN
 

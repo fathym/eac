@@ -1,4 +1,4 @@
-# Bringing the blog to life
+# Bringing the app to life
 
 So far we've just been getting things setup and learning a bit of the lay of the land at Fathym. Now let's quickly look at bringing in a few more things to showcase how fathym works to help you deliver your user experiences with speed and efficiency.
 
