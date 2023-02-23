@@ -39,7 +39,7 @@ import {
   SubscriptionTaskContext,
 } from './core-helpers';
 import { runProc } from './task-helpers';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 
 export type DepthOption = string | (string | Record<string, unknown> | [])[];
 
@@ -213,7 +213,7 @@ export function commitDraftTask<
             ctx.Fathym.Instructions = [
               ...(ctx.Fathym.Instructions || []),
               {
-                Instruction: 'ftm dev billing manage',
+                Instruction: 'fathym dev billing manage',
                 Description: `Open the billing page and complete subscription prchase to use
 these features. Once purchase is complete, rerun the command`,
               },
@@ -224,7 +224,7 @@ these features. Once purchase is complete, rerun the command`,
         }
       } catch {
         ctx.Fathym.Instructions = [
-          ...ctx.Fathym.Instructions,
+          ...(ctx.Fathym.Instructions || []),
           {
             Instruction: 'ftm dev billing manage',
             Description: `Open the billing page and complete subscription prchase to use
