@@ -191,35 +191,48 @@ export function commitDraftTask<
 
       const eacDraft = await withEaCDraft(configDir);
 
-      const response = await axios.post(
-        `${ctx.ActiveEnterpriseLookup}/eac/commit`,
-        {
-          ...eacDraft,
-          Message: message,
-        }
-      );
+      try {
+        const response = await axios.post(
+          `${ctx.ActiveEnterpriseLookup}/eac/commit`,
+          {
+            ...eacDraft,
+            Message: message,
+          }
+        );
 
-      const resp = response.data;
+        const resp = response.data;
 
-      if (resp.Status.Code === 0) {
-        task.title = `EaC Draft Committed`;
+        if (resp.Status.Code === 0) {
+          task.title = `EaC Draft Committed`;
 
-        await withEaCDraft(configDir, 'clear');
+          await withEaCDraft(configDir, 'clear');
 
-        await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup);
-      } else {
-        if (resp.Status.Code === 501) {
-          ctx.Fathym.Instructions = [
-            ...ctx.Fathym.Instructions,
-            {
-              Instruction: 'ftm dev billing manage',
-              Description: `Open the billing page and complete subscription prchase to use
+          await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup);
+        } else {
+          if (resp.Status.Code === 501) {
+            ctx.Fathym.Instructions = [
+              ...ctx.Fathym.Instructions,
+              {
+                Instruction: 'ftm dev billing manage',
+                Description: `Open the billing page and complete subscription prchase to use
 these features. Once purchase is complete, rerun the command`,
-            },
-          ];
-        }
+              },
+            ];
+          }
 
-        throw new Error(resp.Status.Message);
+          throw new Error(resp.Status.Message);
+        }
+      } catch {
+        ctx.Fathym.Instructions = [
+          ...ctx.Fathym.Instructions,
+          {
+            Instruction: 'ftm dev billing manage',
+            Description: `Open the billing page and complete subscription prchase to use
+these features. Once purchase is complete, rerun the command`,
+          },
+        ];
+
+        throw new Error('There was an issue. Follow the instructions.');
       }
     },
   };
