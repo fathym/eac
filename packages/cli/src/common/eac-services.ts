@@ -214,7 +214,7 @@ export function commitDraftTask<
               ...(ctx.Fathym.Instructions || []),
               {
                 Instruction: 'fathym dev billing manage',
-                Description: `Open the billing page and complete subscription prchase to use
+                Description: `Open the billing page and complete subscription purchase to use
 these features. Once purchase is complete, rerun the command`,
               },
             ];
