@@ -215,7 +215,7 @@ export function commitDraftTask<
               {
                 Instruction: 'fathym dev billing manage',
                 Description: `Open the billing page and complete subscription purchase to use
-these features. Once purchase is complete, rerun the command`,
+these features. Once purchase is complete, re-run the command`,
               },
             ];
           }
