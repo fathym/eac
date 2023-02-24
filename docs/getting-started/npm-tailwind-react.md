@@ -1,4 +1,4 @@
-# Bringing the blog to life
+# Bringing the app to life
 
 So far we've just been getting things setup and learning a bit of the lay of the land at Fathym. Now let's quickly look at bringing in a few more things to showcase how fathym works to help you deliver your user experiences with speed and efficiency.
 
@@ -96,14 +96,10 @@ fathym eac projects applications preview
 
 ## Bringing this together with our previous example
 
-You may have noticed that we slipped in our `fathym-compose` div in the App.tsx file. Let's update the DFS Modifier that we created earlier for the HTML Compose, and instead of our hold index.html file, let's set our markdown files to use this new app as its layout. then commit your changes
+You may have noticed that we slipped in our `fathym-compose` div in the App.tsx file. Let's update the DFS Modifier that we created earlier for the HTML Compose, and instead of our old index.html file, let's set our markdown files to use this new app as its layout. Enter the same values as the first time (except for the template path), name `HTML Markdown Composer`, lookup to `html-markdown-composer`, path regex to `.*.(md|mdx).*`, update the template path to `/npm-app`, the xpath target to `//div[@id='fathym-compose']`
 
 ```cli
-fathym eac modifiers define --details "{ ""TemplatePath"": ""/npm-app"", ""Compositions"": [{ ""Source"": ""%DFS%"", ""TargetSelector"": ""//div[@id='fathym-compose']"" }] }"
-```
-
-```cli
-ftm eac commit "Change HTML Markdown composer to use react app for layout"
+fathym lcu @fathym-it/lcu-eac-modifiers-html-composer
 ```
 
 Now we can preview one of the README.md files from our original zip release.

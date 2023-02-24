@@ -67,20 +67,32 @@ export default class Preview extends FathymCommand<PreivewContext> {
         task: async (ctx, task) => {
           const project = ctx.EaC.Projects![ctx.ProjectLookup];
 
-          const host = project.PrimaryHost;
-
           const application = ctx.EaC.Applications![ctx.ApplicationLookup];
 
-          const appRoot = application.LookupConfig!.PathRegex!.replace(
-            '.*',
-            ''
-          );
+          let host = project.PrimaryHost;
+
+          if (host && host?.endsWith('/')) {
+            host = host.slice(0, -1);
+          }
+
+          let appRoot = application.LookupConfig!.PathRegex!.replace('.*', '');
+
+          if (appRoot && appRoot?.endsWith('/')) {
+            appRoot = appRoot.slice(0, -1);
+          }
+
+          if (appRoot && !appRoot?.startsWith('/')) {
+            appRoot = `/${appRoot}`;
+          }
 
           if (path && !path?.startsWith('/')) {
             path = `/${path}`;
           }
 
-          const previewUrl = `https://${host}${appRoot}${path || ''}`;
+          const previewUrl = `https://${host}${appRoot}${path || ''}`.replace(
+            '//',
+            '/'
+          );
 
           open(previewUrl);
 

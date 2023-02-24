@@ -72,6 +72,7 @@ export default class Create extends FathymCommand<FathymTaskContext> {
           await runProc('npm', [
             'install ',
             'tailwindcss ',
+            '@tailwindcss/typography',
             'postcss',
             'autoprefixer',
             '--save-dev',
@@ -90,7 +91,9 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ]
 }
 `
           );
@@ -151,8 +154,39 @@ module.exports = {
         task: async (ctx, task) => {
           await runProc('npx rimraf', ['src/App.css']);
 
-          const appTsx = `import React from 'react';
+          await writeFile(
+            path.join(name, './src/App.tsx'),
+            `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>React App</title>
+    <base href="/">
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <template id="fathym-compose" style="display: none"></template>
+  </body>
+</html>
+`
+          );
+
+          await writeFile(
+            path.join(name, './src/App.tsx'),
+            `import React from 'react';
 import logo from './logo.svg';
+import TemplateInjector from './TemplateInjector';
 
 function App() {
   return (
@@ -181,16 +215,49 @@ function App() {
           Learn React
         </a>
 
-        <div id="fathym-compose" className="mt-8"></div>
+        <TemplateInjector templateId='fathym-compose' className="mt-8 prose dark:prose-invert"></TemplateInjector>
       </header>
     </div>
   );
 }
 
 export default App;
-`;
+          `
+          );
 
-          await writeFile(path.join(name, './src/App.tsx'), appTsx);
+          await writeFile(
+            path.join(name, './src/TemplateInjector.tsx'),
+            `import React, { useEffect, useRef } from "react";
+
+interface Props {
+  templateId: string;
+  className?: string;
+}
+
+const TemplateInjector: React.FC<Props> = ({ templateId, className }) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const template = document.getElementById(templateId);
+
+    if (template) {
+      const html = template.innerHTML;
+
+      if (ref.current) {
+        ref.current.innerHTML = html;
+      }
+    }
+  }, [templateId]);
+
+  return (
+    <div ref={ref} className={className}>
+    </div>
+  );
+};
+
+export default TemplateInjector;
+`
+          );
         },
       },
       // {

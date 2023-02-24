@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.176 win32-x64 node-v18.12.1
+@fathym/cli/0.0.188 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -39,6 +39,7 @@ USAGE
 * [`fathym dev api-root [ENV]`](#fathym-dev-api-root-env)
 * [`fathym dev azure cli-install`](#fathym-dev-azure-cli-install)
 * [`fathym dev azure sshkey create [RESOURCEGROUP]`](#fathym-dev-azure-sshkey-create-resourcegroup)
+* [`fathym dev billing manage`](#fathym-dev-billing-manage)
 * [`fathym dev config open [CONFIG]`](#fathym-dev-config-open-config)
 * [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
 * [`fathym dev lcu react create [NAME]`](#fathym-dev-lcu-react-create-name)
@@ -130,7 +131,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.176/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.188/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -229,6 +230,24 @@ DESCRIPTION
 
 EXAMPLES
   $ fathym dev azure sshkey create
+```
+
+## `fathym dev billing manage`
+
+Used to open the billing dashboard.
+
+```
+USAGE
+  $ fathym dev billing manage [--json]
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to open the billing dashboard.
+
+EXAMPLES
+  $ fathym dev billing manage
 ```
 
 ## `fathym dev config open [CONFIG]`
@@ -637,7 +656,7 @@ EXAMPLES
 
 ## `fathym eac env clouds azure define [CLOUDLOOKUP]`
 
-Used for creating a new project.
+Used for defining a new cloud connection.
 
 ```
 USAGE
@@ -653,7 +672,7 @@ GLOBAL FLAGS
   --json  Format output as json.
 
 DESCRIPTION
-  Used for creating a new project.
+  Used for defining a new cloud connection.
 
 EXAMPLES
   $ fathym eac env clouds azure define
@@ -1246,7 +1265,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.176/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.188/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1553,7 +1572,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.176/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.188/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1619,7 +1638,7 @@ EXAMPLES
   $ fathym open
 ```
 
-_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.176/dist/commands/open.ts)_
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.188/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -1872,5 +1891,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.176/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.188/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
