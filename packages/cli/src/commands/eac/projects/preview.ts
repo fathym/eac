@@ -60,7 +60,7 @@ export default class Preview extends FathymCommand<PreivewContext> {
             path = `/${path}`;
           }
 
-          const previewUrl = `https://${host}${path || ''}`;
+          const previewUrl = `https://${host}${path || ''}`.replace('//', '/');
 
           open(previewUrl);
 
