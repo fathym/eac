@@ -74,7 +74,7 @@ export default class PackageTransform extends FathymCommand<FathymTaskContext> {
           const overrides = transformOverrides?.split('|');
 
           transform?.split('|').forEach((key, i) => {
-            newPckgJson[key] = overrides?.[i] ?? pckgJson[key];
+            newPckgJson[key] = overrides?.[i] || pckgJson[key];
           });
 
           await writeJSON(
