@@ -43,7 +43,9 @@ export default class PackageTransform extends FathymCommand<FathymTaskContext> {
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
     const { flags } = await this.parse(PackageTransform);
 
-    let { destination, transform, transformOverrides } = flags;
+    const { transformOverrides } = flags;
+
+    let { destination, transform } = flags;
 
     return [
       {
@@ -71,8 +73,8 @@ export default class PackageTransform extends FathymCommand<FathymTaskContext> {
 
           const overrides = transformOverrides?.split('|');
 
-          transform?.split('|').forEach((key) => {
-            newPckgJson[key] = overrides?.[key] ?? pckgJson[key];
+          transform?.split('|').forEach((key, i) => {
+            newPckgJson[key] = overrides?.[i] ?? pckgJson[key];
           });
 
           await writeJSON(
