@@ -21,10 +21,16 @@ export default class PackageTransform extends FathymCommand<FathymTaskContext> {
       description: 'Used to determine where to move the transformed package.',
     }),
     transform: Flags.string({
-      char: 'f',
+      char: 't',
       description:
         'The package json property keys to bring along, | separated.',
       default: 'name|version',
+    }),
+    transformOverrides: Flags.string({
+      char: 'o',
+      description:
+        'The values to use in place of the included properties, | separated.',
+      default: 'a-specific-name|',
     }),
   };
 
@@ -35,9 +41,9 @@ export default class PackageTransform extends FathymCommand<FathymTaskContext> {
   static forceRefresh = false;
 
   protected async loadTasks(): Promise<ListrTask<FathymTaskContext>[]> {
-    const { args, flags } = await this.parse(PackageTransform);
+    const { flags } = await this.parse(PackageTransform);
 
-    let { destination, transform } = flags;
+    let { destination, transform, transformOverrides } = flags;
 
     return [
       {
@@ -63,8 +69,10 @@ export default class PackageTransform extends FathymCommand<FathymTaskContext> {
 
           const newPckgJson = {};
 
+          const overrides = transformOverrides?.split('|');
+
           transform?.split('|').forEach((key) => {
-            newPckgJson[key] = pckgJson[key];
+            newPckgJson[key] = overrides?.[key] ?? pckgJson[key];
           });
 
           await writeJSON(
