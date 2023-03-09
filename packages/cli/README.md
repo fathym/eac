@@ -22,7 +22,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.191 win32-x64 node-v18.12.1
+@fathym/cli/0.0.192 win32-x64 node-v18.12.1
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -60,6 +60,7 @@ USAGE
 * [`fathym eac drop`](#fathym-eac-drop)
 * [`fathym eac env clouds azure define [CLOUDLOOKUP]`](#fathym-eac-env-clouds-azure-define-cloudlookup)
 * [`fathym eac env clouds delete [CLOUDLOOKUP]`](#fathym-eac-env-clouds-delete-cloudlookup)
+* [`fathym eac env clouds groups delete [CLOUDRESGROUPLOOKUP]`](#fathym-eac-env-clouds-groups-delete-cloudresgrouplookup)
 * [`fathym eac env clouds groups list`](#fathym-eac-env-clouds-groups-list)
 * [`fathym eac env clouds groups resources list`](#fathym-eac-env-clouds-groups-resources-list)
 * [`fathym eac env clouds list`](#fathym-eac-env-clouds-list)
@@ -131,7 +132,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.191/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.192/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -701,6 +702,27 @@ EXAMPLES
   $ fathym eac env clouds delete
 ```
 
+## `fathym eac env clouds groups delete [CLOUDRESGROUPLOOKUP]`
+
+Used for deleting a cloud resource group.
+
+```
+USAGE
+  $ fathym eac env clouds groups delete [CLOUDRESGROUPLOOKUP] [--json]
+
+ARGUMENTS
+  CLOUDRESGROUPLOOKUP  The cloud resource group lookup to delete.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used for deleting a cloud resource group.
+
+EXAMPLES
+  $ fathym eac env clouds groups delete
+```
+
 ## `fathym eac env clouds groups list`
 
 Used for listing available clouds.
@@ -1267,7 +1289,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.191/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.192/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1574,7 +1596,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.191/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.192/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1640,7 +1662,7 @@ EXAMPLES
   $ fathym open
 ```
 
-_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.191/dist/commands/open.ts)_
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.192/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -1893,5 +1915,5 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.191/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.192/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
