@@ -1,3 +1,4 @@
+import { color } from '@oclif/color';
 import express from 'express';
 import oauth2 from 'simple-oauth2';
 import { ListrRendererFactory, ListrTask, ListrTaskWrapper } from 'listr2';
@@ -69,18 +70,18 @@ const oauthCodeClient = new oauth2.AuthorizationCode({
   },
 });
 
-export function azureCliInstallTask<TContext>(): ListrTask<
-  TContext & AzureCLITaskContext
-> {
+export function azureCliInstallTask<
+  TContext extends AzureCLITaskContext
+>(): ListrTask<TContext> {
   return {
-    title: `Checking Azure CLI is installed`,
+    title: `Azure CLI install check`,
     task: async (ctx, task) => {
       try {
         await runProc('az', []);
 
         ctx.AzureCLIInstalled = true;
       } catch {
-        task.title = 'Installing Azure CLI';
+        task.title = 'Azure CLI installing';
 
         task.output = 'Downloading the Azure CLI installer';
 
@@ -90,7 +91,7 @@ export function azureCliInstallTask<TContext>(): ListrTask<
         );
 
         task.output =
-          'Laucnhing the Azure CLI installer.  Completing in the background.';
+          'Laucnhing the Azure CLI installer; installing in the background.';
 
         // TODO: Cross platform support for msiexec
 
@@ -98,10 +99,48 @@ export function azureCliInstallTask<TContext>(): ListrTask<
 
         await runProc('refreshenv', []);
 
-        task.title = 'Azure CLI was successfully installed';
-
         ctx.AzureCLIInstalled = true;
       }
+
+      task.title = 'Azure CLI installed';
+    },
+  };
+}
+
+export function ensureAzureCliLogin<
+  TContext extends AzureCLITaskContext
+>(): ListrTask<TContext> {
+  return {
+    title: 'Azure CLI login check',
+    skip: (ctx) => !ctx.AzureCLIInstalled,
+    task: async (ctx, task) => {
+      try {
+        await runProc('az', ['account', 'show']);
+      } catch {
+        task.title = 'Azure CLI logging in';
+
+        task.output = color.yellow(
+          'Opening a login form in your browser, complete sign in there, and return.'
+        );
+
+        await runProc('az', ['login']);
+      }
+
+      task.title = 'Azure CLI logged in';
+    },
+  };
+}
+
+export function ensureAzureCliSetupTask<
+  TContext extends AzureCLITaskContext
+>(): ListrTask<TContext> {
+  return {
+    title: `Azure CLI Setup`,
+    task: (ctx, task) => {
+      return task.newListr((parent) => [
+        azureCliInstallTask(),
+        ensureAzureCliLogin(),
+      ]);
     },
   };
 }

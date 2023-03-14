@@ -53,11 +53,11 @@ export abstract class FathymCommand<
 
     const listr = new Listr<TContext>(tasks);
 
-    try {
-      let ctx: TContext = {
-        Fathym: {},
-      } as TContext;
+    let ctx: TContext = {
+      Fathym: {},
+    } as TContext;
 
+    try {
       ctx = await listr.run(ctx);
 
       if (ctx?.Fathym?.Lookups) {
@@ -70,6 +70,8 @@ export abstract class FathymCommand<
 
       this.closure(`${CurCmd.title} Executed`, ctx?.Fathym?.Instructions);
     } catch (error: any) {
+      this.closure(`${CurCmd.title} Executed`, ctx?.Fathym?.Instructions);
+
       this.error(error);
     }
   }

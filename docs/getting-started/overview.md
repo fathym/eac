@@ -2,7 +2,7 @@
 
 Fathym is a framework and platform designed to streamline the development and deployment process for applications. It provides a variety of tools and features to manage the entire DevOps workflow, from development to deployment. With Fathym, you can quickly launch full-blown IoT infrastructure or use LCU recipes to get your application up and running in no time.
 
-In this tutorial, we'll walk you through the process of setting up a static blog using Fathym. By the end of this tutorial, you'll have a solid understanding of how Fathym works and how it can help accelerate application delivery.
+In this tutorial, we'll walk you through the process of setting up a static site using Fathym. By the end of this tutorial, you'll have a solid understanding of how Fathym works and how it can help accelerate application delivery.
 
 ## Building with Markdown
 
@@ -10,7 +10,7 @@ Markdown is a simple formatting syntax for writing plain text that can be conver
 
 These docs are part of a larger project and were built using markdown and delivered with the Fathym Runtime. Using a large JavaScript framework like React, Svelte, or Angular can be useful for building visually rich, interactive applications, but may not be necessary for every statically generated site.
 
-## Let's Build a Blog
+## Let's Build an App
 
 At this point, you may be used to opening up a command prompt, globally installing a custom CLI, and executing a framework's create or init command. However, we're going to go a more basic route to start.
 
@@ -35,15 +35,15 @@ npx touch README.md
 ```
 
 ```cli
-npx open-cli README.md
+npx fathym open README.md
 ```
 
 With the README.md file open, add some basic markdown and then save `Ctrl+S` your file changes:
 
 ```markdown
-# Welcome to our Blog
+# Welcome to our App
 
-This is our new blog built on a static runtime.
+This is our new app built on a static runtime.
 ```
 
 Now, we need to create a deployable artifact that we'll send to Fathym for hosting. For our purposes, let's start with a zip artifact:
@@ -158,9 +158,7 @@ fathym eac projects applications preview
 
 > **NOTE** - It can take up to a minute for your new application preview to be ready.
 
-If your using chrome, you'll see the raw markdown on the web page. If your using Firefox, or other browsers that don't support rendering markdown, you'll be prompted to download the file. This isn't ideal, and isn't where we want to leave it.
-
-Let's look at two last features of the Fathym EaC for this guide, we'll see them both in action in this next command.
+You should see the raw markdown on the web page. Let's look at two last features of the Fathym EaC for this guide, we'll see them both in action in this next command.
 
 ```cli
 fathym lcu @fathym-it/lcu-eac-modifiers-markdown-to-html
@@ -198,4 +196,4 @@ There are a couple of different things happening here that start to further reve
 
 > **NOTE** - There are a number of different ways to configure the application and how it handles a request. It also provides a container to manage security and server-side file modifications.
 
-In the next example we will expand on this blog by adding in some HTML, leveraging additional Fathym Runtime features and changing up our deployment artifact.
+In the next example we will expand on this app by adding in some HTML, leveraging additional Fathym Runtime features and changing up our deployment artifact.

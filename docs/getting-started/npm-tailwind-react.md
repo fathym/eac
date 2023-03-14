@@ -1,4 +1,4 @@
-# Bringing the blog to life
+# Bringing the app to life
 
 So far we've just been getting things setup and learning a bit of the lay of the land at Fathym. Now let's quickly look at bringing in a few more things to showcase how fathym works to help you deliver your user experiences with speed and efficiency.
 
@@ -96,14 +96,10 @@ fathym eac projects applications preview
 
 ## Bringing this together with our previous example
 
-You may have noticed that we slipped in our `fathym-compose` div in the App.tsx file. Let's update the DFS Modifier that we created earlier for the HTML Compose, and instead of our hold index.html file, let's set our markdown files to use this new app as its layout. then commit your changes
+You may have noticed that we slipped in our `fathym-compose` div in the App.tsx file. Let's update the DFS Modifier that we created earlier for the HTML Compose, and instead of our old index.html file, let's set our markdown files to use this new app as its layout. Enter the same values as the first time (except for the template path), name `HTML Markdown Composer`, lookup to `html-markdown-composer`, path regex to `.*.(md|mdx).*`, update the template path to `/npm-app`, the xpath target to `//div[@id='fathym-compose']`
 
 ```cli
-fathym eac modifiers define --details "{ ""TemplatePath"": ""/npm-app"", ""Compositions"": [{ ""Source"": ""%DFS%"", ""TargetSelector"": ""//div[@id='fathym-compose']"" }] }"
-```
-
-```cli
-ftm eac commit "Change HTML Markdown composer to use react app for layout"
+fathym lcu @fathym-it/lcu-eac-modifiers-html-composer
 ```
 
 Now we can preview one of the README.md files from our original zip release.
@@ -114,23 +110,45 @@ fathym eac projects preview -p README.md
 
 ## Using NPM package artifacts for QA
 
-Here, we'll give you just a little primer on how Fathym can be used to hose multiple versions of your applications in concert.
+Here, we'll give you just a little primer on how Fathym can be used to host multiple versions of your applications in concert.
 
 Integrate to integration again
+
+```cli
+fathym git feature integrate
+```
 
 Update original application to use the new version `integration`
 
 Create new feature branch
 
-Add a generic ThirdPartyLibrary Modifier
+```cli
+fathym git feature integrate
+```
+
+Make a change
 
 check in feature branch
+
+```cli
+fathym git "New feature branch changes"
+```
 
 Create app for new feature branch
 
 Preview
 
+```cli
+fathym eac projects applications -p README.md
+```
+
 Make another small change
+
+Push your changes
+
+```cli
+fathym git "Small changes"
+```
 
 Preview to see that changes were automatically applied
 

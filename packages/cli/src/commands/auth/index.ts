@@ -38,7 +38,7 @@ export default class Auth extends FathymCommand<AuthTaskContext> {
 to manage your enterprie setup.`,
       },
       {
-        Instruction: 'fathym github auth',
+        Instruction: 'fathym git auth',
         Description: `There is a lot we can do to help
 with your GitHub management.  Auth
 with GitHub and be ready to go.`,
