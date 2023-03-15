@@ -146,8 +146,7 @@ export default class Install extends FathymCommand<InstallContext> {
             }
           );
         },
-      },
-      this.confirmAgreements(ci),
+      },          
       ensureProjectTask(this.config.configDir, project, true, false, (ctx) =>
         ctx.LCUPackageConfig?.Package
           ? !ctx.LCUPackageConfig.Package!.SkipProject
@@ -180,6 +179,7 @@ export default class Install extends FathymCommand<InstallContext> {
                     return task.newListr<InstallContext>(
                       [
                         this.confirmParameters(ci, parameters, phase),
+                        this.confirmAgreements(ci),
                         this.runInstallLcu(lcu!, phase),
                       ],
                       { rendererOptions: { collapse: true } }
@@ -265,6 +265,19 @@ export default class Install extends FathymCommand<InstallContext> {
             );
 
             if (value) {
+              await runProc('az', [
+                'account',
+                'set',
+                `--subscription ${agreeCfg.SubscriptionID}`,
+              ])
+              await runProc('az', [
+                'term',
+                'accept',
+                `--product "${agreeCfg.offer}"`,
+                `--plan "${agreeCfg.sku}"`,
+                `--publisher "${agreeCfg.publisher}"`,
+              ])
+              
               // const urn = `${agreeCfg.publisher}:${agreeCfg.offer}:${agreeCfg.sku}:${agreeCfg.version}`;
               // ctx.LCUAgreements = {
               //   ...ctx.LCUAgreements,
