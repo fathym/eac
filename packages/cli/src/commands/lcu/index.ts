@@ -179,7 +179,7 @@ export default class Install extends FathymCommand<InstallContext> {
                     return task.newListr<InstallContext>(
                       [
                         this.confirmParameters(ci, parameters, phase),
-                        this.confirmAgreements(ci),
+                        this.confirmAgreements(ci, phase),
                         this.runInstallLcu(lcu!, phase),
                       ],
                       { rendererOptions: { collapse: true } }
@@ -226,7 +226,10 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
-  protected confirmAgreements(ci: boolean): ListrTask<InstallContext> {
+  protected confirmAgreements(
+    ci: boolean,
+    phase?: number
+  ): ListrTask<InstallContext> {
     return {
       title: 'Processing LCU Agreements',
       // enabled: async (ctx) => {
@@ -245,7 +248,9 @@ export default class Install extends FathymCommand<InstallContext> {
         } else {
           const agreesCfg = await loadFileAsJson<any>(
             ctx.LCUPackageFiles,
-            './assets/agreements.json'
+            phase
+              ? `./assets/${phase}/agreements.json`
+              : './assets/agreements.json'
           );
 
           const prompts = await this.loadAgreementsPrompts(task, agreesCfg);
