@@ -268,7 +268,7 @@ export default class Install extends FathymCommand<InstallContext> {
               await runProc('az', [
                 'account',
                 'set',
-                `--subscription ${agreeCfg.SubscriptionID}`,
+                `--subscription ${ctx.SubscriptionID}`,
               ]);
               await runProc('az', [
                 'term',
@@ -598,6 +598,14 @@ export default class Install extends FathymCommand<InstallContext> {
           ctx.ProjectLookup = paramswers.$ProjectLookup;
 
           delete paramswers.$ProjectLookup;
+        }
+
+        if (paramswers.$SubscriptionID) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.SubscriptionID = paramswers.$SubscriptionID;
+
+          delete paramswers.$SubscriptionID;
         }
 
         // if (phase === 3) {
