@@ -29,14 +29,17 @@ import { Draft } from 'immer';
 import {
   AzureCLITaskContext,
   AzureSubscription,
+  ensureAzureCliLogin,
+  ensureAzureCliSetupTask,
   ensurePromptValue,
+  FathymTaskContext,
   loadActieEnterpriseLookup,
   merge,
   removeUndefined,
   SubscriptionTaskContext,
 } from './core-helpers';
 import { runProc } from './task-helpers';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 
 export type DepthOption = string | (string | Record<string, unknown> | [])[];
 
@@ -172,10 +175,9 @@ export function azSshKeyCreateTask<
   };
 }
 
-export function commitDraftTask(
-  configDir: string,
-  message: string
-): ListrTask<ActiveEnterpriseTaskContext> {
+export function commitDraftTask<
+  TContext extends FathymTaskContext & ActiveEnterpriseTaskContext
+>(configDir: string, message: string): ListrTask<TContext> {
   return {
     title: 'Commiting EaC Draft',
     task: async (ctx, task) => {
@@ -189,24 +191,48 @@ export function commitDraftTask(
 
       const eacDraft = await withEaCDraft(configDir);
 
-      const response = await axios.post(
-        `${ctx.ActiveEnterpriseLookup}/eac/commit`,
-        {
-          ...eacDraft,
-          Message: message,
+      try {
+        const response = await axios.post(
+          `${ctx.ActiveEnterpriseLookup}/eac/commit`,
+          {
+            ...eacDraft,
+            Message: message,
+          }
+        );
+
+        const resp = response.data;
+
+        if (resp.Status.Code === 0) {
+          task.title = `EaC Draft Committed`;
+
+          await withEaCDraft(configDir, 'clear');
+
+          await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup);
+        } else {
+          if (resp.Status.Code === 501) {
+            ctx.Fathym.Instructions = [
+              ...(ctx.Fathym.Instructions || []),
+              {
+                Instruction: 'fathym dev billing manage',
+                Description: `Open the billing page and complete subscription purchase to use
+these features. Once purchase is complete, re-run the command`,
+              },
+            ];
+          }
+
+          throw new Error(resp.Status.Message);
         }
-      );
+      } catch {
+        ctx.Fathym.Instructions = [
+          ...(ctx.Fathym.Instructions || []),
+          {
+            Instruction: 'ftm dev billing manage',
+            Description: `Open the billing page and complete subscription prchase to use
+these features. Once purchase is complete, rerun the command`,
+          },
+        ];
 
-      const resp = response.data;
-
-      if (resp.Status.Code === 0) {
-        task.title = `EaC Draft Committed`;
-
-        await withEaCDraft(configDir, 'clear');
-
-        await withEaCDraft(configDir, ctx.ActiveEnterpriseLookup);
-      } else {
-        throw new Error(resp.Status.Message);
+        throw new Error('There was an issue. Follow the instructions.');
       }
     },
   };
@@ -814,27 +840,12 @@ export function setAzureSubTask<
 >(configDir: string): ListrTask<TContext> {
   return {
     title: `Setting Azure Subscription`,
-    skip: (ctx) => !ctx.AzureCLIInstalled,
     task: (ctx, task) => {
       return task.newListr((parent) => [
-        {
-          title: 'Ensure login with Azure CLI',
-          task: async (ctx, task) => {
-            try {
-              await runProc('az', ['account', 'show']);
-
-              task.title = 'Azure CLI already authenticated';
-            } catch {
-              task.output = color.yellow(
-                'Opening a login form in your browser, complete sign in there, then return.'
-              );
-
-              await runProc('az', ['login']);
-            }
-          },
-        },
+        ensureAzureCliSetupTask(),
         {
           title: 'Select Azure Subscription',
+          skip: (ctx) => !ctx.AzureCLIInstalled,
           task: async (ctx, task) => {
             const subsList: AzureSubscription[] = JSON.parse(
               (await runProc('az', ['account', 'list', '--refresh'])) || '[]'

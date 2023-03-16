@@ -18,6 +18,7 @@ import {
   SubscriptionTaskContext,
   azureCliInstallTask,
   removeUndefined,
+  ensureAzureCliSetupTask,
 } from '../../../../../common/core-helpers';
 
 interface DefineTaskContext
@@ -28,7 +29,7 @@ interface DefineTaskContext
     SubscriptionTaskContext {}
 
 export default class Define extends FathymCommand<DefineTaskContext> {
-  static description = `Used for creating a new project.`;
+  static description = `Used for defining a new cloud connection.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -61,7 +62,6 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     return [
       ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      azureCliInstallTask(),
       setAzureSubTask(this.config.configDir),
       this.createCloudConnection(generate, cloudLookup),
     ];
@@ -95,17 +95,36 @@ export default class Define extends FathymCommand<DefineTaskContext> {
         enabled: (ctx) => ctx.AzureCLIInstalled,
         prompt: async (ctx, task) => {
           if (generate) {
-            const svcPrincStr = await runProc('az', [
-              'ad',
-              'sp',
-              'create-for-rbac',
-              // `--name "${ctx.SubscriptionID}"`,
-              '--role Contributor',
-              `--scopes /subscriptions/${ctx.SubscriptionID}`,
-              // `--tenant ${ctx.TenantID}`,
-            ]);
+            let svcPrincStr = '{}';
 
-            const svcPrinc = JSON.parse(svcPrincStr);
+            try {
+              svcPrincStr = await runProc('az', [
+                'ad',
+                'sp',
+                'create-for-rbac',
+                // `--name "${ctx.SubscriptionID}"`,
+                '--role Contributor',
+                `--scopes /subscriptions/${ctx.SubscriptionID}`,
+                // `--tenant ${ctx.TenantID}`,
+              ]);
+            } catch {
+              //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
+              await runProc('az', ['account', 'clear']);
+
+              await runProc('az', ['login']);
+
+              svcPrincStr = await runProc('az', [
+                'ad',
+                'sp',
+                'create-for-rbac',
+                // `--name "${ctx.SubscriptionID}"`,
+                '--role Contributor',
+                `--scopes /subscriptions/${ctx.SubscriptionID}`,
+                // `--tenant ${ctx.TenantID}`,
+              ]);
+            }
+
+            const svcPrinc = JSON.parse(svcPrincStr || '{}');
 
             generated = {
               Type: 'Azure',

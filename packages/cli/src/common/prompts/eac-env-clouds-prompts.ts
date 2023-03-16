@@ -12,7 +12,7 @@ export class CloudSelect extends EaCSelectPrompt {
 
     super(
       options,
-      'Select cloud connection',Fucked this up a different way
+      'Select cloud connection',
       () => clouds,
       (lookup) => {
         const cloudName = env.Clouds[lookup]?.Cloud?.Name || '';

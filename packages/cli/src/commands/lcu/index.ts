@@ -147,7 +147,6 @@ export default class Install extends FathymCommand<InstallContext> {
           );
         },
       },
-      this.confirmAgreements(ci),
       ensureProjectTask(this.config.configDir, project, true, false, (ctx) =>
         ctx.LCUPackageConfig?.Package
           ? !ctx.LCUPackageConfig.Package!.SkipProject
@@ -180,6 +179,7 @@ export default class Install extends FathymCommand<InstallContext> {
                     return task.newListr<InstallContext>(
                       [
                         this.confirmParameters(ci, parameters, phase),
+                        this.confirmAgreements(ci, phase),
                         this.runInstallLcu(lcu!, phase),
                       ],
                       { rendererOptions: { collapse: true } }
@@ -226,7 +226,10 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
-  protected confirmAgreements(ci: boolean): ListrTask<InstallContext> {
+  protected confirmAgreements(
+    ci: boolean,
+    phase?: number
+  ): ListrTask<InstallContext> {
     return {
       title: 'Processing LCU Agreements',
       // enabled: async (ctx) => {
@@ -245,7 +248,9 @@ export default class Install extends FathymCommand<InstallContext> {
         } else {
           const agreesCfg = await loadFileAsJson<any>(
             ctx.LCUPackageFiles,
-            './assets/agreements.json'
+            phase
+              ? `./assets/${phase}/agreements.json`
+              : './assets/agreements.json'
           );
 
           const prompts = await this.loadAgreementsPrompts(task, agreesCfg);
@@ -265,6 +270,19 @@ export default class Install extends FathymCommand<InstallContext> {
             );
 
             if (value) {
+              await runProc('az', [
+                'account',
+                'set',
+                `--subscription ${ctx.SubscriptionID}`,
+              ]);
+              await runProc('az', [
+                'term',
+                'accept',
+                `--product "${agreeCfg.offer}"`,
+                `--plan "${agreeCfg.sku}"`,
+                `--publisher "${agreeCfg.publisher}"`,
+              ]);
+
               // const urn = `${agreeCfg.publisher}:${agreeCfg.offer}:${agreeCfg.sku}:${agreeCfg.version}`;
               // ctx.LCUAgreements = {
               //   ...ctx.LCUAgreements,
@@ -585,6 +603,14 @@ export default class Install extends FathymCommand<InstallContext> {
           ctx.ProjectLookup = paramswers.$ProjectLookup;
 
           delete paramswers.$ProjectLookup;
+        }
+
+        if (paramswers.$SubscriptionID) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.SubscriptionID = paramswers.$SubscriptionID;
+
+          delete paramswers.$SubscriptionID;
         }
 
         // if (phase === 3) {
