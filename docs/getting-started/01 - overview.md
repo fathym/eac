@@ -118,7 +118,7 @@ fathym eac projects applications add {project-lookup} {app-lookup}
 Finally, we can commit all of our changes to the EaC at once.
 
 ```cli
-fathym eac commit "Added my first project and it's first application"
+fathym eac commit "Added my first project and its first application"
 ```
 
 There are a couple of different things happening here that start to further reveal the EaC and what it does. The system is organized into multiple management groups. This particular set works with projects and how/where its applications are hosted/deployed.
