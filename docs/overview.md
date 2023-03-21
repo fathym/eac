@@ -24,7 +24,7 @@ For example, you could use Fathym to build a static blog using Markdown with the
 
 As you can see, there are many ways to bring solutions together with Fathym, even weaving them together into a single cohesive solution. The LCUs are like sauces that can be combined and used in different ways to create a finished dish.
 
-## Enteprise as Code.
+## Enterprise as Code.
 
 When LCUs are combined to craft solutions, they are committed to what we call Enterprise as Code (EaC). EaC is a directed graph database and command structure that defines and stores everything that makes up your Fathym enterprise. 
 
