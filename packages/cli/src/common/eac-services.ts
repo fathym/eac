@@ -833,11 +833,11 @@ export function loadEaCTask<
   };
 }
 
-export function setAzureSubTask<
+export async function setAzureSubTask<
   TContext extends SubscriptionTaskContext &
     AzureCLITaskContext &
     ActiveEnterpriseTaskContext
->(configDir: string): ListrTask<TContext> {
+>(configDir: string): Promise<ListrTask<TContext, any>> {
   return {
     title: `Setting Azure Subscription`,
     task: (ctx, task) => {
@@ -905,13 +905,23 @@ export function setAzureSubTask<
               ctx.SubscriptionName = sub.name;
 
               ctx.TenantID = sub.tenantId;
+            
+              await runProc('az', ['account', 'list', '--refresh'])
+
+              await runProc('az', [
+                'account',
+                'set',
+                `--subscription ${ctx.SubscriptionName}`,
+            ]);
             }
 
-            await runProc('az', [
-              'account',
-              'set',
-              `--subscription ${ctx.SubscriptionID}`,
-            ]);
+            //await runProc('az', ['account', 'clear']);
+
+            // await runProc('az', [
+            //   'account',
+            //   'set',
+            //   `--subscription ${ctx.SubscriptionName}`,
+            // ]);
 
             parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
           },

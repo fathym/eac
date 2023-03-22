@@ -62,15 +62,15 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     return [
       ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      setAzureSubTask(this.config.configDir),
-      this.createCloudConnection(generate, cloudLookup),
+      await setAzureSubTask(this.config.configDir),
+      await this.createCloudConnection(generate, cloudLookup),
     ];
   }
 
-  protected createCloudConnection(
+  protected async  createCloudConnection(
     generate: boolean,
     cloudLookup: string
-  ): ListrTask<DefineTaskContext> {
+  ): Promise<ListrTask<DefineTaskContext, any>> {
     let generated: Record<string, any> = {};
 
     return withEaCDraftEditTask<DefineTaskContext, EaCCloudDetails>(
@@ -87,6 +87,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
             {
               Name: ctx.SubscriptionName,
               Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
+              Type: "Azure",
             },
           ],
         ],
@@ -94,7 +95,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
       {
         enabled: (ctx) => ctx.AzureCLIInstalled,
         prompt: async (ctx, task) => {
-          if (generate) {
+          //if (generate) {
             let svcPrincStr = '{}';
 
             try {
@@ -110,6 +111,8 @@ export default class Define extends FathymCommand<DefineTaskContext> {
             } catch {
               //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
               await runProc('az', ['account', 'clear']);
+
+              await runProc('az', ['logout']);
 
               await runProc('az', ['login']);
 
@@ -133,11 +136,16 @@ export default class Define extends FathymCommand<DefineTaskContext> {
               SubscriptionID: ctx.SubscriptionID,
               TenantID: svcPrinc.tenant,
             };
-          }
+          //}
         },
         draftPatch: (ctx) => {
           const patch = {
             ...removeUndefined(generated),
+            // Type: generated['Type'],
+            // ApplicationID: "My APplication Id",
+            // AuthKey: generated['AuthKey'] as string,
+            // SubscriptionID: generated['SubscriptionID'],
+            // TenantID: generated['TenantID'],
           };
 
           return patch;
