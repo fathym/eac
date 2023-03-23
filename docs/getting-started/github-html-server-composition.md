@@ -12,7 +12,7 @@ Fathym helps to configure the repository for automated builds and deployments fo
 
 ## Configuring your Source Code
 
-For the reason mentioned above, we are going to move our code off of the file system. The first thing you'll need to do is authorize with GitHub. Head back into VS Code and into a terminal where we will auth the user of the CLI with GitHub (in the user's global GitHub auth for the active EaC).
+For the reason mentioned above, we are going to move our code off the file system. The first thing you'll need to do is authorize with GitHub. Head back into VS Code and into a terminal where we will auth the user of the CLI with GitHub (in the user's global GitHub auth for the active EaC).
 
 ```cli
 fathym git auth
@@ -28,7 +28,7 @@ Now let's create a new repository in one of the organizations you authorized Fat
 ftm git configure -s
 ```
 
-This does a number of things for you to setup your repository, including branch setup and configurations to support the default Git workflow.
+This does a number of things to set up your repository, including branch setup and configurations to support the default Git workflow.
 
 > **NOTE** - You may have noticed the use of `ftm` here. The Fathym CLI can be accessed in two ways, `fathym` or the shorthand `ftm`. Both can be used interchangeably for any of the commands. The previous command could have been replaced with `fathym git configure -s` with the same outcome.
 
@@ -46,7 +46,7 @@ cd .\{name-of-new-repo}
 
 ## Preparing for local development
 
-A few things have changed in our code so lets take a look. Start by opening your code.
+A few things have changed in our code so let's take a look. Start by opening your code.
 
 ```cli
 fathym open
@@ -84,7 +84,7 @@ Once the build pipeline is defined, you can now attach it to the source control.
 fathym eac env sources pipeline attach
 ```
 
-Now, we need to commit all of our EaC changes for the source and build pipelines.
+Now we need to commit all of our EaC changes for the source and build pipelines.
 
 ```cli
 fathym eac commit "Configured source and builds for {username/organization} my-new-repository"
@@ -94,7 +94,7 @@ Once the commit completes the source will be created with a new GitHub Action. I
 
 > **NOTE** - If the GitHub Action does not start automatically, you may need to enable actions for your repository. Once done, a build will start on your next committed change (which we will do shortly).
 
-This is a big step for yourself and/or team, as you've set up a complete continuous integration workflow to automate your project builds. You've also laid the ground work for continuous deployment.
+This is a big step for you and/or team, as you've set up a complete continuous integration workflow to automate your project builds. You've also laid the ground work for continuous deployment.
 
 ## Continuing development
 
@@ -155,7 +155,7 @@ Once open, add the following HTML, save, and then close the file.
 </html>
 ```
 
-Take note of the div with id `fathym-compose`, you'll need this id later when configuring Fathym Runtime server side composition.
+Take note of the div with id `fathym-compose`, you'll need this id later when configuring Fathym Runtime server-side composition.
 
 Update the `README.md` file with whatever markdown you want to use. We support a large portion of the CommonMark spec via the work done by [xoofx/markdig](https://github.com/xoofx/markdig). You can also update the HTML template with additional markup.
 
@@ -165,7 +165,7 @@ Now you are ready to check in and push your code.
 fathym git "Added index.html template"
 ```
 
-You'll see we are using the `fathym git` command again, this time specifying a message because we know there were changes. If the message were omitted, and changes detected you will be prompted for a message.
+You'll see we are using the `fathym git` command again, this time specifying a message because we know there were changes. If the message were omitted and changes detected, you would be prompted for a message.
 
 Upon pushing your changes to the repository, you'll be able to see the build in progress. You can view this in the Actions tab of the repository on GitHub.
 
@@ -220,7 +220,7 @@ In the first guide we demonstrated how markdown can be converted into HTML. We h
 fathym eac projects applications preview -p /README.md
 ```
 
-Let's introduce another feature of the Fathym Runtime, server side composition. In order to enable markdown composition with your index.html file, you'll need to setup another modifier. The new one will work withe converted HTML, the HTML Composer Modifier. It will format the HTML into a configured template.
+Let's introduce another feature of the Fathym Runtime, server-side composition. In order to enable markdown composition with your index.html file, you'll need to set up another modifier. The new one will work with converted HTML, the HTML Composer Modifier. It will format the HTML into a configured template.
 
 Next you will configure the modifier that will compose the formatted markdown into the HTML template (index.html). Set the name of the modifier to `HTML Markdown Composer`, the modifier lookup to `html-markdown-composer`, the path regex to `.*.(md|mdx).*`, the template path to `./index.html`, and the xpath target to `//div[@id='fathym-compose']`.
 
