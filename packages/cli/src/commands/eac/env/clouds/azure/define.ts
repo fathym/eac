@@ -95,6 +95,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
       {
         enabled: (ctx) => ctx.AzureCLIInstalled,
         prompt: async (ctx, task) => {
+          //TODO: "Generate" flag is not working, not recognizing the flag, so the SP is never created. Most situations will need this step, but need to fix in the future
           //if (generate) {
             let svcPrincStr = '{}';
 

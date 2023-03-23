@@ -914,6 +914,7 @@ export async function setAzureSubTask<
                 `--subscription ${ctx.SubscriptionName}`,
               ]);
 
+              //TODO: Hardcoded common MS Resource Provider registrations. Need to make this dynamic in the future
               await runProc('az', [
                 'provider', 
                 'register', 
@@ -923,16 +924,7 @@ export async function setAzureSubTask<
                 'provider', 
                 'register', 
                 '--namespace Microsoft.Network']);
-            }
-
-              
-            //await runProc('az', ['account', 'clear']);
-
-            // await runProc('az', [
-            //   'account',
-            //   'set',
-            //   `--subscription ${ctx.SubscriptionName}`,
-            // ]);
+            }             
 
             parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
           },
