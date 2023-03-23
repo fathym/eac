@@ -26,7 +26,7 @@ Now we can create a React application in our current repository. You can create 
 fathym dev lcu react create --tailwind
 ```
 
-This will generate a new React application using CRA (create-react-app), add in Tailwind configuations, set up the `index.html` file to showcase Tailwind, and start the application. If you don't use our CLI, you will need to set up and configure everything yourself, including the deploy scrpits used next.
+This will generate a new React application using CRA (create-react-app), add in Tailwind configurations, set up the `index.html` file to showcase Tailwind, and start the application. If you don't use our CLI, you will need to set up and configure everything yourself, including the deploy scripts used next.
 
 Try out the new Tailwind application with:
 
@@ -76,7 +76,7 @@ Let's also get our feature branch synced with the integration changes that occur
 fathym git
 ```
 
-This will merge integration into your local branch, where you will see the new `.github/workflows/lcu-relesae.yml file`.
+This will merge integration into your local branch, where you will see the new `.github/workflows/lcu-release.yml file`.
 
 Next we will create the LCU for our application to target NPM artifacts (similar to our setup for GitHub). Enter the name of the package you created, then enter `react-app` (this should match the feature branch we created earlier) for the version, and for the path enter `/npm-app`.
 
@@ -153,7 +153,7 @@ Integrate feature branch and see that the integration host is automatically upda
 <!--
 ## Adding google analytics tracking and other thrid party libraries
 
-## Bonus - working with the CLI
+## Bonus - Working with the CLI
 
 As you may have noticed, there is a lot of nesting and relationships to work with. With the CLI it is possible in many cases to set an "active" value. Take for example the following commands.
 
