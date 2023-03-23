@@ -912,9 +912,20 @@ export async function setAzureSubTask<
                 'account',
                 'set',
                 `--subscription ${ctx.SubscriptionName}`,
-            ]);
+              ]);
+
+              await runProc('az', [
+                'provider', 
+                'register', 
+                '--namespace Microsoft.Compute']);
+              
+              await runProc('az', [
+                'provider', 
+                'register', 
+                '--namespace Microsoft.Network']);
             }
 
+              
             //await runProc('az', ['account', 'clear']);
 
             // await runProc('az', [
