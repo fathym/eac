@@ -54,7 +54,7 @@ npx zip-cli -i ./ -o ./deploy.zip
 
 This will generate a deploy.zip file in the working folder that you'll use for deployment to Fathym.
 
-> **NOTE** - If you need to re-create the deploy.zip file, make sure to delete it first, so that it isn't also included in the new zip.
+> **NOTE** - If you need to re-create the deploy.zip file, make sure to delete it first so that it isn't also included in the new zip.
 
 ## Setting up Fathym
 
@@ -112,7 +112,7 @@ We need to configure how our application will be chosen to handle a request. The
 fathym eac applications lookup -p /
 ```
 
-There are a number of different options for configuring how the application handles requests. To do so we configure the application's processor.
+There are a number of different options for configuring how the application handles requests. To do this we configure the application's processor.
 
 ```cli
 fathym eac applications processor DFS -d index.html -b /
@@ -124,30 +124,30 @@ The LCU for an application can be configured to manage security and server-side 
 fathym eac applications lcu Zip -z "https://{{Host}}/deploys/deploy.zip"
 ```
 
-Not that we've used the `Host` token as a dynamic way of accessing where the `deploy.zip` is located for deployment. In order to make the zip file available we can use another dev command to push the zip file to our Fathym Distributed File System (DFS), at the Enterprise scope, making it available to all projects and applications that we create.
+We have used the `Host` token as a dynamic way of accessing where the `deploy.zip` is located for deployment. In order to make the zip file available we can use another dev command to push the zip file to our Fathym Distributed File System (DFS), making it available to all projects and applications that we create in the enterprise.
 
 ```cli
 fathym dfs upload ./deploy.zip /deploys/deploy.zip
 ```
 
-> **NOTE** - You can host the zip file anywhere its publicly available, it does not have to be in our DFS. (private zip access is not currently available)
+> **NOTE** - You can host the zip file anywhere it is publicly available, it does not have to be in our DFS. (private zip access is not currently available)
 
-Then, we can add the application to the project using the prompts and selecting our `draft` project and application.
+Then we can add the application to the project using the prompts and selecting our `draft` project and application.
 
 ```cli
 fathym eac projects applications add
 ```
 
-At this point, we haven't actually made any updates to our EaC. The commands we have used have simply created a draft. The purpose of this is to allow you to craft all of your updates for a single concept, in a single request. Instead of individually updating, we can check our draft before committing.
+At this point, we haven't actually made any updates to our EaC. The commands we have used have simply created a draft. The purpose of this is to allow you to craft all of your updates for a single concept in a single request. Instead of individually updating, we can check our draft before committing.
 
 ```cli
 fathym eac draft
 ```
 
-Like code, we should keep our commits to a a small related set of updates. This ensures a clean history and understanding of changes applied to your enterprise. If your happy with the draft, we can commit all of our changes to the EaC at once.
+Like code, we should keep our commits to a small and related set of updates. This ensures a clean history and understanding of changes applied to your enterprise. If you're happy with the draft, we can commit all of our changes to the EaC at once.
 
 ```cli
-fathym eac commit "Added my first project and it's first application"
+fathym eac commit "Added my first project and its first application"
 ```
 
 This will commit all of the changes, creating the project, the application, and deploying the zip. To preview the application, you can run the following command:
@@ -164,9 +164,9 @@ You should see the raw markdown on the web page. Let's look at two last features
 fathym lcu @fathym-it/lcu-eac-modifiers-markdown-to-html
 ```
 
-We are seeing two features here, the first is our LCU Packages, this are building blocks for composing your solutions. The second is a DFS Modifier, specifically for converting markdown into HTML.
+There are two features here. The first is our LCU Packages, which are the building blocks for composing your solutions. The second is a DFS Modifier, specifically for converting markdown into HTML.
 
-Before we can see our new installed modifier in action, we have to added it to a project (modifiers can also be added to individual applications).
+Before we can see our newly installed modifier in action, we need to add it to a project (modifiers can also be added to individual applications).
 
 ```cli
 fathym eac projects modifiers add
@@ -176,7 +176,7 @@ fathym eac projects modifiers add
 fathym eac commit "Added markdown modifier to project"
 ```
 
-Let's use another preview command, this time at the projects level, to open up our preview.
+Let's open up another preview, this time at the projects level.
 
 ```cli
 fathym eac projects preview
@@ -192,7 +192,7 @@ That's it, we've launched our first application. We've seen a few core features 
 
 This may seem like an overly simple flow, but note what most projects include at the root – a README file. At its very simplest, with Fathym you can host your README file to share with the world.
 
-There are a couple of different things happening here that start to further reveal the EaC and what it does. The system is organized into multiple management groups. This particular set works with projects and how/where its applications are hosted/deployed.
+There are a couple of different things happening here that start to reveal the EaC and what it does. The system is organized into multiple management groups. This particular group works with projects and how/where its applications are hosted/deployed.
 
 > **NOTE** - There are a number of different ways to configure the application and how it handles a request. It also provides a container to manage security and server-side file modifications.
 
