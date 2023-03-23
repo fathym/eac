@@ -1,14 +1,14 @@
 # Bringing the app to life
 
-So far we've just been getting things setup and learning a bit of the lay of the land at Fathym. Now let's quickly look at bringing in a few more things to showcase how fathym works to help you deliver your user experiences with speed and efficiency.
+So far we've just been getting things set up and learning a bit of the lay of the land at Fathym. Now let's quickly look at bringing in a few more things to showcase how Fathym helps you deliver user experiences with speed and efficiency.
 
 ## Let's bring in TailwindCSS and React
 
 Tailwind CSS is a utility-first CSS framework that allows developers to build custom user interfaces more quickly and easily using pre-designed styles and layout options. Their combination can help developers build responsive, lightweight, and fast web applications that are efficient, scalable, and maintainable, which can help to reduce development time and improve the overall performance of the applications.
 
-Coupled with Fathym's out of the box cloud native starting point and automated devops processes, you have a workflow for efficiently delivering your solutions.
+Coupled with Fathym's out-of-the-box cloud-native starting point and automated DevOps processes, you have a workflow for efficiently delivering your solutions.
 
-We need to start by cleaning up some of the files in our existing repo. Starting with a new branch to do the cleanup on
+We need to start by cleaning up some of the files in our existing repo. To do this, let's create a new branch.
 
 ```cli
 fathym git feature react-app
@@ -20,15 +20,15 @@ Lets remove the following from the root.
 npx rimraf .github index.html
 ```
 
-Now we can create a react application in our current repository. You can create your react application however you want, we use this command for our internal applications.
+Now we can create a React application in our current repository. You can create your React application however you want, we use this command for our internal applications.
 
 ```cli
 fathym dev lcu react create --tailwind
 ```
 
-This will generate a new react application using CRA (create-react-app), add in tailwind configuations, setup the `index.html` file to showcase tailwind, and start the application. If you don'tuse our cli, you will need to setup and configure everything yourself, including deploy scrpits used next.
+This will generate a new React application using CRA (create-react-app), add in Tailwind configuations, set up the `index.html` file to showcase Tailwind, and start the application. If you don't use our CLI, you will need to set up and configure everything yourself, including the deploy scrpits used next.
 
-Try out the new tailwind application with:
+Try out the new Tailwind application with:
 
 ```cli
 npm start
@@ -38,9 +38,9 @@ npm start
 
 When using the GitHub build artifact as your deployment artifact, there is one limiting factor, and that is the retention time on those artifacts. While not common to jump back several versions that might be outdated, it is possible that the current version, if unchanged for longer than the retention time, will itself not be deployable. One of the key benefits of hosting with Fathym is being able to host any version of your artifact, on any route, based on your needs (production, staging, test, etc.).
 
-Using NPM packages, we can maintain a complete deployment history. Using NPM tags, we can create a simple way for qa, dev, and product owners to work together to validate stories are complete, with all requirements met. In addition, these can be used to support automation with tools like Chromatic and Applitools.
+Using NPM packages, we can maintain a complete deployment history. Using NPM tags, we can create a simple way for QA, dev and product owners to work together to validate stories are complete, with all requirements met. In addition, these can be used to support automation with tools like Chromatic and Applitools.
 
-In order to get this going we'll need to get your NPM JS account setup and configured. We'll walk you through that now:
+In order to get this going, we'll need to get your NPM JS account set up and configured. We'll walk you through that now:
 
 - (Creat a new organization)[https://www.npmjs.com/org/create] (a free plan will do for this, keep in mind that is public) in NPM.
   - You can create any organization name, and it will serve as the root of your package names. @{npmjs-organization}/{package-name}
@@ -66,11 +66,11 @@ fathym eac env sources pipeline attach
 fathym eac commit "Attach for NPM"
 ```
 
-Once complete, this will kick off a new build and eventually deploy your NPM package to NPM. It's important to note here that if your organization for GitHub and NPM do not match, you will need to go into your `package.json` manually and update the organiation part of the name to equal what you have setup in NPM.
+Once complete, this will kick off a new build and eventually deploy your NPM package to NPM. It's important to note here that if your organization for GitHub and NPM do not match, you will need to go into your `package.json` manually and update the organization part of the name to equal what you have set up in NPM.
 
-You can test, locally, that you have things configured correctly by first running `npm adduser` and once authenticated run `npm run deploy`. If everything is configured correctly, a first 0.0.1 version of your application will be deployed to NPM.
+You can test locally that you have things configured correctly by first running `npm adduser` and once authenticated run `npm run deploy`. If everything is configured correctly, a first 0.0.1 version of your application will be deployed to NPM.
 
-Let's also get our feature branch synced with the integration changes that occurred by running
+Let's also get our feature branch synced with the integration changes that occurred by running:
 
 ```cli
 fathym git
@@ -96,7 +96,7 @@ fathym eac projects applications preview
 
 ## Bringing this together with our previous example
 
-You may have noticed that we slipped in our `fathym-compose` div in the App.tsx file. Let's update the DFS Modifier that we created earlier for the HTML Compose, and instead of our old index.html file, let's set our markdown files to use this new app as its layout. Enter the same values as the first time (except for the template path), name `HTML Markdown Composer`, lookup to `html-markdown-composer`, path regex to `.*.(md|mdx).*`, update the template path to `/npm-app`, the xpath target to `//div[@id='fathym-compose']`
+You may have noticed that we slipped in our `fathym-compose` div in the App.tsx file. Let's update the DFS Modifier that we created earlier for the HTML Compose, and instead of our old index.html file, let's set our markdown files to use this new app as its layout. Enter the same values as the first time (except for the template path). Set name to `HTML Markdown Composer`, lookup to `html-markdown-composer`, path regex to `.*.(md|mdx).*`, update the template path to `/npm-app`, and the xpath target to `//div[@id='fathym-compose']`.
 
 ```cli
 fathym lcu @fathym-it/lcu-eac-modifiers-html-composer
@@ -110,60 +110,52 @@ fathym eac projects preview -p README.md
 
 ## Using NPM package artifacts for QA
 
-Here, we'll give you just a little primer on how Fathym can be used to host multiple versions of your applications in concert.
+Here we'll give you just a little primer on how Fathym can be used to host multiple versions of your applications in concert.
 
-Integrate to integration again
-
-```cli
-fathym git feature integrate
-```
-
-Update original application to use the new version `integration`
-
-Create new feature branch
+Integrate to integration again:
 
 ```cli
 fathym git feature integrate
 ```
 
-Make a change
+Update the original application to use the new version `integration`.
 
-check in feature branch
+Create a new feature branch:
+
+```cli
+fathym git feature integrate
+```
+
+Make a change and check in the feature branch:
 
 ```cli
 fathym git "New feature branch changes"
 ```
 
-Create app for new feature branch
-
-Preview
+Create app for the new feature branch and preview:
 
 ```cli
 fathym eac projects applications -p README.md
 ```
 
-Make another small change
-
-Push your changes
+Make another small change and push your changes:
 
 ```cli
 fathym git "Small changes"
 ```
 
-Preview to see that changes were automatically applied
+Preview to see that changes were automatically applied.
 
-See changes different between integration and feature branch
+You can see now that there are different changes between integration and feature branch.
 
-Integrate feature branch,
-
-see that integration host is automatically updated with latest integration version
+Integrate feature branch and see that the integration host is automatically updated with the latest integration version.
 
 <!--
 ## Adding google analytics tracking and other thrid party libraries
 
 ## Bonus - working with the CLI
 
-As you may have noticed, there is a lot of nesting and relationships to work with. It is possible, in many cases with the CLI, to set an "active" value. Take for example the following commands.
+As you may have noticed, there is a lot of nesting and relationships to work with. With the CLI it is possible in many cases to set an "active" value. Take for example the following commands.
 
 ```cli
 fathym eac projects create "My First Project"
@@ -178,7 +170,7 @@ fathym eac commit "Configured second application in project"
 fathym eac projects applications preview {project-lookup} {app-lookup}
 ```
 
-And say you have multiple applications to add to the same project, or multiple other actions to take on applications within the project. Let's set the active project and applications in a couple of different ways.
+Say you have multiple applications to add to the same project, or multiple other actions to take on applications within the project. Let's set the active project and applications in a couple of different ways.
 
 ```cli
 fathym eac projects create "My First Project"
@@ -195,7 +187,7 @@ fathym eac commit "Configured second application in project"
 fathym eac projects applications preview
 ```
 
-Let's talk through a bit of this. The project is created normally, same with the application. Then each uses the next line to `set` the active project and application respectively. After that, the only difference in the `lcu` and `processor` is we no longer need to to pass the {app-lookup} in to each call. We also don't need to pass the {project-lookup} or {app-lookup} to the `projects` based commands. You can of course pass the values in, and they will override any active values.
+Let's talk through a bit of this. The project is created normally, same with the application. Then each uses the next line to `set` the active project and application respectively. After that, the only difference in the `lcu` and `processor` is we no longer need to to pass the {app-lookup} in to each call. We also don't need to pass the {project-lookup} or {app-lookup} to the `projects` based commands. You can of course pass values in, and they will override any active values.
 
 There is one more shorthand to use, and that is to inline the `set` operation when creating the project or application.
 
