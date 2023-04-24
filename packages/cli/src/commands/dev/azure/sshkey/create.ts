@@ -60,8 +60,8 @@ export default class SSHKey extends FathymCommand<SSHKeyContext> {
       azureCliInstallTask(),
       loadEaCTask(this.config.configDir),
       ensureCloudTask(), // cloudLookup),
-      ensureCloudResourceGroupTask(this.config.configDir, resourceGroup),
       azSshKeyCreateTask(this.config, keyName!),
+      ensureCloudResourceGroupTask(this.config.configDir, resourceGroup),
       {
         title: 'SSH Key Public Key',
         task: (ctx) => {

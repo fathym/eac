@@ -389,9 +389,18 @@ export function ensureActiveEnterpriseTask<
     title: `Ensuring active enterprise`,
     task: async (ctx, task) => {
       ctx.ActiveEnterpriseLookup = await loadActieEnterpriseLookup(configDir);
-
+      
       if (ctx.ActiveEnterpriseLookup) {
-        task.title = `Active enterprise is currently set to ${ctx.ActiveEnterpriseLookup}`;
+        const licenses = await ensureLicense(configDir, "fathym");
+        
+        if (licenses.length === 0){
+          throw new Error(
+            "You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license"
+            );       
+        }
+        else{
+          task.title = `License found. Active enterprise is currently set to ${ctx.ActiveEnterpriseLookup}`;
+        }
       } else {
         throw new Error(
           `Active enterprise must be set with 'fathym enterprises set' command.`
@@ -764,6 +773,27 @@ export function ensureCloudResourceGroupTask<
   };
 }
 
+export async function ensureLicense(
+  configDir: string,
+  licenseType?: string
+): Promise<EaCLicense[]> {
+  const axios = await loadAxios(configDir);
+
+  let config = {};
+
+  if (licenseType !== undefined) {
+    config = {
+      params: { licenseType: licenseType },
+    };
+  }
+
+  const response = await axios.get(`user/licenses`, config);
+
+  if (response.data?.Model == null){
+    throw new Error("You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license");
+  }
+  return response.data?.Model || [];
+}
 // export async function listEnterprises(
 //   configDir: string
 // ): Promise<{ [lookup: string]: EaCEnterpriseDetails }> {
@@ -795,7 +825,7 @@ export async function listLicenseTypes(configDir: string): Promise<string[]> {
 export async function listLicensesByEmail(
   configDir: string,
   licenseType?: string
-): Promise<EaCLicense[]> {
+): Promise<(EaCLicense & {Lookup: string}) []> {
   const axios = await loadAxios(configDir);
 
   let config = {};
@@ -893,7 +923,7 @@ export async function setAzureSubTask<
               });
 
               task.title = `Creating azure subscription: ${ctx.SubscriptionName}`;
-
+              
               const sub = await createAzureSubscription(
                 configDir,
                 ctx.ActiveEnterpriseLookup,
@@ -905,28 +935,32 @@ export async function setAzureSubTask<
               ctx.SubscriptionName = sub.name;
 
               ctx.TenantID = sub.tenantId;
+
+              ctx.ApplicationID = sub.appId;
+
+              ctx.AuthKey = sub.authKey;
             
-              await runProc('az', ['account', 'list', '--refresh'])
-
-              await runProc('az', [
-                'account',
-                'set',
-                `--subscription ${ctx.SubscriptionName}`,
-              ]);
-
-              //TODO: Hardcoded common MS Resource Provider registrations. Need to make this dynamic in the future
-              await runProc('az', [
-                'provider', 
-                'register', 
-                '--namespace Microsoft.Compute']);
+              // await runProc('az', ['account', 'list', '--refresh'])
               
-              await runProc('az', [
-                'provider', 
-                'register', 
-                '--namespace Microsoft.Network']);
+              // await runProc('az', [
+              //   'account',
+              //   'set',
+              //   `--subscription ${ctx.SubscriptionName}`,
+              // ]);
+
+              // //TODO: Hardcoded common MS Resource Provider registrations. Need to make this dynamic in the future
+              // await runProc('az', [
+              //   'provider', 
+              //   'register', 
+              //   '--namespace Microsoft.Compute']);
+              
+              // await runProc('az', [
+              //   'provider', 
+              //   'register', 
+              //   '--namespace Microsoft.Network']);
             }             
 
-            parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
+            parent.title = `Azure subscription created: ${ctx.SubscriptionName}`;
           },
         },
       ]);

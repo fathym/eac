@@ -40,6 +40,10 @@ export interface AzureSubscription {
   name: string;
 
   tenantId: string;
+
+  authKey?: string;
+
+  appId?: string;
 }
 
 export interface LCUParamAnswersTaskContext {
@@ -56,6 +60,10 @@ export interface SubscriptionTaskContext {
   SubscriptionName: string;
 
   TenantID: string;
+
+  ApplicationID?: string;
+
+  AuthKey?: string;
 }
 
 const oauthCodeClient = new oauth2.AuthorizationCode({

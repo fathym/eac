@@ -50,7 +50,15 @@ export default class Get extends FathymCommand<FathymTaskContext> {
             })
           )) as string;
 
-          await listLicensesByEmail(this.config.configDir, licenseType);
+          const licenses = await listLicensesByEmail(this.config.configDir, licenseType);
+
+          ctx.Fathym.Lookups = {
+            name: `LicenseType (${color.blueBright('Details')})`,
+            lookups: licenses.map(
+              (lic) =>
+              `${licenseType} (${lic.Details})`
+            )                         
+          }
         },
       },
     ];
