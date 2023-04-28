@@ -6,7 +6,7 @@ import { ClosureInstruction } from './ClosureInstruction';
 import path from 'node:path';
 import { readFile, existsSync, readJson, readdir } from 'fs-extra';
 import { runProc } from './task-helpers';
-import { downloadFile } from './eac-services';
+import { downloadFile, ensureLicense} from './eac-services';
 import { withSystemConfig, withUserAuthConfig } from './config-helpers';
 import { Draft } from 'immer';
 
@@ -35,15 +35,17 @@ export interface AzureCLITaskContext {
 }
 
 export interface AzureSubscription {
+  appId?: string;
+
+  authKey?: string;
+
   id: string;
 
   name: string;
 
+  subscriptionId?: string;
+
   tenantId: string;
-
-  authKey?: string;
-
-  appId?: string;
 }
 
 export interface LCUParamAnswersTaskContext {
@@ -55,7 +57,7 @@ export interface ParamAnswers {
 }
 
 export interface SubscriptionTaskContext {
-  SubscriptionID: string;
+  SubscriptionID?: string;
 
   SubscriptionName: string;
 
@@ -117,37 +119,46 @@ export function azureCliInstallTask<
 
 export function ensureAzureCliLogin<
   TContext extends AzureCLITaskContext
->(): ListrTask<TContext> {
+>(configDir: string, user: boolean): ListrTask<TContext> {
   return {
     title: 'Azure CLI login check',
     skip: (ctx) => !ctx.AzureCLIInstalled,
     task: async (ctx, task) => {
-      try {
-        await runProc('az', ['account', 'show']);
-      } catch {
-        task.title = 'Azure CLI logging in';
-
-        task.output = color.yellow(
-          'Opening a login form in your browser, complete sign in there, and return.'
-        );
-
-        await runProc('az', ['login']);
-      }
-
-      task.title = 'Azure CLI logged in';
+      // const licenses = await ensureLicense(configDir, "fathym");
+      //   if (licenses.length === 0){
+      //     throw new Error(
+      //       "You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license"
+      //       );       
+      //   }
+        // else{
+          try {
+            await runProc('az', ['account', 'show']);
+          } catch {
+            if(user){
+              task.title = 'Azure CLI logging in';
+    
+              task.output = color.yellow(
+                'Opening a login form in your browser, complete sign in there, and return.'
+              );
+      
+              await runProc('az', ['login']);
+            }
+          }   
+          task.title = 'Azure CLI logged in';
+        // }
     },
   };
 }
 
 export function ensureAzureCliSetupTask<
   TContext extends AzureCLITaskContext
->(): ListrTask<TContext> {
+>(configDir: string, user: boolean): ListrTask<TContext> {
   return {
     title: `Azure CLI Setup`,
     task: (ctx, task) => {
       return task.newListr((parent) => [
         azureCliInstallTask(),
-        ensureAzureCliLogin(),
+        ensureAzureCliLogin(configDir, user),
       ]);
     },
   };

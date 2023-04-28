@@ -113,7 +113,7 @@ export default class Install extends FathymCommand<InstallContext> {
                 task: (ctx, task) => {
                   return task.newListr<InstallContext>(
                     [
-                      azureCliInstallTask(),
+                      //azureCliInstallTask(),
                       // TODO: Ensure az login
                     ],
                     {
@@ -271,10 +271,19 @@ export default class Install extends FathymCommand<InstallContext> {
 
             if (value) {
               await runProc('az', [
+                'login',
+                '--service-principal',
+                `-u ${ctx.ApplicationID}`,
+                `-p ${ctx.AuthKey}`,
+                `--tenant ${ctx.TenantID}`
+              ])
+
+              await runProc('az', [
                 'account',
                 'set',
                 `--subscription ${ctx.SubscriptionID}`,
               ]);
+
               await runProc('az', [
                 'term',
                 'accept',

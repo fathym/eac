@@ -5,8 +5,10 @@ import { FathymCommand } from '../../../../../common/fathym-command';
 import { runProc } from '../../../../../common/task-helpers';
 import {
   ActiveEnterpriseTaskContext,
+  ActiveLicenseTaskContext,
   EaCTaskContext,
   ensureActiveEnterpriseTask,
+  ensureActiveLicenseTask,
   loadEaCTask,
   setAzureSubTask,
   withEaCDraftEditTask,
@@ -24,6 +26,7 @@ import {
 interface DefineTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
+    ActiveLicenseTaskContext,
     EaCTaskContext,
     AzureCLITaskContext,
     SubscriptionTaskContext {}
@@ -62,7 +65,8 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     return [
       ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      await setAzureSubTask(this.config.configDir),
+      ensureActiveLicenseTask(this.config.configDir),
+      setAzureSubTask(this.config.configDir),
       await this.createCloudConnection(generate, cloudLookup),
     ];
   }
@@ -90,13 +94,14 @@ export default class Define extends FathymCommand<DefineTaskContext> {
               Type: "Azure",
               ApplicationID: ctx.ApplicationID,
               AuthKey: ctx.AuthKey,
-              TenantID: ctx.TenantID
+              TenantID: ctx.TenantID,
+              SubscriptionID: ctx.SubscriptionID
             },
           ],
         ],
       ],
       {
-        enabled: (ctx) => ctx.AzureCLIInstalled,
+        // enabled: (ctx) => ctx.AzureCLIInstalled,
         prompt: async (ctx, task) => {
           //TODO: "Generate" flag is not working, not recognizing the flag, so the SP is never created. Most situations will need this step, but need to fix in the future
           //if (generate) {
