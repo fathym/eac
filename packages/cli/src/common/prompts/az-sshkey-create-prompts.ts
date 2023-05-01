@@ -44,6 +44,20 @@ export class AzureSSHKeyCreatePrompt extends Select {
       let existing: any;
 
       try {
+        await runProc('az', [
+          'login',
+          '--service-principal',
+          `-u ${cloud.Cloud?.ApplicationID}`,
+          `-p ${cloud.Cloud?.AuthKey}`,
+          `--tenant ${cloud.Cloud?.TenantID}`
+        ])
+
+        await runProc('az', [
+          'account',
+          'set',
+          `--subscription ${subscriptionId}`
+        ])
+        
         existing = JSON.parse(
           await runProc('az', [
             'sshkey',

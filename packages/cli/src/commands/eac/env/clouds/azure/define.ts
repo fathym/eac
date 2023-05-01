@@ -5,8 +5,10 @@ import { FathymCommand } from '../../../../../common/fathym-command';
 import { runProc } from '../../../../../common/task-helpers';
 import {
   ActiveEnterpriseTaskContext,
+  ActiveLicenseTaskContext,
   EaCTaskContext,
   ensureActiveEnterpriseTask,
+  ensureActiveLicenseTask,
   loadEaCTask,
   setAzureSubTask,
   withEaCDraftEditTask,
@@ -24,6 +26,7 @@ import {
 interface DefineTaskContext
   extends FathymTaskContext,
     ActiveEnterpriseTaskContext,
+    ActiveLicenseTaskContext,
     EaCTaskContext,
     AzureCLITaskContext,
     SubscriptionTaskContext {}
@@ -62,7 +65,8 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     return [
       ensureActiveEnterpriseTask(this.config.configDir),
       loadEaCTask(this.config.configDir),
-      await setAzureSubTask(this.config.configDir),
+      ensureActiveLicenseTask(this.config.configDir),
+      setAzureSubTask(this.config.configDir),
       await this.createCloudConnection(generate, cloudLookup),
     ];
   }
@@ -88,55 +92,59 @@ export default class Define extends FathymCommand<DefineTaskContext> {
               Name: ctx.SubscriptionName,
               Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
               Type: "Azure",
+              ApplicationID: ctx.ApplicationID,
+              AuthKey: ctx.AuthKey,
+              TenantID: ctx.TenantID,
+              SubscriptionID: ctx.SubscriptionID
             },
           ],
         ],
       ],
       {
-        enabled: (ctx) => ctx.AzureCLIInstalled,
+        // enabled: (ctx) => ctx.AzureCLIInstalled,
         prompt: async (ctx, task) => {
           //TODO: "Generate" flag is not working, not recognizing the flag, so the SP is never created. Most situations will need this step, but need to fix in the future
           //if (generate) {
-            let svcPrincStr = '{}';
+            // let svcPrincStr = '{}';
 
-            try {
-              svcPrincStr = await runProc('az', [
-                'ad',
-                'sp',
-                'create-for-rbac',
-                // `--name "${ctx.SubscriptionID}"`,
-                '--role Contributor',
-                `--scopes /subscriptions/${ctx.SubscriptionID}`,
-                // `--tenant ${ctx.TenantID}`,
-              ]);
-            } catch {
-              //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
-              await runProc('az', ['account', 'clear']);
+            // try {
+            //   svcPrincStr = await runProc('az', [
+            //     'ad',
+            //     'sp',
+            //     'create-for-rbac',
+            //     // `--name "${ctx.SubscriptionID}"`,
+            //     '--role Contributor',
+            //     `--scopes /subscriptions/${ctx.SubscriptionID}`,
+            //     // `--tenant ${ctx.TenantID}`,
+            //   ]);
+            // } catch {
+            //   //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
+            //   // await runProc('az', ['account', 'clear']);
 
-              await runProc('az', ['logout']);
+            //   // await runProc('az', ['logout']);
 
-              await runProc('az', ['login']);
+            //   // await runProc('az', ['login']);
 
-              svcPrincStr = await runProc('az', [
-                'ad',
-                'sp',
-                'create-for-rbac',
-                // `--name "${ctx.SubscriptionID}"`,
-                '--role Contributor',
-                `--scopes /subscriptions/${ctx.SubscriptionID}`,
-                // `--tenant ${ctx.TenantID}`,
-              ]);
-            }
+            //   svcPrincStr = await runProc('az', [
+            //     'ad',
+            //     'sp',
+            //     'create-for-rbac',
+            //     // `--name "${ctx.SubscriptionID}"`,
+            //     '--role Contributor',
+            //     `--scopes /subscriptions/${ctx.SubscriptionID}`,
+            //     // `--tenant ${ctx.TenantID}`,
+            //   ]);
+            // }
 
-            const svcPrinc = JSON.parse(svcPrincStr || '{}');
+            // const svcPrinc = JSON.parse(svcPrincStr || '{}');
 
-            generated = {
-              Type: 'Azure',
-              ApplicationID: svcPrinc.appId,
-              AuthKey: svcPrinc.password,
-              SubscriptionID: ctx.SubscriptionID,
-              TenantID: svcPrinc.tenant,
-            };
+            // generated = {
+            //   Type: 'Azure',
+            //   ApplicationID: svcPrinc.appId,
+            //   AuthKey: svcPrinc.password,
+            //   SubscriptionID: ctx.SubscriptionID,
+            //   TenantID: svcPrinc.tenant,
+            // };
           //}
         },
         draftPatch: (ctx) => {

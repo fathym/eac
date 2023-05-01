@@ -113,7 +113,7 @@ export default class Install extends FathymCommand<InstallContext> {
                 task: (ctx, task) => {
                   return task.newListr<InstallContext>(
                     [
-                      azureCliInstallTask(),
+                      //azureCliInstallTask(),
                       // TODO: Ensure az login
                     ],
                     {
@@ -271,10 +271,19 @@ export default class Install extends FathymCommand<InstallContext> {
 
             if (value) {
               await runProc('az', [
+                'login',
+                '--service-principal',
+                `-u ${ctx.ApplicationID}`,
+                `-p ${ctx.AuthKey}`,
+                `--tenant ${ctx.TenantID}`
+              ])
+
+              await runProc('az', [
                 'account',
                 'set',
                 `--subscription ${ctx.SubscriptionID}`,
               ]);
+
               await runProc('az', [
                 'term',
                 'accept',
@@ -611,6 +620,38 @@ export default class Install extends FathymCommand<InstallContext> {
           ctx.SubscriptionID = paramswers.$SubscriptionID;
 
           delete paramswers.$SubscriptionID;
+        }
+
+        if (paramswers.$ApplicationID) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.ApplicationID = paramswers.$ApplicationID;
+
+          delete paramswers.$ApplicationID;
+        }
+
+        if (paramswers.$TenantID) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.TenantID = paramswers.$TenantID;
+
+          delete paramswers.$TenantID;
+        }
+
+        if (paramswers.$AuthKey) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.AuthKey = paramswers.$AuthKey;
+
+          delete paramswers.$AuthKey;
+        }
+
+        if (paramswers.$AuthKey) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.AuthKey = paramswers.$AuthKey;
+
+          delete paramswers.$AuthKey;
         }
 
         // if (phase === 3) {

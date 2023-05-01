@@ -30,6 +30,7 @@ import {
   AzureCLITaskContext,
   AzureSubscription,
   ensureAzureCliLogin,
+  azureCliInstallTask,
   ensureAzureCliSetupTask,
   ensurePromptValue,
   FathymTaskContext,
@@ -86,6 +87,10 @@ export interface ApplicationTaskContext {
 
 export interface ActiveEnterpriseTaskContext {
   ActiveEnterpriseLookup: string;
+}
+
+export interface ActiveLicenseTaskContext {
+  ActiveLicenses: EaCLicense[];
 }
 
 export interface DFSModifierTaskContext {
@@ -236,6 +241,20 @@ these features. Once purchase is complete, rerun the command`,
       }
     },
   };
+}
+
+export async function addExistingSubscription(
+  configDir: string,
+  entLookup: string,
+  sub: AzureSubscription
+): Promise<AzureSubscription> {
+  const axios = await loadAxios(configDir);
+
+  const response = await axios.post(`${entLookup}/azure/subscription/add`, {
+    SubscriptionID: sub.subscriptionId,
+  });
+
+  return response.data.Model as AzureSubscription;
 }
 
 export async function createAzureSubscription(
@@ -389,9 +408,9 @@ export function ensureActiveEnterpriseTask<
     title: `Ensuring active enterprise`,
     task: async (ctx, task) => {
       ctx.ActiveEnterpriseLookup = await loadActieEnterpriseLookup(configDir);
-
+      
       if (ctx.ActiveEnterpriseLookup) {
-        task.title = `Active enterprise is currently set to ${ctx.ActiveEnterpriseLookup}`;
+          task.title = `Active enterprise is currently set to ${ctx.ActiveEnterpriseLookup}`;
       } else {
         throw new Error(
           `Active enterprise must be set with 'fathym enterprises set' command.`
@@ -401,6 +420,26 @@ export function ensureActiveEnterpriseTask<
   };
 }
 
+export function ensureActiveLicenseTask<
+  TContext extends ActiveLicenseTaskContext
+>(configDir: string): ListrTask<TContext> {
+  return {
+    title: `Ensuring active license`,
+    task: async (ctx, task) => {
+      ctx.ActiveLicenses = await ensureLicense(configDir, "fathym");
+      
+      if (ctx.ActiveLicenses.length === 0) {        
+
+           throw new Error(
+             "You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license"
+             );       
+         }
+         else{
+          task.title = `Active License Found`;
+        }
+    },
+  };
+}
 export function ensureApplicationTask<
   TContext extends ActiveEnterpriseTaskContext &
     EaCTaskContext &
@@ -764,6 +803,27 @@ export function ensureCloudResourceGroupTask<
   };
 }
 
+export async function ensureLicense(
+  configDir: string,
+  licenseType?: string
+): Promise<EaCLicense[]> {
+  const axios = await loadAxios(configDir);
+
+  let config = {};
+
+  if (licenseType !== undefined) {
+    config = {
+      params: { licenseType: licenseType },
+    };
+  }
+
+  const response = await axios.get(`user/licenses`, config);
+
+  if (response.data?.Model == null){
+    throw new Error("You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license");
+  }
+  return response.data?.Model || [];
+}
 // export async function listEnterprises(
 //   configDir: string
 // ): Promise<{ [lookup: string]: EaCEnterpriseDetails }> {
@@ -795,7 +855,7 @@ export async function listLicenseTypes(configDir: string): Promise<string[]> {
 export async function listLicensesByEmail(
   configDir: string,
   licenseType?: string
-): Promise<EaCLicense[]> {
+): Promise<(EaCLicense & {Lookup: string}) []> {
   const axios = await loadAxios(configDir);
 
   let config = {};
@@ -833,29 +893,56 @@ export function loadEaCTask<
   };
 }
 
-export async function setAzureSubTask<
+export function setAzureSubTask<
   TContext extends SubscriptionTaskContext &
+    EaCTaskContext &
     AzureCLITaskContext &
     ActiveEnterpriseTaskContext
->(configDir: string): Promise<ListrTask<TContext, any>> {
+>(configDir: string): ListrTask<TContext, any> {
+  let isManaged = "";
+
   return {
     title: `Setting Azure Subscription`,
     task: (ctx, task) => {
       return task.newListr((parent) => [
-        ensureAzureCliSetupTask(),
+        ensureAzureCliSetupTask(configDir, false),
         {
           title: 'Select Azure Subscription',
-          skip: (ctx) => !ctx.AzureCLIInstalled,
+          //skip: (ctx) => !ctx.AzureCLIInstalled,
           task: async (ctx, task) => {
-            const subsList: AzureSubscription[] = JSON.parse(
-              (await runProc('az', ['account', 'list', '--refresh'])) || '[]'
-            );
+            const env = ctx.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!];
 
-            subsList.unshift({
-              id: '-- Create New Subscription --',
-              name: '-- Create New Subscription --',
-              tenantId: '',
-            });
+            isManaged = (await ensurePromptValue(
+              task,
+              'Use existing Azure subscription, or create a new managed Azure subscription?',
+              isManaged,
+              [
+                'Use existing subscription',
+                'Create new managed subscription'
+              ]
+            )) as string;
+            //const clouds =  Object.keys(env.Clouds || {});
+            
+            if(isManaged === "Use existing subscription")
+              await runProc('az', ['login'])  
+
+            const subsList: AzureSubscription[] = isManaged === "Use existing subscription" ? 
+            JSON.parse(
+              (await runProc('az', ['account', 'list', '--refresh'])) || '[]'             
+            ) : JSON.parse('[]');
+
+            if(isManaged === "Use existing subscription")
+              ensureAzureCliSetupTask(configDir, true)            
+            
+            else{
+              ensureAzureCliSetupTask(configDir, false)
+
+              subsList.unshift({
+                id: '-- Create New Subscription --',
+                name: '-- Create New Subscription --',
+                tenantId: '',
+              });
+            }
 
             const subCheck: string = (
               await task.prompt({
@@ -882,7 +969,46 @@ export async function setAzureSubTask<
 
               ctx.SubscriptionName = sub?.name || ctx.SubscriptionID;
 
-              task.title = `Azure subscription selected: ${ctx.SubscriptionID}`;
+            let svcPrincStr = '{}';
+
+            try {
+              svcPrincStr = await runProc('az', [
+                'ad',
+                'sp',
+                'create-for-rbac',
+                // `--name "${ctx.SubscriptionID}"`,
+                '--role Contributor',
+                `--scopes /subscriptions/${ctx.SubscriptionID}`,
+                // `--tenant ${ctx.TenantID}`,
+              ]);
+            } catch {
+              //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
+              await runProc('az', ['account', 'clear']);
+
+              await runProc('az', ['logout']);
+
+              await runProc('az', ['login']);
+
+              svcPrincStr = await runProc('az', [
+                'ad',
+                'sp',
+                'create-for-rbac',
+                // `--name "${ctx.SubscriptionID}"`,
+                '--role Contributor',
+                `--scopes /subscriptions/${ctx.SubscriptionID}`,
+                // `--tenant ${ctx.TenantID}`,
+              ]);
+            }
+
+            const svcPrinc = JSON.parse(svcPrincStr || '{}');
+
+            ctx.ApplicationID = svcPrinc.appId;
+
+            ctx.AuthKey = svcPrinc.password;
+
+            ctx.TenantID = svcPrinc.tenant;
+            
+            task.title = `Azure subscription selected: ${ctx.SubscriptionID}`;
             } else {
               task.title = `Creating azure subscription`;
 
@@ -893,40 +1019,53 @@ export async function setAzureSubTask<
               });
 
               task.title = `Creating azure subscription: ${ctx.SubscriptionName}`;
-
+              
               const sub = await createAzureSubscription(
                 configDir,
                 ctx.ActiveEnterpriseLookup,
                 ctx.SubscriptionName
               );
 
-              ctx.SubscriptionID = sub.id;
+              ctx.SubscriptionID = sub.subscriptionId;
 
               ctx.SubscriptionName = sub.name;
 
               ctx.TenantID = sub.tenantId;
-            
-              await runProc('az', ['account', 'list', '--refresh'])
 
-              await runProc('az', [
-                'account',
-                'set',
-                `--subscription ${ctx.SubscriptionName}`,
-              ]);
+              ctx.ApplicationID = sub.appId;
 
-              //TODO: Hardcoded common MS Resource Provider registrations. Need to make this dynamic in the future
-              await runProc('az', [
-                'provider', 
-                'register', 
-                '--namespace Microsoft.Compute']);
+              ctx.AuthKey = sub.authKey;
               
-              await runProc('az', [
-                'provider', 
-                'register', 
-                '--namespace Microsoft.Network']);
-            }             
+              //await runProc('az', ['logout'])
 
-            parent.title = `Azure subscription set: ${ctx.SubscriptionName}`;
+              // await runProc('az', [
+              //   'login',
+              //   '--service-principal',
+              //   `-u ${ctx.ApplicationID}`,
+              //   `-p ${ctx.AuthKey}`,
+              //   `--tenant ${ctx.TenantID}`
+              // ])
+
+              // await runProc('az', ['account', 'list', '--refresh'])
+              
+              // await runProc('az', [
+              //   'account',
+              //   'set',
+              //   `--subscription ${ctx.SubscriptionName}`,
+              // ]);
+
+              // //TODO: Hardcoded common MS Resource Provider registrations. Need to make this dynamic in the future
+              // await runProc('az', [
+              //   'provider', 
+              //   'register', 
+              //   '--namespace Microsoft.Compute']);
+              
+              // await runProc('az', [
+              //   'provider', 
+              //   'register', 
+              //   '--namespace Microsoft.Network']);
+              parent.title = `Azure subscription created: ${ctx.SubscriptionName}`;
+            }             
           },
         },
       ]);
