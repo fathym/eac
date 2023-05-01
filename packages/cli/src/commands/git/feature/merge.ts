@@ -23,7 +23,7 @@ export default class Feature extends FathymCommand<any> {
     }),
   };
 
-  static title = 'Create Feature Branch';
+  static title = 'Merge Feature Branch';
 
   protected async loadTasks(): Promise<ListrTask[]> {
     const { args, flags } = await this.parse(Feature);
