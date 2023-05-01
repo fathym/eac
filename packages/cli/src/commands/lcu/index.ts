@@ -622,6 +622,38 @@ export default class Install extends FathymCommand<InstallContext> {
           delete paramswers.$SubscriptionID;
         }
 
+        if (paramswers.$ApplicationID) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.ApplicationID = paramswers.$ApplicationID;
+
+          delete paramswers.$ApplicationID;
+        }
+
+        if (paramswers.$TenantID) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.TenantID = paramswers.$TenantID;
+
+          delete paramswers.$TenantID;
+        }
+
+        if (paramswers.$AuthKey) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.AuthKey = paramswers.$AuthKey;
+
+          delete paramswers.$AuthKey;
+        }
+
+        if (paramswers.$AuthKey) {
+          //  TODO:  Handle any $ prop onto the CTX
+
+          ctx.AuthKey = paramswers.$AuthKey;
+
+          delete paramswers.$AuthKey;
+        }
+
         // if (phase === 3) {
         //   ctx.Fathym.Result = JSON.stringify(paramswers, null, 2);
         // } else {
