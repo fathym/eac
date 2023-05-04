@@ -1,10 +1,10 @@
 import { ListrTask } from 'listr2';
-import { FathymCommand } from '../../common/fathym-command';
-import { FathymTaskContext } from '../../common/core-helpers';
+import { FathymCommand } from '../../../common/fathym-command';
+import { FathymTaskContext } from '../../../common/core-helpers';
 import {
   ActiveEnterpriseTaskContext,
   ensureActiveEnterpriseTask,
-} from '../../common/eac-services';
+} from '../../../common/eac-services';
 
 interface GetContext extends FathymTaskContext, ActiveEnterpriseTaskContext {}
 

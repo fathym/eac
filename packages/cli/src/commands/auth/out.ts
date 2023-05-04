@@ -1,4 +1,5 @@
 import { ListrTask } from 'listr2';
+import open from 'open';
 import { withUserAuthConfig } from '../../common/config-helpers';
 import { FathymCommand } from '../../common/fathym-command';
 
@@ -18,7 +19,9 @@ export default class Out extends FathymCommand<any> {
     return [
       {
         title: 'Opened browser for sign out',
-        task: () => 'Opened',
+        task: async (ctx, task) => {
+          open("https://www.fathym.com/.oauth/logout");
+        },
       },
       {
         title: `Waiting for sign out`,
