@@ -4,7 +4,10 @@ import { FathymTaskContext } from '../../common/core-helpers';
 import open from 'open';
 import { Args, Flags } from '@oclif/core';
 import { ensureOrganization, ensureRepository } from '../../common/git-tasks';
-import { GitHubTaskContext } from '../../common/git-helpers';
+import {
+  GitHubTaskContext,
+  loadCurrentGitOrgRepo,
+} from '../../common/git-helpers';
 
 interface HomeTaskContext extends FathymTaskContext, GitHubTaskContext {}
 
@@ -17,6 +20,10 @@ export default class Home extends FathymCommand<HomeTaskContext> {
     section: Flags.string({
       char: 's',
       description: 'The section to open.',
+    }),
+    useLocal: Flags.boolean({
+      char: 'l',
+      description: 'Whether to use local git information for args.',
     }),
   };
 
@@ -34,9 +41,21 @@ export default class Home extends FathymCommand<HomeTaskContext> {
   protected async loadTasks(): Promise<ListrTask<HomeTaskContext>[]> {
     const { args, flags } = await this.parse(Home);
 
-    const { organization, repository } = args;
+    let { organization, repository } = args;
 
-    const { section } = flags;
+    const { section, useLocal } = flags;
+
+    if (useLocal) {
+      const orgRepo = await (await loadCurrentGitOrgRepo('|')).split('|');
+
+      if (!organization) {
+        organization = orgRepo[0];
+      }
+
+      if (!repository) {
+        repository = orgRepo[1];
+      }
+    }
 
     return [
       ensureOrganization(this.config.configDir, organization),
