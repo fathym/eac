@@ -1,4 +1,4 @@
-import { Args } from '@oclif/core';
+import { Args, Flags } from '@oclif/core';
 import { ListrTask } from 'listr2';
 import { FathymCommand } from '../../../common/fathym-command';
 import {
@@ -13,26 +13,34 @@ import {
   pushOrigin,
 } from '../../../common/git-tasks';
 import { FathymTaskContext } from '../../../common/core-helpers';
-import { GitHubTaskContext } from '../../../common/git-helpers';
+import {
+  getCurrentBranch,
+  GitHubTaskContext,
+  loadCurrentGitOrgRepo,
+} from '../../../common/git-helpers';
 
 interface IntegrateTaskContext extends FathymTaskContext, GitHubTaskContext {}
 
 export default class Integrate extends FathymCommand<IntegrateTaskContext> {
-  static description = `Used for creating a feature branch from 'integration' in git.`;
+  static description = `Used for integrating a feature branch into 'integration' in git.`;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
-  static flags = {};
+  static flags = {
+    useLocal: Flags.boolean({
+      description: 'Whether to use local git information for args.',
+    }),
+  };
 
   static args = {
     organization: Args.string({
-      description: 'The organization to patch from.',
+      description: 'The organization to integrate from.',
     }),
     repository: Args.string({
-      description: 'The repository to patch from.',
+      description: 'The repository to integrate from.',
     }),
     branch: Args.string({
-      description: 'The branch to patch from.',
+      description: 'The branch to integrate from.',
     }),
   };
 
@@ -41,7 +49,25 @@ export default class Integrate extends FathymCommand<IntegrateTaskContext> {
   protected async loadTasks(): Promise<ListrTask<IntegrateTaskContext>[]> {
     const { args, flags } = await this.parse(Integrate);
 
-    const { branch, organization, repository } = args;
+    let { branch, organization, repository } = args;
+
+    const { useLocal } = flags;
+
+    if (useLocal) {
+      const orgRepo = await (await loadCurrentGitOrgRepo('|')).split('|');
+
+      if (!organization) {
+        organization = orgRepo[0];
+      }
+
+      if (!repository) {
+        repository = orgRepo[1];
+      }
+
+      if (!branch) {
+        branch = await getCurrentBranch();
+      }
+    }
 
     return [
       confirmGitRepo(),
