@@ -28,6 +28,7 @@ export default class Patch extends FathymCommand<PatchTaskContext> {
 
   static flags = {
     useLocal: Flags.boolean({
+      char: 'l',
       description: 'Whether to use local git information for args.',
     }),
   };
