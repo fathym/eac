@@ -14,8 +14,9 @@ export default class Out extends FathymCommand<any> {
   static args = {};
 
   static title = 'Fathym Sign Out';
-
+  
   protected async loadTasks(): Promise<ListrTask[]> {
+    var rimraf = require("rimraf");
     return [
       {
         title: 'Opened browser for sign out',
@@ -25,11 +26,13 @@ export default class Out extends FathymCommand<any> {
       },
       {
         title: `Waiting for sign out`,
-        task: async (ctx, task) => {
+        task: async (ctx, task) => {          
           await withUserAuthConfig(this.config.configDir, async (userAuth) => {
-            delete userAuth.AccessToken;
+            delete userAuth.AccessToken;           
           });
 
+          rimraf(this.config.configDir.toString(), function () {console.log('deleted fathym directory')})
+                   
           task.title = `Sign out completed successfully`;
         },
       },
