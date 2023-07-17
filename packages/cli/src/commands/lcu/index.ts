@@ -589,7 +589,7 @@ export default class Install extends FathymCommand<InstallContext> {
     phase?: number
   ): ListrTask<InstallContext> {
     return {
-      title: `Installing LCU`,
+      title: `Installing LCU - This may take several minutes`,
       task: async (ctx, task) => {
         const paramswers = await this.installLcu(
           this.config.configDir,
