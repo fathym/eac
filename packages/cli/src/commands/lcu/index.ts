@@ -7,6 +7,7 @@ import { LcuPackageConfig } from '../../common/LcuPackageConfig';
 import {
   azureCliInstallTask,
   AzureCLITaskContext,
+  DeployStatus,
   ensurePromptValue,
   FathymTaskContext,
   LCUParamAnswersTaskContext,
@@ -30,6 +31,7 @@ import {
   loadEaCTask,
   ProjectTaskContext,
 } from '../../common/eac-services';
+import { GetDeploymentStatusRequest } from '../../common/GetDeploymentStatusRequest';
 
 export interface InstallContext
   extends FathymTaskContext,
@@ -389,6 +391,21 @@ export default class Install extends FathymCommand<InstallContext> {
     };
   }
 
+  protected async getDeploymentStatus(
+    configDir: string,
+    resourceGroupName: string,
+    deploymentName: string,
+    deployReq: GetDeploymentStatusRequest,
+    subscriptionId?: string,
+  ): Promise<DeployStatus> {
+    
+    const axios = await loadAxios(configDir);
+
+    const response = await axios.post(`${subscriptionId}/${resourceGroupName}/${deploymentName}/status`, deployReq);
+
+    return response.data?.Model || {};
+  }
+
   protected async installLcu(
     configDir: string,
     entLookup: string,
@@ -588,6 +605,7 @@ export default class Install extends FathymCommand<InstallContext> {
     lcu: string,
     phase?: number
   ): ListrTask<InstallContext> {
+    let deployParam : DeployStatus;
     return {
       title: `Installing LCU - This may take several minutes`,
       task: async (ctx, task) => {
@@ -605,7 +623,7 @@ export default class Install extends FathymCommand<InstallContext> {
             Project: ctx.ProjectLookup,
           }
         );
-
+        
         if (paramswers.$ProjectLookup) {
           //  TODO:  Handle any $ prop onto the CTX
 
@@ -661,11 +679,24 @@ export default class Install extends FathymCommand<InstallContext> {
           ...ctx.LCUParamAnswers,
           ...paramswers,
         };
-
+              
+        if (paramswers.deploymentName){
+          const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+          deployParam = await this.getDeploymentStatus(this.config.configDir, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)
+          console.log('deploy check called')
+          while ('Status' in deployParam){
+            console.log('while loop called')
+            await sleep(5000);
+            deployParam = await this.getDeploymentStatus(this.config.configDir, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)
+          }         
+        }
+        
         ctx.Fathym.Result =
           JSON.stringify(paramswers, null, 2) +
           '\n' +
-          JSON.stringify(ctx.LCUParamAnswers, null, 2);
+          JSON.stringify(ctx.LCUParamAnswers, null, 2)
+          '\n' +
+          JSON.stringify(deployParam, null, 2);
 
         // ctx.Fathym.Result = JSON.stringify(ctx.LCUParamAnswers, null, 2);
         // }

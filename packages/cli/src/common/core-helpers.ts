@@ -48,6 +48,10 @@ export interface AzureSubscription {
   tenantId: string;
 }
 
+export interface DeployStatus {
+  [key: string]: string;
+}
+
 export interface LCUParamAnswersTaskContext {
   LCUParamAnswers: ParamAnswers;
 }
