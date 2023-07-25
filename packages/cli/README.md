@@ -26,7 +26,7 @@ $ npm install -g @fathym/cli
 $ fathym COMMAND
 running command...
 $ fathym (--version)
-@fathym/cli/0.0.206 win32-x64 node-v18.16.0
+@fathym/cli/0.0.207 win32-x64 node-v18.16.0
 $ fathym --help [COMMAND]
 USAGE
   $ fathym COMMAND
@@ -57,6 +57,7 @@ USAGE
 * [`fathym dev azure sshkey create [RESOURCEGROUP]`](#fathym-dev-azure-sshkey-create-resourcegroup)
 * [`fathym dev billing manage`](#fathym-dev-billing-manage)
 * [`fathym dev config open [CONFIG]`](#fathym-dev-config-open-config)
+* [`fathym dev deno scaffold [NAME]`](#fathym-dev-deno-scaffold-name)
 * [`fathym dev download URL OUTPUTFILE`](#fathym-dev-download-url-outputfile)
 * [`fathym dev lcu react create [NAME]`](#fathym-dev-lcu-react-create-name)
 * [`fathym dev lcu scaffold [NAME]`](#fathym-dev-lcu-scaffold-name)
@@ -152,7 +153,7 @@ EXAMPLES
   $ fathym auth
 ```
 
-_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.206/dist/commands/auth/index.ts)_
+_See code: [dist/commands/auth/index.ts](https://github.com/fathym/eac/blob/v0.0.207/dist/commands/auth/index.ts)_
 
 ## `fathym auth config`
 
@@ -292,6 +293,30 @@ EXAMPLES
   $ fathym dev config open
 ```
 
+## `fathym dev deno scaffold [NAME]`
+
+Used to scaffold a new Deno project.
+
+```
+USAGE
+  $ fathym dev deno scaffold [NAME] [--json] [-d <value>]
+
+ARGUMENTS
+  NAME  The name of the deno project to scaffold.
+
+FLAGS
+  -d, --directory=<value>  The directory to initialize and scaffold.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+DESCRIPTION
+  Used to scaffold a new Deno project.
+
+EXAMPLES
+  $ fathym dev deno scaffold dev deno scaffold --help
+```
+
 ## `fathym dev download URL OUTPUTFILE`
 
 Used for downloading a file.
@@ -348,7 +373,7 @@ USAGE
   $ fathym dev lcu scaffold [NAME] [--json] [-d <value>]
 
 ARGUMENTS
-  NAME  The name of the LCUt to scaffold.
+  NAME  The name of the LCU to scaffold.
 
 FLAGS
   -d, --directory=<value>  The directory to initialize and scaffold.
@@ -1386,7 +1411,7 @@ EXAMPLES
   $ fathym git "Commit messag here"
 ```
 
-_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.206/dist/commands/git/index.ts)_
+_See code: [dist/commands/git/index.ts](https://github.com/fathym/eac/blob/v0.0.207/dist/commands/git/index.ts)_
 
 ## `fathym git auth`
 
@@ -1700,7 +1725,7 @@ EXAMPLES
   $ fathym lcu
 ```
 
-_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.206/dist/commands/lcu/index.ts)_
+_See code: [dist/commands/lcu/index.ts](https://github.com/fathym/eac/blob/v0.0.207/dist/commands/lcu/index.ts)_
 
 ## `fathym licenses get [LICENSETYPE]`
 
@@ -1766,7 +1791,7 @@ EXAMPLES
   $ fathym open
 ```
 
-_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.206/dist/commands/open.ts)_
+_See code: [dist/commands/open.ts](https://github.com/fathym/eac/blob/v0.0.207/dist/commands/open.ts)_
 
 ## `fathym plugins`
 
@@ -2019,7 +2044,7 @@ EXAMPLES
   $ fathym upgrade
 ```
 
-_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.206/dist/commands/upgrade.ts)_
+_See code: [dist/commands/upgrade.ts](https://github.com/fathym/eac/blob/v0.0.207/dist/commands/upgrade.ts)_
 <!-- commandsstop -->
 * [`fathym auth`](#fathym-auth)
 * [`fathym auth config`](#fathym-auth-config)
