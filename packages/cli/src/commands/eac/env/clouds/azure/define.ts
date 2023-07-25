@@ -75,7 +75,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     generate: boolean,
     cloudLookup: string
   ): Promise<ListrTask<DefineTaskContext, any>> {
-    let generated: Record<string, any> = {};
+    const generated: Record<string, any> = {};
 
     return withEaCDraftEditTask<DefineTaskContext, EaCCloudDetails>(
       'Create cloud subscription connection',
