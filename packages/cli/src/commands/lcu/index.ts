@@ -605,7 +605,8 @@ export default class Install extends FathymCommand<InstallContext> {
     lcu: string,
     phase?: number
   ): ListrTask<InstallContext> {
-    let deployParam : DeployStatus;
+    let deployParam : ParamAnswers;
+    let combinedParam: ParamAnswers;
     return {
       title: `Installing LCU - This may take several minutes`,
       task: async (ctx, task) => {
@@ -675,10 +676,7 @@ export default class Install extends FathymCommand<InstallContext> {
         // if (phase === 3) {
         //   ctx.Fathym.Result = JSON.stringify(paramswers, null, 2);
         // } else {
-        ctx.LCUParamAnswers = {
-          ...ctx.LCUParamAnswers,
-          ...paramswers,
-        };
+
               
         if (paramswers.deploymentName){
           const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -688,16 +686,32 @@ export default class Install extends FathymCommand<InstallContext> {
           while ('Status' in deployParam){
             await sleep(5000);
             
-            deployParam = await this.getDeploymentStatus(this.config.configDir, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)
-          }         
+            deployParam = await this.getDeploymentStatus(this.config.configDir, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)          
+          }    
+          
+          combinedParam = {
+            ...paramswers,
+            ...deployParam,
+          }
+
+          ctx.LCUParamAnswers = {
+            ...ctx.LCUParamAnswers,
+            ...combinedParam,
+          };
         }
+        else{
+          ctx.LCUParamAnswers = {
+            ...ctx.LCUParamAnswers,
+            ...paramswers,
+          };
+        }
+        
+
         
         ctx.Fathym.Result =
           JSON.stringify(paramswers, null, 2) +
           '\n' +
           JSON.stringify(ctx.LCUParamAnswers, null, 2)
-          '\n' +
-          JSON.stringify(deployParam, null, 2);
 
         // ctx.Fathym.Result = JSON.stringify(ctx.LCUParamAnswers, null, 2);
         // }
