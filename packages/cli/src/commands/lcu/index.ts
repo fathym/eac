@@ -682,11 +682,12 @@ export default class Install extends FathymCommand<InstallContext> {
               
         if (paramswers.deploymentName){
           const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
           deployParam = await this.getDeploymentStatus(this.config.configDir, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)
-          console.log('deploy check called')
+         
           while ('Status' in deployParam){
-            console.log('while loop called')
             await sleep(5000);
+            
             deployParam = await this.getDeploymentStatus(this.config.configDir, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)
           }         
         }
