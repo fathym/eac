@@ -705,9 +705,7 @@ export default class Install extends FathymCommand<InstallContext> {
             ...paramswers,
           };
         }
-        
-
-        
+               
         ctx.Fathym.Result =
           JSON.stringify(paramswers, null, 2) +
           '\n' +
