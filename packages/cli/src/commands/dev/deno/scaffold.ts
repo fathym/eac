@@ -6,10 +6,10 @@ import { FathymTaskContext } from '../../../common/core-helpers';
 import { loadCurrentGitPackageName } from '../../../common/git-helpers';
 
 export default class Scaffold extends FathymCommand<FathymTaskContext> {
-  static description = 'Used to scaffold a new LCU.';
+  static description = 'Used to scaffold a new Deno project.';
 
   static examples = [
-    '<%= config.bin %> <%= command.id %> dev lcu scaffold --help',
+    '<%= config.bin %> <%= command.id %> dev deno scaffold --help',
   ];
 
   static flags = {
@@ -21,7 +21,7 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
 
   static args = {
     name: Args.string({
-      description: 'The name of the LCU to scaffold.',
+      description: 'The name of the deno project to scaffold.',
     }),
   };
 
@@ -36,6 +36,8 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
 
     directory = directory || './';
 
+    let projectType = '';
+
     return [
       {
         title: `Ensuring package name`,
@@ -46,12 +48,33 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
         },
       },
       {
-        title: `Initializing LCU package`,
+        title: `Select project type`,
         task: async (ctx, task) => {
-          task.title = `Initializing LCU package ${name}`;
+          projectType = await task.prompt({
+            type: 'select',
+            message: 'Project type',
+            choices: [{
+              message: 'Module',
+              name: '@fathym/create-deno-module-package@latest',
+            }, {
+              message: 'Fresh',
+              name: '@fathym/create-deno-fresh-package@latest'
+            }],
+            validate: (v) => Boolean(v),
+          } as any);
+
+          if (!name) {
+            name = await loadCurrentGitPackageName();
+          }
+        },
+      },
+      {
+        title: `Initializing Deno project`,
+        task: async (ctx, task) => {
+          task.title = `Initializing Deno project ${name}: ${projectType}`;
 
           await runProc('npx', [
-            '@fathym/create-lcu-package@latest',
+            projectType,
             name!,
             directory!,
           ]);
