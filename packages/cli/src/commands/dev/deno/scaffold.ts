@@ -55,7 +55,7 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
             message: 'Project type',
             choices: [{
               message: 'Module',
-              name: '@fathym/create-deno-module-package@latest',
+              name: 'https://deno.land/x/create_deno_module_project@v0.0.17-integration/cli.ts ',
             }, {
               message: 'Fresh',
               name: '@fathym/create-deno-fresh-package@latest'
@@ -73,10 +73,14 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
         task: async (ctx, task) => {
           task.title = `Initializing Deno project ${name}: ${projectType}`;
 
-          await runProc('npx', [
+          console.log(projectType);
+
+          await runProc('deno', [
+            "run",
+            "-A",
             projectType,
+            `-d ${directory!}`,
             name!,
-            directory!,
           ]);
         },
       },
