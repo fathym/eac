@@ -19,6 +19,7 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
+    "@fathym/cli": "^0.0.214",
     "@microsoft/signalr": "^7.0.2",
     "@oclif/core": "^2.1.1",
     "@oclif/plugin-help": "^5.2.4",
