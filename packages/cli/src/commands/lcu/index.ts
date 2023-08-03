@@ -393,6 +393,7 @@ export default class Install extends FathymCommand<InstallContext> {
 
   protected async getDeploymentStatus(
     configDir: string,
+    entLookup: string,
     resourceGroupName: string,
     deploymentName: string,
     deployReq: GetDeploymentStatusRequest,
@@ -401,7 +402,7 @@ export default class Install extends FathymCommand<InstallContext> {
     
     const axios = await loadAxios(configDir);
 
-    const response = await axios.post(`${subscriptionId}/${resourceGroupName}/${deploymentName}/status`, deployReq);
+    const response = await axios.post(`${entLookup}/{subscriptionId}/${resourceGroupName}/${deploymentName}/status`, deployReq);
 
     return response.data?.Model || {};
   }
@@ -681,12 +682,12 @@ export default class Install extends FathymCommand<InstallContext> {
         if (paramswers.deploymentName){
           const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-          deployParam = await this.getDeploymentStatus(this.config.configDir, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)
+          deployParam = await this.getDeploymentStatus(this.config.configDir, ctx.ActiveEnterpriseLookup, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)
          
           while ('Status' in deployParam){
             await sleep(5000);
             
-            deployParam = await this.getDeploymentStatus(this.config.configDir, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)          
+            deployParam = await this.getDeploymentStatus(this.config.configDir, ctx.ActiveEnterpriseLookup, paramswers.resourceGroupName, paramswers.deploymentName, {ApplicationID: ctx.ApplicationID, AuthKey: ctx.AuthKey, TenantID: ctx.TenantID}, ctx.SubscriptionID)          
           }    
           
           combinedParam = {
