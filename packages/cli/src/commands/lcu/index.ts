@@ -402,7 +402,7 @@ export default class Install extends FathymCommand<InstallContext> {
     
     const axios = await loadAxios(configDir);
 
-    const response = await axios.post(`${entLookup}/{subscriptionId}/${resourceGroupName}/${deploymentName}/status`, deployReq);
+    const response = await axios.post(`${entLookup}/${subscriptionId}/${resourceGroupName}/${deploymentName}/status`, deployReq);
 
     return response.data?.Model || {};
   }
