@@ -53,13 +53,16 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
           projectType = await task.prompt({
             type: 'select',
             message: 'Project type',
-            choices: [{
-              message: 'Module',
-              name: 'https://deno.land/x/create_deno_module_project@v0.0.25-integration/cli.ts ',
-            }, {
-              message: 'Fresh',
-              name: 'https://deno.land/x/create_deno_fresh_project@v0.0.9-integration/cli.ts ',
-            }],
+            choices: [
+              {
+                message: 'Module',
+                name: 'https://deno.land/x/create_deno_module_project@v0.0.25-integration/cli.ts ',
+              },
+              {
+                message: 'Fresh',
+                name: 'https://deno.land/x/create_deno_fresh_project@v0.0.13-integration/cli.ts ',
+              },
+            ],
             validate: (v) => Boolean(v),
           } as any);
 
@@ -76,8 +79,8 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
           console.log(projectType);
 
           await runProc('deno', [
-            "run",
-            "-A",
+            'run',
+            '-A',
             projectType,
             `-d ${directory!}`,
             name!,
