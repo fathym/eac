@@ -56,7 +56,7 @@ export default class Scaffold extends FathymCommand<FathymTaskContext> {
             choices: [
               {
                 message: 'Module',
-                name: 'https://deno.land/x/create_deno_module_project@v0.0.26-integration/cli.ts',
+                name: 'https://deno.land/x/create_deno_module_project@v0.0.27-integration/cli.ts',
               },
               {
                 message: 'Fresh',
