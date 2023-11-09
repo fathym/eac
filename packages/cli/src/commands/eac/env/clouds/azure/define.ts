@@ -71,7 +71,7 @@ export default class Define extends FathymCommand<DefineTaskContext> {
     ];
   }
 
-  protected async  createCloudConnection(
+  protected async createCloudConnection(
     generate: boolean,
     cloudLookup: string
   ): Promise<ListrTask<DefineTaskContext, any>> {
@@ -91,11 +91,11 @@ export default class Define extends FathymCommand<DefineTaskContext> {
             {
               Name: ctx.SubscriptionName,
               Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
-              Type: "Azure",
+              Type: 'Azure',
               ApplicationID: ctx.ApplicationID,
               AuthKey: ctx.AuthKey,
               TenantID: ctx.TenantID,
-              SubscriptionID: ctx.SubscriptionID
+              SubscriptionID: ctx.SubscriptionID,
             },
           ],
         ],
@@ -105,46 +105,40 @@ export default class Define extends FathymCommand<DefineTaskContext> {
         prompt: async (ctx, task) => {
           //TODO: "Generate" flag is not working, not recognizing the flag, so the SP is never created. Most situations will need this step, but need to fix in the future
           //if (generate) {
-            // let svcPrincStr = '{}';
-
-            // try {
-            //   svcPrincStr = await runProc('az', [
-            //     'ad',
-            //     'sp',
-            //     'create-for-rbac',
-            //     // `--name "${ctx.SubscriptionID}"`,
-            //     '--role Contributor',
-            //     `--scopes /subscriptions/${ctx.SubscriptionID}`,
-            //     // `--tenant ${ctx.TenantID}`,
-            //   ]);
-            // } catch {
-            //   //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
-            //   // await runProc('az', ['account', 'clear']);
-
-            //   // await runProc('az', ['logout']);
-
-            //   // await runProc('az', ['login']);
-
-            //   svcPrincStr = await runProc('az', [
-            //     'ad',
-            //     'sp',
-            //     'create-for-rbac',
-            //     // `--name "${ctx.SubscriptionID}"`,
-            //     '--role Contributor',
-            //     `--scopes /subscriptions/${ctx.SubscriptionID}`,
-            //     // `--tenant ${ctx.TenantID}`,
-            //   ]);
-            // }
-
-            // const svcPrinc = JSON.parse(svcPrincStr || '{}');
-
-            // generated = {
-            //   Type: 'Azure',
-            //   ApplicationID: svcPrinc.appId,
-            //   AuthKey: svcPrinc.password,
-            //   SubscriptionID: ctx.SubscriptionID,
-            //   TenantID: svcPrinc.tenant,
-            // };
+          // let svcPrincStr = '{}';
+          // try {
+          //   svcPrincStr = await runProc('az', [
+          //     'ad',
+          //     'sp',
+          //     'create-for-rbac',
+          //     // `--name "${ctx.SubscriptionID}"`,
+          //     '--role Contributor',
+          //     `--scopes /subscriptions/${ctx.SubscriptionID}`,
+          //     // `--tenant ${ctx.TenantID}`,
+          //   ]);
+          // } catch {
+          //   //  TODO:  Would be nice if this was done in it's own task as part of the ensureAzureCli step, but couldn't find a way to get it to fail without actual rbac creation
+          //   // await runProc('az', ['account', 'clear']);
+          //   // await runProc('az', ['logout']);
+          //   // await runProc('az', ['login']);
+          //   svcPrincStr = await runProc('az', [
+          //     'ad',
+          //     'sp',
+          //     'create-for-rbac',
+          //     // `--name "${ctx.SubscriptionID}"`,
+          //     '--role Contributor',
+          //     `--scopes /subscriptions/${ctx.SubscriptionID}`,
+          //     // `--tenant ${ctx.TenantID}`,
+          //   ]);
+          // }
+          // const svcPrinc = JSON.parse(svcPrincStr || '{}');
+          // generated = {
+          //   Type: 'Azure',
+          //   ApplicationID: svcPrinc.appId,
+          //   AuthKey: svcPrinc.password,
+          //   SubscriptionID: ctx.SubscriptionID,
+          //   TenantID: svcPrinc.tenant,
+          // };
           //}
         },
         draftPatch: (ctx) => {

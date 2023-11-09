@@ -410,7 +410,7 @@ export function ensureActiveEnterpriseTask<
       ctx.ActiveEnterpriseLookup = await loadActieEnterpriseLookup(configDir);
 
       if (ctx.ActiveEnterpriseLookup) {
-          task.title = `Active enterprise is currently set to ${ctx.ActiveEnterpriseLookup}`;
+        task.title = `Active enterprise is currently set to ${ctx.ActiveEnterpriseLookup}`;
       } else {
         throw new Error(
           `Active enterprise must be set with 'fathym enterprises set' command.`
@@ -426,17 +426,15 @@ export function ensureActiveLicenseTask<
   return {
     title: `Ensuring active license`,
     task: async (ctx, task) => {
-      ctx.ActiveLicenses = await ensureLicense(configDir, "fathym");
+      ctx.ActiveLicenses = await ensureLicense(configDir, 'fathym');
 
       if (ctx.ActiveLicenses.length === 0) {
-
-           throw new Error(
-             "You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license"
-             );
-         }
-         else{
-          task.title = `Active License Found`;
-        }
+        throw new Error(
+          "You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license"
+        );
+      } else {
+        task.title = `Active License Found`;
+      }
     },
   };
 }
@@ -819,8 +817,10 @@ export async function ensureLicense(
 
   const response = await axios.get(`user/licenses`, config);
 
-  if (response.data?.Model == null){
-    throw new Error("You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license");
+  if (response.data?.Model == null) {
+    throw new Error(
+      "You currently don't have an active license. Please visit https://fathym.com/dashboard/billing to purchase a license"
+    );
   }
   return response.data?.Model || [];
 }
@@ -855,7 +855,7 @@ export async function listLicenseTypes(configDir: string): Promise<string[]> {
 export async function listLicensesByEmail(
   configDir: string,
   licenseType?: string
-): Promise<(EaCLicense & {Lookup: string}) []> {
+): Promise<(EaCLicense & { Lookup: string })[]> {
   const axios = await loadAxios(configDir);
 
   let config = {};
@@ -899,7 +899,7 @@ export function setAzureSubTask<
     AzureCLITaskContext &
     ActiveEnterpriseTaskContext
 >(configDir: string): ListrTask<TContext, any> {
-  let isManaged = "";
+  let isManaged = '';
 
   return {
     title: `Setting Azure Subscription`,
@@ -910,32 +910,32 @@ export function setAzureSubTask<
           title: 'Select Azure Subscription',
           //skip: (ctx) => !ctx.AzureCLIInstalled,
           task: async (ctx, task) => {
-            const env = ctx.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!];
+            // const env =
+            //   ctx.EaC.Environments![ctx.EaC.Enterprise!.PrimaryEnvironment!];
 
             isManaged = (await ensurePromptValue(
               task,
               'Use existing Azure subscription, or create a new managed Azure subscription?',
               isManaged,
-              [
-                'Use existing subscription',
-                'Create new managed subscription'
-              ]
+              ['Use existing subscription', 'Create new managed subscription']
             )) as string;
             //const clouds =  Object.keys(env.Clouds || {});
 
-            if(isManaged === "Use existing subscription")
-              await runProc('az', ['login'])
+            if (isManaged === 'Use existing subscription')
+              await runProc('az', ['login']);
 
-            const subsList: AzureSubscription[] = isManaged === "Use existing subscription" ?
-            JSON.parse(
-              (await runProc('az', ['account', 'list', '--refresh'])) || '[]'
-            ) : JSON.parse('[]');
+            const subsList: AzureSubscription[] =
+              isManaged === 'Use existing subscription'
+                ? JSON.parse(
+                    (await runProc('az', ['account', 'list', '--refresh'])) ||
+                      '[]'
+                  )
+                : JSON.parse('[]');
 
-            if(isManaged === "Use existing subscription")
-              ensureAzureCliSetupTask(configDir, true)
-
-            else{
-              ensureAzureCliSetupTask(configDir, false)
+            if (isManaged === 'Use existing subscription')
+              ensureAzureCliSetupTask(configDir, true);
+            else {
+              ensureAzureCliSetupTask(configDir, false);
 
               subsList.unshift({
                 id: '-- Create New Subscription --',
@@ -946,7 +946,7 @@ export function setAzureSubTask<
 
             const subCheck: string = (
               await task.prompt({
-                type: 'Select',
+                type: 'autocomplete',
                 name: 'subId',
                 message: 'Choose Azure subscription:',
                 choices: subsList.map((account) => {
@@ -1007,6 +1007,8 @@ export function setAzureSubTask<
               ctx.AuthKey = svcPrinc.password;
 
               ctx.TenantID = svcPrinc.tenant;
+
+              console.log(ctx.AuthKey);
 
               task.title = `Azure subscription selected: ${ctx.SubscriptionID}`;
             } else {
