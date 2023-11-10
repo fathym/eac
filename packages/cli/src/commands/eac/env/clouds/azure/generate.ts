@@ -82,10 +82,10 @@ export default class Define extends FathymCommand<DefineTaskContext> {
             Name: ctx.SubscriptionName,
             Description: `Created using Fathym CLI with Azure CLI: ${ctx.SubscriptionName}`,
             Type: 'Azure',
-            ApplicationID: ctx.ApplicationID,
-            AuthKey: ctx.AuthKey,
             TenantID: ctx.TenantID,
             SubscriptionID: ctx.SubscriptionID,
+            ApplicationID: ctx.ApplicationID,
+            AuthKey: ctx.AuthKey,
           },
           undefined,
           2
